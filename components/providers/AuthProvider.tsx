@@ -2,7 +2,8 @@
 
 import { createContext, useEffect, useState, ReactNode } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { auth, signInWithGoogle, signOutUser } from "@/lib/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { auth, db, signInWithGoogle, signOutUser } from "@/lib/firebase";
 
 interface AuthContextValue {
   user: User | null;
@@ -21,8 +22,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const unsubscribe = onAuthStateChanged(
         auth,
-        (firebaseUser) => {
+        async (firebaseUser) => {
           setUser(firebaseUser);
+          if (firebaseUser) {
+            // Ensure user doc exists in Firestore
+            try {
+              const userRef = doc(db, "users", firebaseUser.uid);
+              const userSnap = await getDoc(userRef);
+              if (!userSnap.exists()) {
+                await setDoc(userRef, {
+                  email: firebaseUser.email ?? "",
+                  displayName: firebaseUser.displayName ?? "",
+                  role: "user",
+                  createdAt: Date.now(),
+                });
+              }
+            } catch (error) {
+              console.error("Error saving user doc:", error);
+            }
+          }
           setLoading(false);
         },
         (error) => {

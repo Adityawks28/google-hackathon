@@ -85,7 +85,10 @@ function AdminContent() {
     try {
       const res = await fetch("/api/generate-sol", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-uid": user?.uid ?? "",
+        },
         body: JSON.stringify({ problemId }),
       });
       const data = await res.json();

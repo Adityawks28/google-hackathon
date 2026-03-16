@@ -15,10 +15,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Add proper admin authentication check
-    // For now, this endpoint is accessible but should be restricted
+    // Verify admin via Authorization header (uid)
+    const uid = request.headers.get("x-user-uid");
+    if (!uid) {
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
 
     const { db } = await import("@/lib/firebase");
+
+    // Check admin role
+    const userDoc = await getDoc(doc(db, "users", uid));
+    if (!userDoc.exists() || userDoc.data().role !== "admin") {
+      return NextResponse.json({ error: "Admin access required." }, { status: 403 });
+    }
     const problemRef = doc(db, "problems", problemId);
     const problemDoc = await getDoc(problemRef);
 

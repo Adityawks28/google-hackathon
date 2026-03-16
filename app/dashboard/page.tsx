@@ -4,13 +4,16 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ProblemCard } from "@/components/ProblemCard";
 import { ProgressTracker } from "@/components/ProgressTracker";
+import Link from "next/link";
 import type { Problem, UserProgress } from "@/types";
 
 function DashboardContent() {
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const [problems, setProblems] = useState<Problem[]>([]);
   const [progress, setProgress] = useState<UserProgress[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,6 +70,14 @@ function DashboardContent() {
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
           <h1 className="text-xl font-bold text-gray-900">CodeSensei</h1>
           <div className="flex items-center gap-4">
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className="rounded-md bg-red-50 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-100"
+              >
+                Admin
+              </Link>
+            )}
             <span className="text-sm text-gray-600">{user?.displayName}</span>
             <button
               onClick={signOut}

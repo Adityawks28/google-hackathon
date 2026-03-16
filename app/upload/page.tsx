@@ -4,7 +4,7 @@ import { useState } from "react";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/hooks/useAuth";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { AdminRoute } from "@/components/AdminRoute";
 import type { TestCase } from "@/types";
 import Link from "next/link";
 
@@ -209,8 +209,8 @@ function UploadContent() {
 
 export default function UploadPage() {
   return (
-    <ProtectedRoute>
+    <AdminRoute>
       <UploadContent />
-    </ProtectedRoute>
+    </AdminRoute>
   );
 }
