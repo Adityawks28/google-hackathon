@@ -1,36 +1,183 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# google-hackathon
+
+An AI coding tutor that guides learners through programming problems using progressive hints and guiding questions without giving direct answers. Built for the Google Hackathon.
+
+## Tech Stack
+
+- **Frontend:** Next.js 16 (App Router), TypeScript, Tailwind CSS
+- **AI:** Google Gemini API (`gemini-2.0-flash`)
+- **Auth:** Firebase Authentication (Google Sign-In)
+- **Database:** Cloud Firestore
+- **Code Editor:** Monaco Editor (`@monaco-editor/react`)
+- **State:** Zustand, React Context
+- **Deployment:** Vercel
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- A Firebase project with Authentication and Firestore enabled
+- A Gemini API key
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/your-org/google-hackathon.git
+cd google-hackathon
+npm install
+```
+
+### 2. Set up environment variables
+
+Copy `.env.example` to `.env.local` and fill in your keys:
+
+```bash
+cp .env.example .env.local
+```
+
+| Variable | Where to get it |
+|---|---|
+| `GOOGLE_GEMINI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
+| `NEXT_PUBLIC_FIREBASE_API_KEY` | Firebase Console → Project Settings → Your apps |
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Same as above |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Same as above |
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | Same as above |
+| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Same as above |
+| `NEXT_PUBLIC_FIREBASE_APP_ID` | Same as above |
+
+### 3. Set up Firebase
+
+1. Go to [Firebase Console](https://console.firebase.google.com) → your project
+2. **Authentication** → Get started → Enable **Google** sign-in provider
+3. **Firestore** → Create database → Choose a region
+4. **Firestore Rules** → Set to:
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /problems/{problemId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+    match /progress/{progressId} {
+      allow read, write: if request.auth != null
+        && request.auth.uid == resource.data.userId;
+    }
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+### 4. Run the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 5. Set up admin access
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Sign in to the app with Google (this creates your user doc in Firestore)
+2. Find your UID in Firebase Console → Authentication → Users
+3. Promote yourself to admin:
 
-## Learn More
+```bash
+npx tsx scripts/seed-admin.ts YOUR_UID
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. Refresh the app — you'll see an **Admin** button in the dashboard header
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 6. Seed starter problems
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Go to `/admin` (requires admin access)
+2. Click **"Seed Starter Problems"** to add FizzBuzz, Reverse String, and Two Sum
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+app/
+  page.tsx                  # Landing page
+  layout.tsx                # Root layout with AuthProvider
+  login/page.tsx            # Google sign-in
+  dashboard/page.tsx        # Problem list + progress
+  problem/[id]/page.tsx     # Problem solver (editor + hints)
+  chat/[problemId]/page.tsx # AI tutor chat
+  code/[problemId]/page.tsx # Standalone code editor
+  upload/page.tsx           # Create problem (admin only)
+  admin/page.tsx            # Admin panel
+  api/
+    tutor/route.ts          # hint generation
+    evaluate/route.ts       # Code evaluation
+    generate-sol/route.ts   # Reference solution gen (admin)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+components/
+  CodeEditor.tsx            # Monaco editor wrapper
+  HintPanel.tsx             # Progressive hint display
+  ChatMessage.tsx           # Chat message bubble
+  ProblemCard.tsx           # Problem list card
+  ProgressTracker.tsx       # User stats + progress bar
+  ProtectedRoute.tsx        # Auth guard
+  AdminRoute.tsx            # Admin guard
+  providers/
+    AuthProvider.tsx         # Firebase auth context
+
+lib/
+  firebase.ts               # Firebase client init
+  gemini.ts                 # Gemini API client
+  prompts.ts                # AI prompt templates
+  rate-limit.ts             # In-memory rate limiter
+  lessons.ts                # Seed problems + Firestore helpers
+  admin.ts                  # Admin check utility
+
+hooks/
+  useAuth.ts                # Auth context consumer
+  useAdmin.ts               # Admin role check
+  useTutor.ts               # Tutor interaction flow
+
+types/
+  index.ts                  # Shared TypeScript types
+
+scripts/
+  seed-admin.ts             # Promote user to admin
+```
+
+## Key Features
+
+- **Tutoring:** AI never gives direct answers — uses 3 levels of progressive hints
+- **Code Editor:** Full Monaco editor with syntax highlighting and dark theme
+- **Code Evaluation:** AI evaluates submissions against test cases
+- **Chat Interface:** Conversational AI tutor for deeper discussions
+- **Admin Panel:** Seed problems, manage users, generate reference solutions
+- **Role-Based Access:** Admin vs regular user permissions
+
+## Available Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start dev server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npx tsx scripts/seed-admin.ts <uid>` | Promote a user to admin |
+
+## Firestore Collections
+
+| Collection | Description |
+|---|---|
+| `problems` | Coding problems with test cases |
+| `users` | User profiles with role (user/admin) |
+| `progress` | Per-user per-problem progress tracking |
+
+## Team Notes
+
+- The `NEXT_PUBLIC_FIREBASE_*` env vars are safe to expose client-side — they are identifiers, not secrets
+- The `GOOGLE_GEMINI_API_KEY` is server-only and must NOT be prefixed with `NEXT_PUBLIC_`
+- Firestore security rules are what protect your data — keep them locked down
+- The first user to sign in needs to be manually promoted to admin via the seed script
+- Rate limiting is in-memory (resets on server restart) — fine for hackathon, not for production
