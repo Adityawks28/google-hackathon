@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useAuth } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { CodeEditor } from "@/components/CodeEditor";
 import { HintPanel } from "@/components/HintPanel";
@@ -14,6 +15,7 @@ import Link from "next/link";
 function ProblemContent() {
   const params = useParams<{ id: string }>();
   const problemId = params.id;
+  const { user } = useAuth();
   const [problem, setProblem] = useState<Problem | null>(null);
   const [code, setCode] = useState("");
   const [hints, setHints] = useState<string[]>([]);
@@ -60,6 +62,29 @@ function ProblemContent() {
       const data: EvaluateResponse = await res.json();
       setCorrect(data.correct);
       setFeedback(data.feedback);
+
+      // Save progress to Firestore
+      if (user) {
+        try {
+          const progressRef = doc(db, "progress", `${user.uid}_${problemId}`);
+          const existing = await getDoc(progressRef);
+          const alreadySolved = existing.exists() && existing.data().solved;
+
+          await setDoc(
+            progressRef,
+            {
+              userId: user.uid,
+              problemId,
+              attempted: true,
+              solved: alreadySolved || data.correct,
+              lastAttemptAt: Date.now(),
+            },
+            { merge: true },
+          );
+        } catch (progressError) {
+          console.error("Error saving progress:", progressError);
+        }
+      }
     } catch (error) {
       console.error("Submit error:", error);
       setFeedback("Failed to evaluate. Please try again.");
@@ -77,6 +102,31 @@ function ProblemContent() {
         updated[nextLevel - 1] = guidance;
         return updated;
       });
+
+      // Track hint usage in progress
+      if (user) {
+        try {
+          const progressRef = doc(db, "progress", `${user.uid}_${problemId}`);
+          const existing = await getDoc(progressRef);
+          const currentHistory = existing.exists()
+            ? (existing.data().hintHistory ?? [])
+            : [];
+
+          await setDoc(
+            progressRef,
+            {
+              userId: user.uid,
+              problemId,
+              attempted: true,
+              hintHistory: [...currentHistory, nextLevel],
+              lastAttemptAt: Date.now(),
+            },
+            { merge: true },
+          );
+        } catch (hintError) {
+          console.error("Error saving hint progress:", hintError);
+        }
+      }
     }
   }
 
@@ -153,14 +203,27 @@ function ProblemContent() {
           {/* Feedback */}
           {feedback && (
             <div
-              className={`border-t px-4 py-3 text-sm ${
+              className={`border-t px-4 py-3 ${
                 correct
                   ? "border-green-200 bg-green-50 text-green-800"
                   : "border-red-200 bg-red-50 text-red-800"
               }`}
             >
-              {correct ? "Correct! " : "Not quite. "}
-              {feedback}
+              {correct ? (
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex h-8 w-8 animate-bounce items-center justify-center rounded-full bg-green-500 text-lg text-white">
+                    &#10003;
+                  </span>
+                  <div>
+                    <p className="text-base font-bold">Solved!</p>
+                    <p className="text-sm">{feedback}</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-sm">
+                  <span className="font-medium">Not quite.</span> {feedback}
+                </div>
+              )}
             </div>
           )}
 
