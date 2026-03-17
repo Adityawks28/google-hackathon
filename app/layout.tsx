@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CodeSensei — AI Coding Tutor",
+  title: "Google Hackathon — AI Coding Tutor",
   description:
-    "Learn to code through Socratic guidance. CodeSensei is an AI tutor that helps you discover solutions through progressive hints and guiding questions — never just gives you the answer.",
+    "Learn to code through guided practice. Google Hackathon is an AI tutor that helps you discover solutions through progressive hints and guiding questions — never just gives you the answer.",
 };
 
 export default function RootLayout({
