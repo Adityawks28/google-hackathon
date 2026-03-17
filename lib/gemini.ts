@@ -1,5 +1,4 @@
 import { GoogleGenAI } from "@google/genai";
-import { TUTOR_SYSTEM_PROMPT } from "@/lib/prompts";
 import type { ChatMessage } from "@/types";
 
 let _ai: GoogleGenAI | undefined;
@@ -10,46 +9,82 @@ function getAI(): GoogleGenAI {
   return _ai;
 }
 
-export async function askTutor(
-  code: string,
-  error: string,
-  hintLevel: number,
-  history: ChatMessage[],
-  problemDescription: string,
-): Promise<string> {
-  const conversationHistory = history
+function formatHistory(history: ChatMessage[]): string {
+  return history
     .map(
       (msg) => `${msg.role === "user" ? "Learner" : "Tutor"}: ${msg.content}`,
     )
     .join("\n");
+}
+
+export async function askBrainstorm(
+  message: string,
+  history: ChatMessage[],
+  problemDescription: string,
+  systemPrompt: string,
+): Promise<string> {
+  const conversationHistory = formatHistory(history);
 
   const userMessage = `
 Problem: ${problemDescription}
 
-Learner's code:
+${conversationHistory ? `Conversation so far:\n${conversationHistory}\n` : ""}
+Learner: ${message}
+
+Respond as the tutor. Help them think through the approach — no code.`;
+
+  const response = await getAI().models.generateContent({
+    model: "gemini-2.0-flash",
+    contents: userMessage,
+    config: { systemInstruction: systemPrompt },
+  });
+
+  return (
+    response.text ??
+    "I'm having trouble responding right now. Please try again."
+  );
+}
+
+export async function askHelp(
+  code: string,
+  error: string,
+  hintLevel: number,
+  history: ChatMessage[],
+  brainstormHistory: ChatMessage[],
+  problemDescription: string,
+  systemPrompt: string,
+): Promise<string> {
+  const brainstormContext = formatHistory(brainstormHistory);
+  const helpConversation = formatHistory(history);
+
+  const userMessage = `
+Problem: ${problemDescription}
+
+Brainstorm conversation (what the learner planned):
+${brainstormContext || "(No brainstorm conversation)"}
+
+Learner's current code:
 \`\`\`
 ${code}
 \`\`\`
 
 ${error ? `Error message: ${error}` : ""}
 
-Current hint level: ${hintLevel} (1=gentle nudge, 2=more specific, 3=very specific)
+Current help level: ${hintLevel} (1=hint, 2=more specific, 3=teach/give up)
 
-${conversationHistory ? `Conversation so far:\n${conversationHistory}` : ""}
+${helpConversation ? `Help conversation so far:\n${helpConversation}` : ""}
 
-Please provide a level ${hintLevel} hint to guide the learner.`;
+Provide level ${hintLevel} help based on their specific code and mistakes.`;
 
   const response = await getAI().models.generateContent({
     model: "gemini-2.0-flash",
     contents: userMessage,
-    config: {
-      systemInstruction: TUTOR_SYSTEM_PROMPT,
-    },
+    config: { systemInstruction: systemPrompt },
   });
 
   return (
     response.text ??
-    "I'm having trouble generating a hint right now. Please try again."
+    "I'm having trouble generating help right now. Please try again."
   );
 }
 
