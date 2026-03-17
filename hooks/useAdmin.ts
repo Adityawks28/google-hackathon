@@ -1,34 +1,46 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { checkIsAdmin } from "@/lib/admin";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export function useAdmin() {
   const { user, loading: authLoading } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  const checkAdmin = useCallback(async (uid: string) => {
-    const admin = await checkIsAdmin(uid);
-    setIsAdmin(admin);
-    setLoading(false);
-  }, []);
+  const prevUid = useRef<string | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
 
     if (!user) {
-      // Derive state without calling setState synchronously in effect body
-      const id = requestAnimationFrame(() => {
+      prevUid.current = null;
+      // Use a microtask to avoid synchronous setState in effect
+      const id = setTimeout(() => {
         setIsAdmin(false);
         setLoading(false);
-      });
-      return () => cancelAnimationFrame(id);
+      }, 0);
+      return () => clearTimeout(id);
     }
 
-    checkAdmin(user.uid);
-  }, [user, authLoading, checkAdmin]);
+    // Subscribe to user doc for role changes
+    const unsubscribe = onSnapshot(
+      doc(db, "users", user.uid),
+      (snap) => {
+        const data = snap.data();
+        setIsAdmin(data?.role === "admin");
+        setLoading(false);
+      },
+      () => {
+        setIsAdmin(false);
+        setLoading(false);
+      }
+    );
+
+    prevUid.current = user.uid;
+    return unsubscribe;
+  }, [user, authLoading]);
 
   return { isAdmin, loading };
 }
