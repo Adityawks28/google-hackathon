@@ -11,8 +11,8 @@ export default function Home() {
           AI Coding Tutor
         </p>
         <p className="mx-auto mb-8 max-w-md text-lg text-gray-600">
-          Learn to code through guided practice. Our AI tutor helps you
-          discover solutions — never just gives you the answer.
+          Learn to code through guided practice. Our AI tutor helps you discover
+          solutions — never just gives you the answer.
         </p>
         <Link
           href="/login"

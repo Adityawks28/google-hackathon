@@ -43,9 +43,18 @@ function getFirebaseDb(): Firestore {
 }
 
 // Use getter properties so Firebase only initializes when accessed client-side
-export const app = typeof window !== "undefined" ? getFirebaseApp() : (undefined as unknown as FirebaseApp);
-export const auth = typeof window !== "undefined" ? getFirebaseAuth() : (undefined as unknown as Auth);
-export const db = typeof window !== "undefined" ? getFirebaseDb() : (undefined as unknown as Firestore);
+export const app =
+  typeof window !== "undefined"
+    ? getFirebaseApp()
+    : (undefined as unknown as FirebaseApp);
+export const auth =
+  typeof window !== "undefined"
+    ? getFirebaseAuth()
+    : (undefined as unknown as Auth);
+export const db =
+  typeof window !== "undefined"
+    ? getFirebaseDb()
+    : (undefined as unknown as Firestore);
 
 export async function signInWithGoogle() {
   const googleProvider = new GoogleAuthProvider();

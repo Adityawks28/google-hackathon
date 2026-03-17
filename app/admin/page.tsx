@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs, doc, deleteDoc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  deleteDoc,
+  setDoc,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/hooks/useAuth";
 import { AdminRoute } from "@/components/AdminRoute";
@@ -29,10 +35,10 @@ function AdminContent() {
         getDocs(collection(db, "users")),
       ]);
       setProblems(
-        problemsSnap.docs.map((d) => ({ id: d.id, ...d.data() }) as Problem)
+        problemsSnap.docs.map((d) => ({ id: d.id, ...d.data() }) as Problem),
       );
       setUsers(
-        usersSnap.docs.map((d) => ({ uid: d.id, ...d.data() }) as AppUser)
+        usersSnap.docs.map((d) => ({ uid: d.id, ...d.data() }) as AppUser),
       );
     } catch (error) {
       console.error("Error fetching admin data:", error);
@@ -74,7 +80,7 @@ function AdminContent() {
     try {
       await setDoc(doc(db, "users", uid), { role: newRole }, { merge: true });
       setUsers((prev) =>
-        prev.map((u) => (u.uid === uid ? { ...u, role: newRole } : u))
+        prev.map((u) => (u.uid === uid ? { ...u, role: newRole } : u)),
       );
     } catch (error) {
       console.error("Error updating user role:", error);

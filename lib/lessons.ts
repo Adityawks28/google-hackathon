@@ -1,9 +1,4 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-} from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import type { Problem } from "@/types";
 
 export const seedProblems: Omit<Problem, "createdBy" | "createdAt">[] = [
@@ -18,7 +13,11 @@ export const seedProblems: Omit<Problem, "createdBy" | "createdAt">[] = [
     starterCode: `function fizzBuzz(n) {\n  // Your code here\n}`,
     testCases: [
       { input: "5", expectedOutput: '["1","2","Fizz","4","Buzz"]' },
-      { input: "15", expectedOutput: '["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13","14","FizzBuzz"]' },
+      {
+        input: "15",
+        expectedOutput:
+          '["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13","14","FizzBuzz"]',
+      },
       { input: "1", expectedOutput: '["1"]' },
     ],
     difficulty: "easy",
@@ -77,7 +76,7 @@ export async function getAllProblems(): Promise<Problem[]> {
   try {
     const querySnapshot = await getDocs(collection(db, "problems"));
     return querySnapshot.docs.map(
-      (d) => ({ id: d.id, ...d.data() }) as Problem
+      (d) => ({ id: d.id, ...d.data() }) as Problem,
     );
   } catch (error) {
     console.error("Error fetching problems:", error);

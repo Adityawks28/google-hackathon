@@ -17,6 +17,7 @@ An AI coding tutor that guides learners through programming problems using progr
 ### Prerequisites
 
 - Node.js 18+
+- [Lefthook](https://github.com/evilmartians/lefthook) (installed globally: `brew install lefthook` or similar)
 - A Firebase project with Authentication and Firestore enabled
 - A Gemini API key
 
@@ -34,15 +35,15 @@ npm install
 cp .env.example .env.local
 ```
 
-| Variable | Where to get it |
-|---|---|
-| `GOOGLE_GEMINI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
-| `NEXT_PUBLIC_FIREBASE_API_KEY` | Firebase Console → Project Settings → Your apps |
-| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Same as above |
-| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Same as above |
-| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | Same as above |
-| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Same as above |
-| `NEXT_PUBLIC_FIREBASE_APP_ID` | Same as above |
+| Variable                                   | Where to get it                                                  |
+| ------------------------------------------ | ---------------------------------------------------------------- |
+| `GOOGLE_GEMINI_API_KEY`                    | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
+| `NEXT_PUBLIC_FIREBASE_API_KEY`             | Firebase Console → Project Settings → Your apps                  |
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`         | Same as above                                                    |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID`          | Same as above                                                    |
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`      | Same as above                                                    |
+| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Same as above                                                    |
+| `NEXT_PUBLIC_FIREBASE_APP_ID`              | Same as above                                                    |
 
 ### 3. Set up Firebase
 
@@ -156,20 +157,20 @@ scripts/
 
 ## Available Scripts
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start dev server |
-| `npm run build` | Production build |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
+| Command                               | Description             |
+| ------------------------------------- | ----------------------- |
+| `npm run dev`                         | Start dev server        |
+| `npm run build`                       | Production build        |
+| `npm run start`                       | Start production server |
+| `npm run lint`                        | Run ESLint              |
 | `npx tsx scripts/seed-admin.ts <uid>` | Promote a user to admin |
 
 ## Firestore Collections
 
-| Collection | Description |
-|---|---|
-| `problems` | Coding problems with test cases |
-| `users` | User profiles with role (user/admin) |
+| Collection | Description                            |
+| ---------- | -------------------------------------- |
+| `problems` | Coding problems with test cases        |
+| `users`    | User profiles with role (user/admin)   |
 | `progress` | Per-user per-problem progress tracking |
 
 ## Team Notes

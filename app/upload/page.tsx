@@ -13,7 +13,9 @@ function UploadContent() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [starterCode, setStarterCode] = useState("");
-  const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">("easy");
+  const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">(
+    "easy",
+  );
   const [language, setLanguage] = useState("javascript");
   const [testCases, setTestCases] = useState<TestCase[]>([
     { input: "", expectedOutput: "" },
@@ -69,10 +71,15 @@ function UploadContent() {
     <div className="min-h-screen bg-gray-50">
       <header className="border-b border-gray-200 bg-white px-4 py-3">
         <div className="mx-auto flex max-w-2xl items-center gap-4">
-          <Link href="/dashboard" className="text-sm text-blue-600 hover:underline">
+          <Link
+            href="/dashboard"
+            className="text-sm text-blue-600 hover:underline"
+          >
             &larr; Dashboard
           </Link>
-          <h1 className="text-lg font-semibold text-gray-900">Create Problem</h1>
+          <h1 className="text-lg font-semibold text-gray-900">
+            Create Problem
+          </h1>
         </div>
       </header>
 

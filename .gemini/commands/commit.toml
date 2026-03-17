@@ -1,0 +1,9 @@
+description = "Delegate a conventional commit to the specialized commit_agent."
+prompt = """
+Please use the `commit_agent` sub-agent to generate and execute a conventional commit.
+
+Pass the following implementation overview to the agent:
+{{args}}
+
+The agent should review `git status` and `git diff HEAD` to construct the correct commit message and execute it using `bash .gemini/scripts/commit.sh`.
+"""

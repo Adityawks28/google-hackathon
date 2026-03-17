@@ -47,7 +47,7 @@ function CodeContent() {
       setOutput(logs.join("\n") || "(no output)");
     } catch (error) {
       setOutput(
-        `Error: ${error instanceof Error ? error.message : String(error)}`
+        `Error: ${error instanceof Error ? error.message : String(error)}`,
       );
     } finally {
       setRunning(false);
@@ -66,10 +66,16 @@ function CodeContent() {
     <div className="flex min-h-screen flex-col">
       <header className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
         <div className="flex items-center gap-4">
-          <Link href={`/problem/${problemId}`} className="text-sm text-blue-600 hover:underline">
+          <Link
+            href={`/problem/${problemId}`}
+            className="text-sm text-blue-600 hover:underline"
+          >
             &larr; Problem
           </Link>
-          <Link href={`/chat/${problemId}`} className="text-sm text-blue-600 hover:underline">
+          <Link
+            href={`/chat/${problemId}`}
+            className="text-sm text-blue-600 hover:underline"
+          >
             Chat Tutor
           </Link>
           <h1 className="text-lg font-semibold text-gray-900">
