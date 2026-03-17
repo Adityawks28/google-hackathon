@@ -2,10 +2,16 @@
   "hooks": {
     "AfterTool": [
       {
-        "name": "Format File",
         "matcher": "write_file|replace",
-        "type": "command",
-        "command": "node .gemini/scripts/format-hook.js"
+        "hooks": [
+          {
+            "name": "prettier-format",
+            "type": "command",
+            "command": "$GEMINI_PROJECT_DIR/.gemini/hooks/prettier.sh",
+            "timeout": 10000,
+            "description": "Run Prettier on files after writing/editing"
+          }
+        ]
       }
     ]
   }
