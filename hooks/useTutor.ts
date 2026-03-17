@@ -1,44 +1,41 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import type { ChatMessage, TutorRequest, TutorResponse } from "@/types";
+import type { ChatMessage, TutorPhase, TutorResponse } from "@/types";
 
 export function useTutor(problemId: string) {
-  const [history, setHistory] = useState<ChatMessage[]>([]);
+  const [phase, setPhase] = useState<TutorPhase>("brainstorm");
+  const [brainstormHistory, setBrainstormHistory] = useState<ChatMessage[]>([]);
+  const [helpHistory, setHelpHistory] = useState<ChatMessage[]>([]);
   const [hintLevel, setHintLevel] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const sendCode = useCallback(
-    async (code: string, error: string) => {
+  const sendBrainstormMessage = useCallback(
+    async (message: string) => {
       setLoading(true);
       try {
         const userMessage: ChatMessage = {
           role: "user",
-          content: error
-            ? `Here's my code:\n\`\`\`\n${code}\n\`\`\`\n\nI'm getting this error: ${error}`
-            : `Here's my code:\n\`\`\`\n${code}\n\`\`\`\n\nCan you help me?`,
+          content: message,
           timestamp: Date.now(),
         };
 
-        const updatedHistory = [...history, userMessage];
-
-        const body: TutorRequest = {
-          code,
-          error,
-          hintLevel: hintLevel || 1,
-          history: updatedHistory,
-          problemId,
-        };
+        const updatedHistory = [...brainstormHistory, userMessage];
 
         const res = await fetch("/api/tutor", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
+          body: JSON.stringify({
+            code: message,
+            error: "",
+            hintLevel: 0,
+            history: updatedHistory,
+            problemId,
+            mode: "brainstorm",
+          }),
         });
 
-        if (!res.ok) {
-          throw new Error("Failed to get tutor response");
-        }
+        if (!res.ok) throw new Error("Failed to get tutor response");
 
         const data: TutorResponse = await res.json();
 
@@ -48,35 +45,82 @@ export function useTutor(problemId: string) {
           timestamp: Date.now(),
         };
 
-        setHistory([...updatedHistory, assistantMessage]);
+        setBrainstormHistory([...updatedHistory, assistantMessage]);
         return data.guidance;
       } catch (error) {
-        console.error("Tutor error:", error);
+        console.error("Brainstorm error:", error);
         return null;
       } finally {
         setLoading(false);
       }
     },
-    [history, hintLevel, problemId],
+    [brainstormHistory, problemId],
   );
 
-  const requestHint = useCallback(async () => {
-    const nextLevel = Math.min(hintLevel + 1, 3);
-    setHintLevel(nextLevel);
-    return nextLevel;
-  }, [hintLevel]);
+  const startCoding = useCallback(() => {
+    setPhase("code");
+  }, []);
+
+  const requestHelp = useCallback(
+    async (code: string, error: string) => {
+      const nextLevel = Math.min(hintLevel + 1, 3);
+      setHintLevel(nextLevel);
+      setPhase("help");
+      setLoading(true);
+
+      try {
+        const res = await fetch("/api/tutor", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code,
+            error,
+            hintLevel: nextLevel,
+            history: helpHistory,
+            problemId,
+            mode: "help",
+            brainstormHistory,
+          }),
+        });
+
+        if (!res.ok) throw new Error("Failed to get help response");
+
+        const data: TutorResponse = await res.json();
+
+        const assistantMessage: ChatMessage = {
+          role: "assistant",
+          content: data.guidance,
+          timestamp: Date.now(),
+        };
+
+        setHelpHistory((prev) => [...prev, assistantMessage]);
+        return data.guidance;
+      } catch (error) {
+        console.error("Help error:", error);
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [hintLevel, helpHistory, brainstormHistory, problemId],
+  );
 
   const resetConversation = useCallback(() => {
-    setHistory([]);
+    setPhase("brainstorm");
+    setBrainstormHistory([]);
+    setHelpHistory([]);
     setHintLevel(0);
   }, []);
 
   return {
-    history,
+    phase,
+    brainstormHistory,
+    helpHistory,
     hintLevel,
     loading,
-    sendCode,
-    requestHint,
+    sendBrainstormMessage,
+    startCoding,
+    requestHelp,
     resetConversation,
   };
 }
