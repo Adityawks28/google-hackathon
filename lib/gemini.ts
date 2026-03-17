@@ -2,7 +2,13 @@ import { GoogleGenAI } from "@google/genai";
 import { TUTOR_SYSTEM_PROMPT } from "@/lib/prompts";
 import type { ChatMessage } from "@/types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GEMINI_API_KEY! });
+let _ai: GoogleGenAI | undefined;
+function getAI(): GoogleGenAI {
+  if (!_ai) {
+    _ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GEMINI_API_KEY! });
+  }
+  return _ai;
+}
 
 export async function askTutor(
   code: string,
@@ -31,7 +37,7 @@ ${conversationHistory ? `Conversation so far:\n${conversationHistory}` : ""}
 
 Please provide a level ${hintLevel} hint to guide the learner.`;
 
-  const response = await ai.models.generateContent({
+  const response = await getAI().models.generateContent({
     model: "gemini-2.0-flash",
     contents: userMessage,
     config: {
@@ -61,7 +67,7 @@ ${code}
 
 Evaluate this solution and respond with a JSON object containing "correct" (boolean) and "feedback" (string).`;
 
-  const response = await ai.models.generateContent({
+  const response = await getAI().models.generateContent({
     model: "gemini-2.0-flash",
     contents: userMessage,
     config: {
@@ -90,7 +96,7 @@ Language: ${language}
 
 Generate a clean, well-commented reference solution.`;
 
-  const response = await ai.models.generateContent({
+  const response = await getAI().models.generateContent({
     model: "gemini-2.0-flash",
     contents: userMessage,
     config: {

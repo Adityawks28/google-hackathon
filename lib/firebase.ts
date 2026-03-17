@@ -1,11 +1,12 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
+import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
   signOut as firebaseSignOut,
+  Auth,
 } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, Firestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -16,18 +17,42 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+let _app: FirebaseApp | undefined;
+let _auth: Auth | undefined;
+let _db: Firestore | undefined;
+
+function getFirebaseApp(): FirebaseApp {
+  if (!_app) {
+    _app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+  }
+  return _app;
+}
+
+function getFirebaseAuth(): Auth {
+  if (!_auth) {
+    _auth = getAuth(getFirebaseApp());
+  }
+  return _auth;
+}
+
+function getFirebaseDb(): Firestore {
+  if (!_db) {
+    _db = getFirestore(getFirebaseApp());
+  }
+  return _db;
+}
+
+// Use getter properties so Firebase only initializes when accessed client-side
+export const app = typeof window !== "undefined" ? getFirebaseApp() : (undefined as unknown as FirebaseApp);
+export const auth = typeof window !== "undefined" ? getFirebaseAuth() : (undefined as unknown as Auth);
+export const db = typeof window !== "undefined" ? getFirebaseDb() : (undefined as unknown as Firestore);
 
 export async function signInWithGoogle() {
   const googleProvider = new GoogleAuthProvider();
-  const result = await signInWithPopup(auth, googleProvider);
+  const result = await signInWithPopup(getFirebaseAuth(), googleProvider);
   return result.user;
 }
 
 export async function signOutUser() {
-  await firebaseSignOut(auth);
+  await firebaseSignOut(getFirebaseAuth());
 }
-
-export { app, auth, db };
