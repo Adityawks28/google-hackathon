@@ -17,6 +17,7 @@ An AI coding tutor that guides learners through programming problems using progr
 ### Prerequisites
 
 - Node.js 18+
+- [Lefthook](https://github.com/evilmartians/lefthook) (installed globally: `brew install lefthook` or similar)
 - A Firebase project with Authentication and Firestore enabled
 - A Gemini API key
 

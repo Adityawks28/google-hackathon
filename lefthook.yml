@@ -2,7 +2,7 @@ pre-commit:
   commands:
     pretty:
       glob: "*.{js,jsx,ts,tsx,json,css,md}"
-      run: npx prettier --write {staged_files} && git add {staged_files}
+      run: npm run format:fix -- {staged_files} && git add {staged_files}
 
 
 
