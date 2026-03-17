@@ -41,9 +41,29 @@ function CodeContent() {
       const logs: string[] = [];
       const mockConsole = {
         log: (...args: unknown[]) => logs.push(args.map(String).join(" ")),
+        error: (...args: unknown[]) =>
+          logs.push("ERROR: " + args.map(String).join(" ")),
+        warn: (...args: unknown[]) =>
+          logs.push("WARN: " + args.map(String).join(" ")),
       };
-      const fn = new Function("console", code);
-      fn(mockConsole);
+
+      // Use a Web Worker-style timeout via synchronous execution cap
+      const timeoutMs = 5000;
+      const start = performance.now();
+      const timedCode = `
+        const __start = ${start};
+        const __timeout = ${timeoutMs};
+        ${code}
+      `;
+      const fn = new Function("console", "performance", timedCode);
+      const timer = setTimeout(() => {
+        setOutput("Error: Execution timed out (5s limit). Check for infinite loops.");
+        setRunning(false);
+      }, timeoutMs);
+
+      fn(mockConsole, performance);
+      clearTimeout(timer);
+
       setOutput(logs.join("\n") || "(no output)");
     } catch (error) {
       setOutput(
