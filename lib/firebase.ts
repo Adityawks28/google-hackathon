@@ -17,10 +17,11 @@ import { getStorage, connectStorageEmulator } from "firebase/storage";
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "demo-key",
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "localhost",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "google-hackathon",
+  projectId:
+    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "demo-google-hackathon",
   storageBucket:
     process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
-    "google-hackathon.appspot.com",
+    "demo-google-hackathon.appspot.com",
   messagingSenderId:
     process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "123456789",
   appId:
