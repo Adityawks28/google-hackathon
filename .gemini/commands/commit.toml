@@ -1,0 +1,19 @@
+description = "Generate and execute a conventional commit based on staged/unstaged changes."
+prompt = """
+You are a commit specialist. Your task is to generate a meaningful conventional commit message and execute it.
+
+Review the following information:
+- User's implementation overview: {{args}}
+- Git status:
+!{git status}
+
+- Git diff:
+!{git diff HEAD}
+
+Generate a conventional commit message following the format: `<type>: <verb> <description>`
+- Types: `feat`, `chore`, `fix`, `style`, `refactor`, `docs`, `test`
+- Verb: Lowercase and present-tense (e.g., `implement`, `fix`, `update`).
+
+After generating the message, execute the commit using the script:
+`bash .gemini/scripts/commit.sh "<generated_message>"`
+"""
