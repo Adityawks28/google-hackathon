@@ -1,19 +1,9 @@
-description = "Generate and execute a conventional commit based on staged/unstaged changes."
+description = "Delegate a conventional commit to the specialized commit_agent."
 prompt = """
-You are a commit specialist. Your task is to generate a meaningful conventional commit message and execute it.
+Please use the `commit_agent` sub-agent to generate and execute a conventional commit.
 
-Review the following information:
-- User's implementation overview: {{args}}
-- Git status:
-!{git status}
+Pass the following implementation overview to the agent:
+{{args}}
 
-- Git diff:
-!{git diff HEAD}
-
-Generate a conventional commit message following the format: `<type>: <verb> <description>`
-- Types: `feat`, `chore`, `fix`, `style`, `refactor`, `docs`, `test`
-- Verb: Lowercase and present-tense (e.g., `implement`, `fix`, `update`).
-
-After generating the message, execute the commit using the script:
-`bash .gemini/scripts/commit.sh "<generated_message>"`
+The agent should review `git status` and `git diff HEAD` to construct the correct commit message and execute it using `bash .gemini/scripts/commit.sh`.
 """
