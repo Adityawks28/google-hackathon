@@ -1,0 +1,12 @@
+{
+  "hooks": {
+    "AfterTool": [
+      {
+        "name": "Format File",
+        "matcher": "write_file|replace",
+        "type": "command",
+        "command": "node .gemini/scripts/format-hook.js"
+      }
+    ]
+  }
+}
