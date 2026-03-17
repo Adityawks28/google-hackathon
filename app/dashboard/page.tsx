@@ -17,9 +17,6 @@ function DashboardContent() {
   const [problems, setProblems] = useState<Problem[]>([]);
   const [progress, setProgress] = useState<UserProgress[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "easy" | "medium" | "hard">(
-    "all",
-  );
 
   useEffect(() => {
     async function fetchData() {
@@ -99,24 +96,9 @@ function DashboardContent() {
           totalProblems={problems.length}
         />
 
-        <div className="mb-4 mt-8 flex items-center justify-between">
-          <h2 className="text-2xl font-semibold text-gray-900">Problems</h2>
-          <div className="flex gap-2">
-            {(["all", "easy", "medium", "hard"] as const).map((level) => (
-              <button
-                key={level}
-                onClick={() => setFilter(level)}
-                className={`rounded-full px-3 py-1 text-sm font-medium capitalize transition-colors ${
-                  filter === level
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                {level}
-              </button>
-            ))}
-          </div>
-        </div>
+        <h2 className="mb-4 mt-8 text-2xl font-semibold text-gray-900">
+          Problems
+        </h2>
 
         {loading ? (
           <p className="text-gray-500">Loading problems...</p>
@@ -126,17 +108,15 @@ function DashboardContent() {
           </p>
         ) : (
           <div className="space-y-3">
-            {problems
-              .filter((p) => filter === "all" || p.difficulty === filter)
-              .map((problem) => (
-                <ProblemCard
-                  key={problem.id}
-                  id={problem.id}
-                  title={problem.title}
-                  difficulty={problem.difficulty}
-                  solved={solvedIds.has(problem.id)}
-                />
-              ))}
+            {problems.map((problem) => (
+              <ProblemCard
+                key={problem.id}
+                id={problem.id}
+                title={problem.title}
+                difficulty={problem.difficulty}
+                solved={solvedIds.has(problem.id)}
+              />
+            ))}
           </div>
         )}
       </main>
