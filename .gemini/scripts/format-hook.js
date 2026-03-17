@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-const { exec } = require('child_process');
-const fs = require('fs');
+import { exec } from 'child_process';
 
 // Read input from stdin
 let inputData = '';
