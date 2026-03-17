@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
-import { exec } from 'child_process';
+import { exec } from "child_process";
 
 // Read input from stdin
-let inputData = '';
-process.stdin.on('data', chunk => {
+let inputData = "";
+process.stdin.on("data", (chunk) => {
   inputData += chunk;
 });
 
-process.stdin.on('end', () => {
+process.stdin.on("end", () => {
   try {
     if (!inputData.trim()) {
       // No input, just exit success
@@ -26,12 +26,12 @@ process.stdin.on('end', () => {
       process.exit(0);
     }
 
-    if (tool_name === 'write_file' || tool_name === 'replace') {
+    if (tool_name === "write_file" || tool_name === "replace") {
       const filePath = tool_input.file_path;
 
       if (filePath) {
         console.error(`Running Prettier on: ${filePath}`);
-        
+
         exec(`npm run format:fix -- "${filePath}"`, (err, stdout, stderr) => {
           if (err) {
             console.error(`Prettier failed: ${stderr}`);
@@ -39,12 +39,12 @@ process.stdin.on('end', () => {
           } else {
             console.error(`Prettier success: ${stdout.trim()}`);
           }
-          
+
           // Always return success JSON to Geminicli
           console.log(JSON.stringify({ message: "Format hook executed" }));
         });
       } else {
-         console.log(JSON.stringify({ message: "No file path found" }));
+        console.log(JSON.stringify({ message: "No file path found" }));
       }
     } else {
       console.log(JSON.stringify({ message: "Ignored tool" }));
