@@ -92,12 +92,6 @@ function CodeContent() {
           >
             &larr; Problem
           </Link>
-          <Link
-            href={`/chat/${problemId}`}
-            className="text-sm text-blue-600 hover:underline"
-          >
-            Chat Tutor
-          </Link>
           <h1 className="text-lg font-semibold text-gray-900">
             {problem.title} — Editor
           </h1>
