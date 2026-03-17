@@ -22,7 +22,12 @@ function ProblemContent() {
   const [submitting, setSubmitting] = useState(false);
   const [loadingProblem, setLoadingProblem] = useState(true);
 
-  const { hintLevel, loading: hintLoading, sendCode, requestHint } = useTutor(problemId);
+  const {
+    hintLevel,
+    loading: hintLoading,
+    sendCode,
+    requestHint,
+  } = useTutor(problemId);
 
   useEffect(() => {
     async function fetchProblem() {
@@ -95,10 +100,15 @@ function ProblemContent() {
     <div className="flex min-h-screen flex-col">
       <header className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard" className="text-sm text-blue-600 hover:underline">
+          <Link
+            href="/dashboard"
+            className="text-sm text-blue-600 hover:underline"
+          >
             &larr; Back
           </Link>
-          <h1 className="text-lg font-semibold text-gray-900">{problem.title}</h1>
+          <h1 className="text-lg font-semibold text-gray-900">
+            {problem.title}
+          </h1>
         </div>
         <Link
           href={`/chat/${problemId}`}
@@ -113,12 +123,17 @@ function ProblemContent() {
         <div className="w-1/2 overflow-y-auto border-r border-gray-200 bg-white p-6">
           <div className="prose prose-sm max-w-none">
             <h2 className="text-xl font-semibold">{problem.title}</h2>
-            <p className="whitespace-pre-wrap text-gray-700">{problem.description}</p>
-            <h3 className="mt-4 text-sm font-semibold text-gray-500">Test Cases</h3>
+            <p className="whitespace-pre-wrap text-gray-700">
+              {problem.description}
+            </p>
+            <h3 className="mt-4 text-sm font-semibold text-gray-500">
+              Test Cases
+            </h3>
             <ul className="space-y-1">
               {problem.testCases.map((tc, i) => (
                 <li key={i} className="text-sm text-gray-600">
-                  Input: <code>{tc.input}</code> &rarr; Expected: <code>{tc.expectedOutput}</code>
+                  Input: <code>{tc.input}</code> &rarr; Expected:{" "}
+                  <code>{tc.expectedOutput}</code>
                 </li>
               ))}
             </ul>

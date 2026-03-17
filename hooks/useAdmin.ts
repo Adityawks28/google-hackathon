@@ -35,7 +35,7 @@ export function useAdmin() {
       () => {
         setIsAdmin(false);
         setLoading(false);
-      }
+      },
     );
 
     prevUid.current = user.uid;

@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         (error) => {
           console.error("Auth state error:", error);
           setLoading(false);
-        }
+        },
       );
       return unsubscribe;
     } catch (error) {

@@ -36,7 +36,10 @@ function ChatContent() {
     <div className="flex min-h-screen flex-col">
       <header className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
         <div className="flex items-center gap-4">
-          <Link href={`/problem/${problemId}`} className="text-sm text-blue-600 hover:underline">
+          <Link
+            href={`/problem/${problemId}`}
+            className="text-sm text-blue-600 hover:underline"
+          >
             &larr; Back to Problem
           </Link>
           <h1 className="text-lg font-semibold text-gray-900">AI Tutor Chat</h1>

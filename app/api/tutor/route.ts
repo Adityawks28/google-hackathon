@@ -12,7 +12,10 @@ export async function POST(request: NextRequest) {
     if (!allowed) {
       return NextResponse.json(
         { error: "Rate limit exceeded. Please try again later." },
-        { status: 429, headers: { "X-RateLimit-Remaining": String(remaining) } }
+        {
+          status: 429,
+          headers: { "X-RateLimit-Remaining": String(remaining) },
+        },
       );
     }
 
@@ -22,7 +25,7 @@ export async function POST(request: NextRequest) {
     if (!code && !error) {
       return NextResponse.json(
         { error: "Code or error message is required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -43,18 +46,18 @@ export async function POST(request: NextRequest) {
       error,
       hintLevel,
       history,
-      problemDescription
+      problemDescription,
     );
 
     return NextResponse.json(
       { guidance },
-      { headers: { "X-RateLimit-Remaining": String(remaining) } }
+      { headers: { "X-RateLimit-Remaining": String(remaining) } },
     );
   } catch (err) {
     console.error("Tutor API error:", err);
     return NextResponse.json(
       { error: "Failed to generate guidance." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

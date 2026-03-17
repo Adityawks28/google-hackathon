@@ -57,7 +57,7 @@ export function useTutor(problemId: string) {
         setLoading(false);
       }
     },
-    [history, hintLevel, problemId]
+    [history, hintLevel, problemId],
   );
 
   const requestHint = useCallback(async () => {

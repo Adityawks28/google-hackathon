@@ -15,10 +15,12 @@ export async function askTutor(
   error: string,
   hintLevel: number,
   history: ChatMessage[],
-  problemDescription: string
+  problemDescription: string,
 ): Promise<string> {
   const conversationHistory = history
-    .map((msg) => `${msg.role === "user" ? "Learner" : "Tutor"}: ${msg.content}`)
+    .map(
+      (msg) => `${msg.role === "user" ? "Learner" : "Tutor"}: ${msg.content}`,
+    )
     .join("\n");
 
   const userMessage = `
@@ -45,14 +47,17 @@ Please provide a level ${hintLevel} hint to guide the learner.`;
     },
   });
 
-  return response.text ?? "I'm having trouble generating a hint right now. Please try again.";
+  return (
+    response.text ??
+    "I'm having trouble generating a hint right now. Please try again."
+  );
 }
 
 export async function evaluateCode(
   code: string,
   problemDescription: string,
   testCases: { input: string; expectedOutput: string }[],
-  systemPrompt: string
+  systemPrompt: string,
 ): Promise<{ correct: boolean; feedback: string }> {
   const userMessage = `
 Problem: ${problemDescription}
@@ -75,7 +80,9 @@ Evaluate this solution and respond with a JSON object containing "correct" (bool
     },
   });
 
-  const text = response.text ?? '{"correct": false, "feedback": "Unable to evaluate. Please try again."}';
+  const text =
+    response.text ??
+    '{"correct": false, "feedback": "Unable to evaluate. Please try again."}';
 
   try {
     const cleaned = text.replace(/```json\n?|\n?```/g, "").trim();
@@ -88,7 +95,7 @@ Evaluate this solution and respond with a JSON object containing "correct" (bool
 export async function generateSolution(
   problemDescription: string,
   language: string,
-  systemPrompt: string
+  systemPrompt: string,
 ): Promise<string> {
   const userMessage = `
 Problem: ${problemDescription}
