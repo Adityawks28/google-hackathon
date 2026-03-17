@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return unsubscribe;
     } catch (error) {
       console.error("Auth initialization error:", error);
-      setLoading(false);
+      requestAnimationFrame(() => setLoading(false));
     }
   }, []);
 
