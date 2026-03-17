@@ -8,7 +8,7 @@ const store = new Map<string, RateLimitEntry>();
 export function rateLimit(
   key: string,
   maxRequests: number = 30,
-  windowMs: number = 60_000
+  windowMs: number = 60_000,
 ): { allowed: boolean; remaining: number } {
   const now = Date.now();
   const entry = store.get(key);

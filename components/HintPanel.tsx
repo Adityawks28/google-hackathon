@@ -6,7 +6,11 @@ interface HintPanelProps {
   onRequestHint: () => void;
 }
 
-export function HintPanel({ hints, currentLevel, onRequestHint }: HintPanelProps) {
+export function HintPanel({
+  hints,
+  currentLevel,
+  onRequestHint,
+}: HintPanelProps) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
       <h3 className="mb-3 text-lg font-semibold text-gray-800">Hints</h3>
@@ -36,7 +40,9 @@ export function HintPanel({ hints, currentLevel, onRequestHint }: HintPanelProps
           onClick={onRequestHint}
           className="mt-3 rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600"
         >
-          {currentLevel === 0 ? "Get a Hint" : `Get Hint ${currentLevel + 1} of 3`}
+          {currentLevel === 0
+            ? "Get a Hint"
+            : `Get Hint ${currentLevel + 1} of 3`}
         </button>
       )}
 

@@ -13,7 +13,12 @@ const difficultyColors = {
   hard: "bg-red-100 text-red-700",
 };
 
-export function ProblemCard({ id, title, difficulty, solved }: ProblemCardProps) {
+export function ProblemCard({
+  id,
+  title,
+  difficulty,
+  solved,
+}: ProblemCardProps) {
   return (
     <Link
       href={`/problem/${id}`}

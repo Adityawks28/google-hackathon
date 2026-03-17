@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     if (!problemId) {
       return NextResponse.json(
         { error: "problemId is required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -26,7 +26,10 @@ export async function POST(request: NextRequest) {
     // Check admin role
     const userDoc = await getDoc(doc(db, "users", uid));
     if (!userDoc.exists() || userDoc.data().role !== "admin") {
-      return NextResponse.json({ error: "Admin access required." }, { status: 403 });
+      return NextResponse.json(
+        { error: "Admin access required." },
+        { status: 403 },
+      );
     }
     const problemRef = doc(db, "problems", problemId);
     const problemDoc = await getDoc(problemRef);
@@ -34,7 +37,7 @@ export async function POST(request: NextRequest) {
     if (!problemDoc.exists()) {
       return NextResponse.json(
         { error: "Problem not found." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -42,7 +45,7 @@ export async function POST(request: NextRequest) {
     const solution = await generateSolution(
       problem.description,
       problem.language,
-      SOLUTION_GENERATOR_PROMPT
+      SOLUTION_GENERATOR_PROMPT,
     );
 
     await updateDoc(problemRef, { referenceSolution: solution });
@@ -52,7 +55,7 @@ export async function POST(request: NextRequest) {
     console.error("Generate solution API error:", err);
     return NextResponse.json(
       { error: "Failed to generate solution." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

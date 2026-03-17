@@ -22,7 +22,7 @@ function DashboardContent() {
     async function fetchData() {
       // Timeout to prevent hanging if Firestore rules block the request
       const timeout = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("Firestore timeout")), 5000)
+        setTimeout(() => reject(new Error("Firestore timeout")), 5000),
       );
 
       try {
@@ -31,21 +31,21 @@ function DashboardContent() {
           timeout,
         ]);
         const problemsList = problemsSnap.docs.map(
-          (d) => ({ id: d.id, ...d.data() }) as Problem
+          (d) => ({ id: d.id, ...d.data() }) as Problem,
         );
         setProblems(problemsList);
 
         if (user) {
           const progressQuery = query(
             collection(db, "progress"),
-            where("userId", "==", user.uid)
+            where("userId", "==", user.uid),
           );
           const progressSnap = await Promise.race([
             getDocs(progressQuery),
             timeout,
           ]);
           const progressList = progressSnap.docs.map(
-            (d) => d.data() as UserProgress
+            (d) => d.data() as UserProgress,
           );
           setProgress(progressList);
         }
@@ -60,7 +60,7 @@ function DashboardContent() {
   }, [user]);
 
   const solvedIds = new Set(
-    progress.filter((p) => p.solved).map((p) => p.problemId)
+    progress.filter((p) => p.solved).map((p) => p.problemId),
   );
   const attemptedCount = progress.filter((p) => p.attempted).length;
 

@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "AfterTool": [
+      {
+        "matcher": "write_file|replace",
+        "hooks": [
+          {
+            "name": "prettier-format",
+            "type": "command",
+            "command": "$GEMINI_PROJECT_DIR/.gemini/hooks/prettier.sh",
+            "timeout": 10000,
+            "description": "Run Prettier on files after writing/editing"
+          }
+        ]
+      }
+    ]
+  }
+}

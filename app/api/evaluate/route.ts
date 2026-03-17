@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     if (!allowed) {
       return NextResponse.json(
         { error: "Rate limit exceeded. Please try again later." },
-        { status: 429 }
+        { status: 429 },
       );
     }
 
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     if (!code || !problemId) {
       return NextResponse.json(
         { error: "Code and problemId are required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     if (!problemDoc.exists()) {
       return NextResponse.json(
         { error: "Problem not found." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       code,
       problem.description,
       problem.testCases,
-      EVALUATOR_PROMPT
+      EVALUATOR_PROMPT,
     );
 
     return NextResponse.json(result);
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     console.error("Evaluate API error:", err);
     return NextResponse.json(
       { error: "Failed to evaluate code." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

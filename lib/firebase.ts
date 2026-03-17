@@ -7,16 +7,24 @@ import {
   Auth,
   connectAuthEmulator,
 } from "firebase/auth";
-import { getFirestore, Firestore, connectFirestoreEmulator } from "firebase/firestore";
+import {
+  getFirestore,
+  Firestore,
+  connectFirestoreEmulator,
+} from "firebase/firestore";
 import { getStorage, connectStorageEmulator } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "demo-key",
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "localhost",
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "google-hackathon",
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "google-hackathon.appspot.com",
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "123456789",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:123456789:web:abcdef123456",
+  storageBucket:
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
+    "google-hackathon.appspot.com",
+  messagingSenderId:
+    process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "123456789",
+  appId:
+    process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:123456789:web:abcdef123456",
 };
 
 let _app: FirebaseApp | undefined;
@@ -61,9 +69,18 @@ export function getFirebaseStorage() {
 }
 
 // Use getter properties so Firebase only initializes when accessed client-side
-export const app = typeof window !== "undefined" ? getFirebaseApp() : (undefined as unknown as FirebaseApp);
-export const auth = typeof window !== "undefined" ? getFirebaseAuth() : (undefined as unknown as Auth);
-export const db = typeof window !== "undefined" ? getFirebaseDb() : (undefined as unknown as Firestore);
+export const app =
+  typeof window !== "undefined"
+    ? getFirebaseApp()
+    : (undefined as unknown as FirebaseApp);
+export const auth =
+  typeof window !== "undefined"
+    ? getFirebaseAuth()
+    : (undefined as unknown as Auth);
+export const db =
+  typeof window !== "undefined"
+    ? getFirebaseDb()
+    : (undefined as unknown as Firestore);
 
 export async function signInWithGoogle() {
   const googleProvider = new GoogleAuthProvider();
