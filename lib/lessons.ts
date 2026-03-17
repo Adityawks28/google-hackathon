@@ -1,4 +1,3 @@
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import type { Problem } from "@/types";
 
 export const seedProblems: Omit<Problem, "createdBy" | "createdAt">[] = [
@@ -57,29 +56,3 @@ Write a function \`twoSum(nums, target)\` that returns an array of two indices.`
   },
 ];
 
-export async function getProblem(id: string): Promise<Problem | null> {
-  // Dynamic import to avoid importing client-side firebase on the server
-  const { db } = await import("@/lib/firebase");
-  try {
-    const docRef = doc(db, "problems", id);
-    const docSnap = await getDoc(docRef);
-    if (!docSnap.exists()) return null;
-    return { id: docSnap.id, ...docSnap.data() } as Problem;
-  } catch (error) {
-    console.error("Error fetching problem:", error);
-    return null;
-  }
-}
-
-export async function getAllProblems(): Promise<Problem[]> {
-  const { db } = await import("@/lib/firebase");
-  try {
-    const querySnapshot = await getDocs(collection(db, "problems"));
-    return querySnapshot.docs.map(
-      (d) => ({ id: d.id, ...d.data() }) as Problem,
-    );
-  } catch (error) {
-    console.error("Error fetching problems:", error);
-    return [];
-  }
-}
