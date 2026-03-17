@@ -8,17 +8,18 @@ An AI coding tutor that guides learners through programming problems using progr
 - **AI:** Google Gemini API (`gemini-2.0-flash`)
 - **Auth:** Firebase Authentication (Google Sign-In)
 - **Database:** Cloud Firestore
+- **Containerization:** Docker, Docker Compose
 - **Code Editor:** Monaco Editor (`@monaco-editor/react`)
 - **State:** Zustand, React Context
 - **Deployment:** Vercel
 
+## External Dependencies
+
+- **Node.js 18+**
+- **Docker & Docker Compose**
+- **Google Gemini API Key**
+
 ## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- A Firebase project with Authentication and Firestore enabled
-- A Gemini API key
 
 ### 1. Clone and install
 
@@ -44,32 +45,16 @@ cp .env.dist .env
 | `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Same as above |
 | `NEXT_PUBLIC_FIREBASE_APP_ID` | Same as above |
 
-### 3. Set up Firebase
+### 3. Start Firebase Emulators with Docker
 
-1. Go to [Firebase Console](https://console.firebase.google.com) → your project
-2. **Authentication** → Get started → Enable **Google** sign-in provider
-3. **Firestore** → Create database → Choose a region
-4. **Firestore Rules** → Set to:
+```bash
+docker-compose up -d
+```
 
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /problems/{problemId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
-    }
-    match /progress/{progressId} {
-      allow read, write: if request.auth != null
-        && request.auth.uid == resource.data.userId;
-    }
-    match /users/{userId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.uid == userId;
-    }
-  }
-}
-```
+**Available Services:**
+- **Firebase Emulator UI:** [http://localhost:4000](http://localhost:4000)
+- **Firestore Emulator:** `localhost:8080`
+- **Auth Emulator:** `localhost:9099`
 
 ### 4. Run the dev server
 
@@ -77,21 +62,36 @@ service cloud.firestore {
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) and login to the locally hosted app.
 
-### 5. Set up admin access
+### 5. Set up admin access (Local)
 
-1. Sign in to the app with Google (this creates your user doc in Firestore)
-2. Find your UID in Firebase Console → Authentication → Users
+1. Sign in to the app at [http://localhost:3000](http://localhost:3000)
+2. Find your UID in the **Firebase Emulator UI** (Auth section) at [http://localhost:4000](http://localhost:4000)
 3. Promote yourself to admin:
 
 ```bash
+# For local setup, the script uses the default 'google-hackathon' project id
 npx tsx scripts/seed-admin.ts YOUR_UID
 ```
 
 4. Refresh the app — you'll see an **Admin** button in the dashboard header
 
-### 6. Seed starter problems
+### 6. Set up admin access (Production)
+
+1. Sign in to the app in production (this creates your user doc in Firestore)
+2. Find your UID in the **Firebase Console** → Authentication → Users
+3. Set your production environment variables in `.env` (temporarily or via a dedicated production file)
+4. Promote yourself to admin:
+
+```bash
+# Ensure your .env contains the production Firebase credentials
+npx tsx scripts/seed-admin.ts YOUR_UID
+```
+
+5. Refresh the app — you'll see an **Admin** button in the dashboard header
+
+### 7. Seed starter problems
 
 1. Go to `/admin` (requires admin access)
 2. Click **"Seed Starter Problems"** to add FizzBuzz, Reverse String, and Two Sum
