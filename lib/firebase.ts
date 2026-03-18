@@ -12,7 +12,11 @@ import {
   Firestore,
   connectFirestoreEmulator,
 } from "firebase/firestore";
-import { getStorage, connectStorageEmulator } from "firebase/storage";
+import {
+  getStorage,
+  connectStorageEmulator,
+  FirebaseStorage,
+} from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "demo-key",
@@ -31,6 +35,11 @@ const firebaseConfig = {
 let _app: FirebaseApp | undefined;
 let _auth: Auth | undefined;
 let _db: Firestore | undefined;
+let _storage: FirebaseStorage | undefined;
+
+let _authEmulatorConnected = false;
+let _dbEmulatorConnected = false;
+let _storageEmulatorConnected = false;
 
 function getFirebaseApp(): FirebaseApp {
   if (!_app) {
@@ -42,9 +51,11 @@ function getFirebaseApp(): FirebaseApp {
 function getFirebaseAuth(): Auth {
   if (!_auth) {
     _auth = getAuth(getFirebaseApp());
-    if (process.env.NODE_ENV === "development") {
-      connectAuthEmulator(_auth, "http://127.0.0.1:9099");
-    }
+  }
+
+  if (process.env.NODE_ENV === "development" && !_authEmulatorConnected) {
+    connectAuthEmulator(_auth, "http://127.0.0.1:9099");
+    _authEmulatorConnected = true;
   }
 
   return _auth;
@@ -53,20 +64,27 @@ function getFirebaseAuth(): Auth {
 function getFirebaseDb(): Firestore {
   if (!_db) {
     _db = getFirestore(getFirebaseApp());
-    if (process.env.NODE_ENV === "development") {
-      connectFirestoreEmulator(_db, "127.0.0.1", 8080);
-    }
   }
+
+  if (process.env.NODE_ENV === "development" && !_dbEmulatorConnected) {
+    connectFirestoreEmulator(_db, "127.0.0.1", 8080);
+    _dbEmulatorConnected = true;
+  }
+
   return _db;
 }
 
 export function getFirebaseStorage() {
-  const storage = getStorage(getFirebaseApp());
-  if (process.env.NODE_ENV === "development") {
-    connectStorageEmulator(storage, "127.0.0.1", 9199);
+  if (!_storage) {
+    _storage = getStorage(getFirebaseApp());
   }
 
-  return storage;
+  if (process.env.NODE_ENV === "development" && !_storageEmulatorConnected) {
+    connectStorageEmulator(_storage, "127.0.0.1", 9199);
+    _storageEmulatorConnected = true;
+  }
+
+  return _storage;
 }
 
 // Use getter properties so Firebase only initializes when accessed client-side
