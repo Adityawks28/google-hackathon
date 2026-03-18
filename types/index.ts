@@ -30,12 +30,16 @@ export interface ChatMessage {
   timestamp: number;
 }
 
+export type TutorPhase = "brainstorm" | "code" | "help";
+
 export interface TutorRequest {
   code: string;
   error: string;
   hintLevel: number;
   history: ChatMessage[];
   problemId: string;
+  mode: "brainstorm" | "help";
+  brainstormHistory?: ChatMessage[];
 }
 
 export interface TutorResponse {
