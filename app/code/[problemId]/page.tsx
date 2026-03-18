@@ -37,41 +37,58 @@ function CodeContent() {
   function handleRun() {
     setRunning(true);
     setOutput("");
-    try {
-      const logs: string[] = [];
-      const mockConsole = {
-        log: (...args: unknown[]) => logs.push(args.map(String).join(" ")),
-        error: (...args: unknown[]) =>
-          logs.push("ERROR: " + args.map(String).join(" ")),
-        warn: (...args: unknown[]) =>
-          logs.push("WARN: " + args.map(String).join(" ")),
+
+    const timeoutMs = 5000;
+
+    // Run user code in a Web Worker for real timeout + isolation
+    const workerCode = `
+      self.onmessage = function(e) {
+        const logs = [];
+        const mockConsole = {
+          log: (...args) => logs.push(args.map(String).join(" ")),
+          error: (...args) => logs.push("ERROR: " + args.map(String).join(" ")),
+          warn: (...args) => logs.push("WARN: " + args.map(String).join(" ")),
+        };
+        try {
+          const fn = new Function("console", e.data);
+          fn(mockConsole);
+          self.postMessage({ success: true, logs });
+        } catch (err) {
+          self.postMessage({ success: false, error: err.message, logs });
+        }
       };
+    `;
 
-      // Use a Web Worker-style timeout via synchronous execution cap
-      const timeoutMs = 5000;
-      const start = performance.now();
-      const timedCode = `
-        const __start = ${start};
-        const __timeout = ${timeoutMs};
-        ${code}
-      `;
-      const fn = new Function("console", "performance", timedCode);
-      const timer = setTimeout(() => {
-        setOutput("Error: Execution timed out (5s limit). Check for infinite loops.");
-        setRunning(false);
-      }, timeoutMs);
+    const blob = new Blob([workerCode], { type: "application/javascript" });
+    const worker = new Worker(URL.createObjectURL(blob));
 
-      fn(mockConsole, performance);
-      clearTimeout(timer);
-
-      setOutput(logs.join("\n") || "(no output)");
-    } catch (error) {
-      setOutput(
-        `Error: ${error instanceof Error ? error.message : String(error)}`,
-      );
-    } finally {
+    const timer = setTimeout(() => {
+      worker.terminate();
+      setOutput("Error: Execution timed out (5s limit). Check for infinite loops.");
       setRunning(false);
-    }
+    }, timeoutMs);
+
+    worker.onmessage = (e) => {
+      clearTimeout(timer);
+      worker.terminate();
+      const { success, logs, error } = e.data;
+      if (success) {
+        setOutput(logs.join("\n") || "(no output)");
+      } else {
+        const logOutput = logs.length > 0 ? logs.join("\n") + "\n" : "";
+        setOutput(logOutput + `Error: ${error}`);
+      }
+      setRunning(false);
+    };
+
+    worker.onerror = (e) => {
+      clearTimeout(timer);
+      worker.terminate();
+      setOutput(`Error: ${e.message}`);
+      setRunning(false);
+    };
+
+    worker.postMessage(code);
   }
 
   if (!problem) {

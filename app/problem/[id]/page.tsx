@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, runTransaction } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -22,6 +22,7 @@ function ProblemContent() {
   const [correct, setCorrect] = useState<boolean | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [loadingProblem, setLoadingProblem] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [brainstormInput, setBrainstormInput] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -47,6 +48,7 @@ function ProblemContent() {
         }
       } catch (error) {
         console.error("Error fetching problem:", error);
+        setFetchError(true);
       } finally {
         setLoadingProblem(false);
       }
@@ -82,20 +84,21 @@ function ProblemContent() {
       if (user) {
         try {
           const progressRef = doc(db, "progress", `${user.uid}_${problemId}`);
-          const existing = await getDoc(progressRef);
-          const alreadySolved = existing.exists() && existing.data().solved;
-
-          await setDoc(
-            progressRef,
-            {
-              userId: user.uid,
-              problemId,
-              attempted: true,
-              solved: alreadySolved || data.correct,
-              lastAttemptAt: Date.now(),
-            },
-            { merge: true },
-          );
+          await runTransaction(db, async (transaction) => {
+            const existing = await transaction.get(progressRef);
+            const alreadySolved = existing.exists() && existing.data().solved;
+            transaction.set(
+              progressRef,
+              {
+                userId: user.uid,
+                problemId,
+                attempted: true,
+                solved: alreadySolved || data.correct,
+                lastAttemptAt: Date.now(),
+              },
+              { merge: true },
+            );
+          });
         } catch (progressError) {
           console.error("Error saving progress:", progressError);
         }
@@ -113,22 +116,23 @@ function ProblemContent() {
     if (guidance && user) {
       try {
         const progressRef = doc(db, "progress", `${user.uid}_${problemId}`);
-        const existing = await getDoc(progressRef);
-        const currentHistory = existing.exists()
-          ? (existing.data().hintHistory ?? [])
-          : [];
-
-        await setDoc(
-          progressRef,
-          {
-            userId: user.uid,
-            problemId,
-            attempted: true,
-            hintHistory: [...currentHistory, hintLevel + 1],
-            lastAttemptAt: Date.now(),
-          },
-          { merge: true },
-        );
+        await runTransaction(db, async (transaction) => {
+          const existing = await transaction.get(progressRef);
+          const currentHistory = existing.exists()
+            ? (existing.data().hintHistory ?? [])
+            : [];
+          transaction.set(
+            progressRef,
+            {
+              userId: user.uid,
+              problemId,
+              attempted: true,
+              hintHistory: [...currentHistory, hintLevel + 1],
+              lastAttemptAt: Date.now(),
+            },
+            { merge: true },
+          );
+        });
       } catch (hintError) {
         console.error("Error saving hint progress:", hintError);
       }
@@ -139,6 +143,22 @@ function ProblemContent() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500">Failed to load problem. Please check your connection and try again.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-3 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
