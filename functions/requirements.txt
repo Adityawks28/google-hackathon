@@ -1,0 +1,5 @@
+# functions/requirements.txt
+firebase-functions
+firebase-admin
+google-cloud-firestore
+google-generativeai
