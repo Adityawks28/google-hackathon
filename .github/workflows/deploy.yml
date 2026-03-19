@@ -40,7 +40,7 @@ jobs:
       - name: Deploy to Firebase
         run: |
           firebase experiments:enable webframeworks
-          firebase deploy --non-interactive --project ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }} --token ${{ secrets.FIREBASE_TOKEN }}
+          firebase deploy --non-interactive --project ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }} --token ${{ secrets.FIREBASE_TOKEN }} --force
         env:
           NODE_ENV: production
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

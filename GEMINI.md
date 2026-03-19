@@ -13,3 +13,4 @@ The main idea is a website where students can solve simple programing problems w
 - Use interfaces instead of types
 - Use ES module imports/exports (e.g., `import { ... } from '...'`) instead of `require()` style.
 - NEVER doc, setDoc, and getDoc directly. ALWAYS use the implemented models in lib/db/ to store or read from the database.
+- Use ONLY global imports (e.g, @/lib/db/utils). Also please only import at the top of the files
