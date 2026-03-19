@@ -7,6 +7,7 @@ import {
   updateDoc,
   query,
   UpdateData,
+  onSnapshot,
 } from "firebase/firestore";
 import { getTypedCollection } from "@/lib/db/utils";
 import { AppUser } from "@/types";
@@ -43,6 +44,23 @@ export const UserModel = (db: Firestore) => {
     async update(uid: string, data: UpdateData<AppUser>): Promise<void> {
       const docRef = doc(colRef, uid);
       await updateDoc(docRef, data);
+    },
+
+    subscribeToRole(
+      uid: string,
+      callback: (role: "user" | "admin" | undefined) => void,
+    ): () => void {
+      const docRef = doc(colRef, uid);
+      return onSnapshot(
+        docRef,
+        (snapshot) => {
+          const data = snapshot.data();
+          callback(data?.role);
+        },
+        () => {
+          callback(undefined);
+        },
+      );
     },
   };
 };

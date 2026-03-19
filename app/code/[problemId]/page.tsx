@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { problemModel } from "@/lib/db";
 import Link from "next/link";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { CodeEditor } from "@/components/CodeEditor";
@@ -20,9 +19,8 @@ function CodeContent() {
   useEffect(() => {
     async function fetchProblem() {
       try {
-        const docSnap = await getDoc(doc(db, "problems", problemId));
-        if (docSnap.exists()) {
-          const data = { id: docSnap.id, ...docSnap.data() } as Problem;
+        const data = await problemModel.getById(problemId);
+        if (data) {
           setProblem(data);
           setCode(data.starterCode);
         }

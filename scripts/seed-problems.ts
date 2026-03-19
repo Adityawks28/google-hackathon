@@ -1,5 +1,6 @@
 import { problemModel } from "@/lib/db";
 import { seedProblems } from "@/lib/lessons";
+import { Problem } from "@/types";
 
 async function seed() {
   console.log("Starting to seed problems...");
@@ -12,7 +13,7 @@ async function seed() {
       createdBy: "system-seed",
     };
 
-    await problemModel.create(fullProblem as any, id);
+    await problemModel.create(fullProblem as Omit<Problem, "id">, id);
     console.log(`Successfully seeded problem: ${id}`);
   }
 

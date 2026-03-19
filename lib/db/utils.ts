@@ -19,9 +19,9 @@ export function createConverter<T extends object>(
 ): FirestoreDataConverter<T> {
   return {
     toFirestore(data: WithFieldValue<T>): DocumentData {
-      const doc = { ...data } as any;
+      const doc = { ...data } as Record<string, unknown>;
       delete doc[idField];
-      return doc;
+      return doc as DocumentData;
     },
     fromFirestore(
       snapshot: QueryDocumentSnapshot,

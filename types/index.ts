@@ -13,6 +13,7 @@ export interface Problem {
   language: string;
   createdBy: string;
   createdAt: number;
+  referenceSolution?: string;
 }
 
 export interface UserProgress {

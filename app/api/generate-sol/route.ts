@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 
     await problemModel.update(problemId, {
       referenceSolution: solution,
-    } as any);
+    });
 
     return NextResponse.json({ solution });
   } catch (err) {
