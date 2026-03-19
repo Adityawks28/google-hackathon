@@ -16,6 +16,7 @@ export interface Problem {
 }
 
 export interface UserProgress {
+  id?: string;
   userId: string;
   problemId: string;
   attempted: boolean;

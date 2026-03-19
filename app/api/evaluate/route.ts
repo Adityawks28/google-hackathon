@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { evaluateCode } from "@/lib/gemini";
 import { EVALUATOR_PROMPT } from "@/lib/prompts";
 import { rateLimit } from "@/lib/rate-limit";
+import { problemModel } from "@/lib/db";
 import type { EvaluateRequest } from "@/types";
-import { doc, getDoc } from "firebase/firestore";
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,17 +27,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { db } = await import("@/lib/firebase");
-    const problemDoc = await getDoc(doc(db, "problems", problemId));
+    const problem = await problemModel.getById(problemId);
 
-    if (!problemDoc.exists()) {
+    if (!problem) {
       return NextResponse.json(
         { error: "Problem not found." },
         { status: 404 },
       );
     }
 
-    const problem = problemDoc.data();
     const result = await evaluateCode(
       code,
       problem.description,

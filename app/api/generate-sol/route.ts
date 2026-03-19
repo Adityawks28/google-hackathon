@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateSolution } from "@/lib/gemini";
 import { SOLUTION_GENERATOR_PROMPT } from "@/lib/prompts";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { userModel, problemModel } from "@/lib/db";
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,34 +21,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
 
-    const { db } = await import("@/lib/firebase");
-
     // Check admin role
-    const userDoc = await getDoc(doc(db, "users", uid));
-    if (!userDoc.exists() || userDoc.data().role !== "admin") {
+    const user = await userModel.getById(uid);
+    if (!user || user.role !== "admin") {
       return NextResponse.json(
         { error: "Admin access required." },
         { status: 403 },
       );
     }
-    const problemRef = doc(db, "problems", problemId);
-    const problemDoc = await getDoc(problemRef);
 
-    if (!problemDoc.exists()) {
+    const problem = await problemModel.getById(problemId);
+
+    if (!problem) {
       return NextResponse.json(
         { error: "Problem not found." },
         { status: 404 },
       );
     }
 
-    const problem = problemDoc.data();
     const solution = await generateSolution(
       problem.description,
       problem.language,
       SOLUTION_GENERATOR_PROMPT,
     );
 
-    await updateDoc(problemRef, { referenceSolution: solution });
+    await problemModel.update(problemId, {
+      referenceSolution: solution,
+    } as any);
 
     return NextResponse.json({ solution });
   } catch (err) {
