@@ -84,7 +84,7 @@ function ProblemContent() {
           if (data.correct) {
             await progressModel.markSolved(user.uid, problemId);
           } else {
-            await progressModel.update(`${user.uid}_${problemId}`, {
+            await progressModel.upsert(`${user.uid}_${problemId}`, {
               userId: user.uid,
               problemId,
               attempted: true,

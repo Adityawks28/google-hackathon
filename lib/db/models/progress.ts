@@ -40,7 +40,7 @@ export const ProgressModel = (db: Firestore) => {
       return snapshot.docs.map((d) => d.data());
     },
 
-    async update(id: string, data: Partial<UserProgress>): Promise<void> {
+    async upsert(id: string, data: Partial<UserProgress>): Promise<void> {
       const docRef = doc(colRef, id);
       await setDoc(docRef, data, { merge: true });
     },
