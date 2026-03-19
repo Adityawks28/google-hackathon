@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { askBrainstorm, askHelp } from "@/lib/gemini";
-import {
-  BRAINSTORM_SYSTEM_PROMPT,
-  HELP_SYSTEM_PROMPT,
-} from "@/lib/prompts";
 import { rateLimit } from "@/lib/rate-limit";
 import type { TutorRequest } from "@/types";
-import { doc, getDoc } from "firebase/firestore";
+import { tutorFlow, TutorStore } from "@/lib/tutor-flow";
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +19,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: TutorRequest = await request.json();
-    const { mode, problemId } = body;
+    const { problemId } = body;
 
     if (!problemId) {
       return NextResponse.json(
@@ -33,40 +28,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Fetch problem description from Firestore
-    const { db } = await import("@/lib/firebase");
-    let problemDescription = "";
-    try {
-      const problemDoc = await getDoc(doc(db, "problems", problemId));
-      if (problemDoc.exists()) {
-        problemDescription = problemDoc.data().description ?? "";
-      }
-    } catch (firestoreError) {
-      console.error("Error fetching problem:", firestoreError);
+    if (!body.userId) {
+      body.userId = ip.replace(/[^a-zA-Z0-9]/g, "_");
     }
 
-    let guidance: string;
+    const store: TutorStore = {
+      requestBody: body,
+      messages: [...body.history],
+    };
 
-    if (mode === "brainstorm") {
-      const { code: message, history } = body;
-      guidance = await askBrainstorm(
-        message,
-        history,
-        problemDescription,
-        BRAINSTORM_SYSTEM_PROMPT,
-      );
-    } else {
-      const { code, error, hintLevel, history, brainstormHistory } = body;
-      guidance = await askHelp(
-        code,
-        error,
-        hintLevel,
-        history,
-        brainstormHistory ?? [],
-        problemDescription,
-        HELP_SYSTEM_PROMPT,
-      );
-    }
+    await tutorFlow.run(store);
+
+    const guidance =
+      store.messages.length > body.history.length
+        ? store.messages[store.messages.length - 1].content
+        : "I'm having trouble responding right now.";
 
     return NextResponse.json(
       { guidance },

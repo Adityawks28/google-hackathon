@@ -40,6 +40,7 @@ export interface TutorRequest {
   problemId: string;
   mode: "brainstorm" | "help";
   brainstormHistory?: ChatMessage[];
+  userId: string;
 }
 
 export interface TutorResponse {
