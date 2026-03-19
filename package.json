@@ -9,7 +9,8 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "format:file": "prettier --write",
-    "format:fix": "prettier --write"
+    "format:fix": "prettier --write",
+    "seed": "bash scripts/seed-emulator.sh"
   },
   "dependencies": {
     "@google/genai": "^1.45.0",
