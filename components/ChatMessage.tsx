@@ -7,10 +7,25 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
   const isUser = role === "user";
 
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+    <div className={`flex gap-3 mb-4 ${isUser ? "flex-row-reverse" : ""}`}>
       <div
-        className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
-          isUser ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-800"
+        className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${
+          isUser ? "bg-primary/10" : "bg-slate-200"
+        }`}
+      >
+        <span
+          className={`material-symbols-outlined text-sm ${
+            isUser ? "text-primary" : "text-slate-500"
+          }`}
+        >
+          {isUser ? "person" : "smart_toy"}
+        </span>
+      </div>
+      <div
+        className={`max-w-[80%] px-4 py-3 text-sm leading-relaxed ${
+          isUser
+            ? "bg-primary text-white rounded-2xl rounded-tr-none"
+            : "bg-slate-100 text-slate-800 rounded-2xl rounded-tl-none"
         }`}
       >
         <p className="whitespace-pre-wrap">{content}</p>
