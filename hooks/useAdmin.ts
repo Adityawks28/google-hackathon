@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { userModel } from "@/lib/db";
 
 export function useAdmin() {
   const { user, loading: authLoading } = useAuth();
@@ -25,18 +24,10 @@ export function useAdmin() {
     }
 
     // Subscribe to user doc for role changes
-    const unsubscribe = onSnapshot(
-      doc(db, "users", user.uid),
-      (snap) => {
-        const data = snap.data();
-        setIsAdmin(data?.role === "admin");
-        setLoading(false);
-      },
-      () => {
-        setIsAdmin(false);
-        setLoading(false);
-      },
-    );
+    const unsubscribe = userModel.subscribeToRole(user.uid, (role) => {
+      setIsAdmin(role === "admin");
+      setLoading(false);
+    });
 
     prevUid.current = user.uid;
     return unsubscribe;

@@ -2,8 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
-import { doc, getDoc, setDoc, runTransaction } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { problemModel, progressModel } from "@/lib/db";
 import { useAuth } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { CodeEditor } from "@/components/CodeEditor";
@@ -40,9 +39,8 @@ function ProblemContent() {
   useEffect(() => {
     async function fetchProblem() {
       try {
-        const docSnap = await getDoc(doc(db, "problems", problemId));
-        if (docSnap.exists()) {
-          const data = { id: docSnap.id, ...docSnap.data() } as Problem;
+        const data = await problemModel.getById(problemId);
+        if (data) {
           setProblem(data);
           setCode(data.starterCode);
         }
@@ -83,22 +81,16 @@ function ProblemContent() {
 
       if (user) {
         try {
-          const progressRef = doc(db, "progress", `${user.uid}_${problemId}`);
-          await runTransaction(db, async (transaction) => {
-            const existing = await transaction.get(progressRef);
-            const alreadySolved = existing.exists() && existing.data().solved;
-            transaction.set(
-              progressRef,
-              {
-                userId: user.uid,
-                problemId,
-                attempted: true,
-                solved: alreadySolved || data.correct,
-                lastAttemptAt: Date.now(),
-              },
-              { merge: true },
-            );
-          });
+          if (data.correct) {
+            await progressModel.markSolved(user.uid, problemId);
+          } else {
+            await progressModel.upsert(`${user.uid}_${problemId}`, {
+              userId: user.uid,
+              problemId,
+              attempted: true,
+              lastAttemptAt: Date.now(),
+            });
+          }
         } catch (progressError) {
           console.error("Error saving progress:", progressError);
         }
@@ -115,24 +107,7 @@ function ProblemContent() {
     const guidance = await requestHelp(code, "");
     if (guidance && user) {
       try {
-        const progressRef = doc(db, "progress", `${user.uid}_${problemId}`);
-        await runTransaction(db, async (transaction) => {
-          const existing = await transaction.get(progressRef);
-          const currentHistory = existing.exists()
-            ? (existing.data().hintHistory ?? [])
-            : [];
-          transaction.set(
-            progressRef,
-            {
-              userId: user.uid,
-              problemId,
-              attempted: true,
-              hintHistory: [...currentHistory, hintLevel + 1],
-              lastAttemptAt: Date.now(),
-            },
-            { merge: true },
-          );
-        });
+        await progressModel.addHint(user.uid, problemId, hintLevel + 1);
       } catch (hintError) {
         console.error("Error saving hint progress:", hintError);
       }
@@ -151,7 +126,9 @@ function ProblemContent() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <p className="text-red-500">Failed to load problem. Please check your connection and try again.</p>
+          <p className="text-red-500">
+            Failed to load problem. Please check your connection and try again.
+          </p>
           <button
             onClick={() => window.location.reload()}
             className="mt-3 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
@@ -248,11 +225,7 @@ function ProblemContent() {
 
                 {/* Chat messages */}
                 {brainstormHistory.map((msg, i) => (
-                  <ChatMessage
-                    key={i}
-                    role={msg.role}
-                    content={msg.content}
-                  />
+                  <ChatMessage key={i} role={msg.role} content={msg.content} />
                 ))}
 
                 {loading && (

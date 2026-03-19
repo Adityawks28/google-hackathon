@@ -55,4 +55,3 @@ Write a function \`twoSum(nums, target)\` that returns an array of two indices.`
     language: "javascript",
   },
 ];
-

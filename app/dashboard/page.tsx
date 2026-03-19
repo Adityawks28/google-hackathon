@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { problemModel, progressModel } from "@/lib/db";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -26,27 +25,19 @@ function DashboardContent() {
       );
 
       try {
-        const problemsSnap = await Promise.race([
-          getDocs(collection(db, "problems")),
+        const problemsPromise = problemModel.getAll();
+        const problemsList = (await Promise.race([
+          problemsPromise,
           timeout,
-        ]);
-        const problemsList = problemsSnap.docs.map(
-          (d) => ({ id: d.id, ...d.data() }) as Problem,
-        );
+        ])) as Problem[];
         setProblems(problemsList);
 
         if (user) {
-          const progressQuery = query(
-            collection(db, "progress"),
-            where("userId", "==", user.uid),
-          );
-          const progressSnap = await Promise.race([
-            getDocs(progressQuery),
+          const progressPromise = progressModel.getByUserId(user.uid);
+          const progressList = (await Promise.race([
+            progressPromise,
             timeout,
-          ]);
-          const progressList = progressSnap.docs.map(
-            (d) => d.data() as UserProgress,
-          );
+          ])) as UserProgress[];
           setProgress(progressList);
         }
       } catch (error) {
