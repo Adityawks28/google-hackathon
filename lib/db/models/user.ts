@@ -6,6 +6,7 @@ import {
   setDoc,
   updateDoc,
   query,
+  UpdateData,
 } from "firebase/firestore";
 import { getTypedCollection } from "@/lib/db/utils";
 import { AppUser } from "@/types";
@@ -39,12 +40,9 @@ export const UserModel = (db: Firestore) => {
       await updateDoc(docRef, { role });
     },
 
-    async update(
-      uid: string,
-      data: Partial<Omit<AppUser, "uid">>,
-    ): Promise<void> {
+    async update(uid: string, data: UpdateData<AppUser>): Promise<void> {
       const docRef = doc(colRef, uid);
-      await updateDoc(docRef, data as any);
+      await updateDoc(docRef, data);
     },
   };
 };

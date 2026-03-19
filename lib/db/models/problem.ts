@@ -8,6 +8,7 @@ import {
   deleteDoc,
   query,
   addDoc,
+  UpdateData,
 } from "firebase/firestore";
 import { getTypedCollection } from "@/lib/db/utils";
 import { Problem } from "@/types";
@@ -42,12 +43,9 @@ export const ProblemModel = (db: Firestore) => {
       }
     },
 
-    async update(
-      id: string,
-      data: Partial<Omit<Problem, "id">>,
-    ): Promise<void> {
+    async update(id: string, data: UpdateData<Problem>): Promise<void> {
       const docRef = doc(colRef, id);
-      await updateDoc(docRef, data as any);
+      await updateDoc(docRef, data);
     },
 
     async delete(id: string): Promise<void> {
