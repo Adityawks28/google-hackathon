@@ -53,7 +53,7 @@ function getFirebaseAuth(): Auth {
     _auth = getAuth(getFirebaseApp());
   }
 
-  if (process.env.NODE_ENV === "development" && !_authEmulatorConnected) {
+  if (process.env.NODE_ENV !== "production" && !_authEmulatorConnected) {
     connectAuthEmulator(_auth, "http://127.0.0.1:9099");
     _authEmulatorConnected = true;
   }
@@ -66,7 +66,7 @@ function getFirebaseDb(): Firestore {
     _db = getFirestore(getFirebaseApp());
   }
 
-  if (process.env.NODE_ENV === "development" && !_dbEmulatorConnected) {
+  if (process.env.NODE_ENV !== "production" && !_dbEmulatorConnected) {
     connectFirestoreEmulator(_db, "127.0.0.1", 8080);
     _dbEmulatorConnected = true;
   }
@@ -79,7 +79,7 @@ export function getFirebaseStorage() {
     _storage = getStorage(getFirebaseApp());
   }
 
-  if (process.env.NODE_ENV === "development" && !_storageEmulatorConnected) {
+  if (process.env.NODE_ENV !== "production" && !_storageEmulatorConnected) {
     connectStorageEmulator(_storage, "127.0.0.1", 9199);
     _storageEmulatorConnected = true;
   }
