@@ -12,3 +12,4 @@ The main idea is a website where students can solve simple programing problems w
   - If you are unsure always ask the user whether it is a concern
 - Use interfaces instead of types
 - Use ES module imports/exports (e.g., `import { ... } from '...'`) instead of `require()` style.
+- Use ONLY global imports (e.g, @/lib/db/utils). Also please only import at the top of the files
