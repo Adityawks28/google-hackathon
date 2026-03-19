@@ -20,14 +20,15 @@ function DashboardContent() {
 
   useEffect(() => {
     async function fetchData() {
-      const timeout = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("Firestore timeout")), 5000),
-      );
+      const makeTimeout = () =>
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Firestore timeout")), 5000),
+        );
 
       try {
         const problemsSnap = await Promise.race([
           getDocs(collection(db, "problems")),
-          timeout,
+          makeTimeout(),
         ]);
         const problemsList = problemsSnap.docs.map(
           (d) => ({ id: d.id, ...d.data() }) as Problem,
@@ -41,7 +42,7 @@ function DashboardContent() {
           );
           const progressSnap = await Promise.race([
             getDocs(progressQuery),
-            timeout,
+            makeTimeout(),
           ]);
           const progressList = progressSnap.docs.map(
             (d) => d.data() as UserProgress,

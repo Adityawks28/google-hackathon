@@ -84,6 +84,14 @@ function AnalyticsContent() {
       </header>
 
       <main className="mx-auto max-w-6xl px-6 py-8 space-y-8">
+        {/* Sample data banner */}
+        <div className="flex items-center gap-3 rounded-xl bg-amber-50 border border-amber-200 px-5 py-3">
+          <span className="material-symbols-outlined text-amber-600">info</span>
+          <p className="text-sm text-amber-800">
+            <span className="font-semibold">Sample data.</span> This page shows placeholder stats — real analytics coming soon.
+          </p>
+        </div>
+
         {/* Title */}
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">Performance Analytics</h1>
