@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { askTutor } from "@/lib/gemini";
+import { askBrainstorm, askHelp } from "@/lib/gemini";
+import { BRAINSTORM_SYSTEM_PROMPT, HELP_SYSTEM_PROMPT } from "@/lib/prompts";
 import { rateLimit } from "@/lib/rate-limit";
 import { problemModel } from "@/lib/db";
 import type { TutorRequest } from "@/types";
@@ -20,11 +21,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body: TutorRequest = await request.json();
-    const { code, error, hintLevel, history, problemId } = body;
+    const { mode, problemId } = body;
 
-    if (!code && !error) {
+    if (!problemId) {
       return NextResponse.json(
-        { error: "Code or error message is required." },
+        { error: "problemId is required." },
         { status: 400 },
       );
     }
@@ -40,13 +41,28 @@ export async function POST(request: NextRequest) {
       console.error("Error fetching problem:", firestoreError);
     }
 
-    const guidance = await askTutor(
-      code,
-      error,
-      hintLevel,
-      history,
-      problemDescription,
-    );
+    let guidance: string;
+
+    if (mode === "brainstorm") {
+      const { code: message, history } = body;
+      guidance = await askBrainstorm(
+        message,
+        history,
+        problemDescription,
+        BRAINSTORM_SYSTEM_PROMPT,
+      );
+    } else {
+      const { code, error, hintLevel, history, brainstormHistory } = body;
+      guidance = await askHelp(
+        code,
+        error,
+        hintLevel,
+        history,
+        brainstormHistory ?? [],
+        problemDescription,
+        HELP_SYSTEM_PROMPT,
+      );
+    }
 
     return NextResponse.json(
       { guidance },
