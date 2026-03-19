@@ -19,11 +19,15 @@ function DashboardContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+
     async function fetchData() {
       const makeTimeout = () =>
         new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error("Firestore timeout")), 5000),
         );
+
+      setLoading(true);
 
       try {
         const problemsSnap = await Promise.race([
@@ -33,6 +37,7 @@ function DashboardContent() {
         const problemsList = problemsSnap.docs.map(
           (d) => ({ id: d.id, ...d.data() }) as Problem,
         );
+        if (cancelled) return;
         setProblems(problemsList);
 
         if (user) {
@@ -47,16 +52,25 @@ function DashboardContent() {
           const progressList = progressSnap.docs.map(
             (d) => d.data() as UserProgress,
           );
+          if (cancelled) return;
           setProgress(progressList);
+        } else if (!cancelled) {
+          setProgress([]);
         }
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     }
 
     fetchData();
+
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
   const solvedIds = new Set(
