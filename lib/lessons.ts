@@ -1,5 +1,4 @@
 import type { Problem } from "@/types";
-import { problemModel } from "@/lib/db";
 
 export const seedProblems: Omit<Problem, "createdBy" | "createdAt">[] = [
   {
@@ -56,21 +55,3 @@ Write a function \`twoSum(nums, target)\` that returns an array of two indices.`
     language: "javascript",
   },
 ];
-
-export async function getProblem(id: string): Promise<Problem | null> {
-  try {
-    return await problemModel.getById(id);
-  } catch (error) {
-    console.error("Error fetching problem:", error);
-    return null;
-  }
-}
-
-export async function getAllProblems(): Promise<Problem[]> {
-  try {
-    return await problemModel.getAll();
-  } catch (error) {
-    console.error("Error fetching problems:", error);
-    return [];
-  }
-}
