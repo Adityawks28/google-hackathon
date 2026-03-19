@@ -115,8 +115,11 @@ export function useTutor(problemId: string) {
           timestamp: Date.now(),
         };
 
-        const updatedHistory = [...helpHistory, userMessage];
-        setHelpHistory(updatedHistory);
+        let updatedHistory: ChatMessage[] = [];
+        setHelpHistory((prev) => {
+          updatedHistory = [...prev, userMessage];
+          return updatedHistory;
+        });
 
         const res = await fetch("/api/tutor", {
           method: "POST",
@@ -151,7 +154,7 @@ export function useTutor(problemId: string) {
         setLoading(false);
       }
     },
-    [helpHistory, hintLevel, brainstormHistory, problemId],
+    [hintLevel, brainstormHistory, problemId],
   );
 
   const resetConversation = useCallback(() => {
