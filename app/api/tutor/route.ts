@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { askBrainstorm, askHelp } from "@/lib/gemini";
-import {
-  BRAINSTORM_SYSTEM_PROMPT,
-  HELP_SYSTEM_PROMPT,
-} from "@/lib/prompts";
+import { BRAINSTORM_SYSTEM_PROMPT, HELP_SYSTEM_PROMPT } from "@/lib/prompts";
 import { rateLimit } from "@/lib/rate-limit";
+import { problemModel } from "@/lib/db";
 import type { TutorRequest } from "@/types";
-import { doc, getDoc } from "firebase/firestore";
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,12 +31,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Fetch problem description from Firestore
-    const { db } = await import("@/lib/firebase");
     let problemDescription = "";
     try {
-      const problemDoc = await getDoc(doc(db, "problems", problemId));
-      if (problemDoc.exists()) {
-        problemDescription = problemDoc.data().description ?? "";
+      const problem = await problemModel.getById(problemId);
+      if (problem) {
+        problemDescription = problem.description ?? "";
       }
     } catch (firestoreError) {
       console.error("Error fetching problem:", firestoreError);

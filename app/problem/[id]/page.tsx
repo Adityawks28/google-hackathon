@@ -2,8 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
-import { doc, getDoc, runTransaction } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { problemModel, progressModel } from "@/lib/db";
 import { useAuth } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { CodeEditor } from "@/components/CodeEditor";
@@ -43,9 +42,8 @@ function ProblemContent() {
   useEffect(() => {
     async function fetchProblem() {
       try {
-        const docSnap = await getDoc(doc(db, "problems", problemId));
-        if (docSnap.exists()) {
-          const data = { id: docSnap.id, ...docSnap.data() } as Problem;
+        const data = await problemModel.getById(problemId);
+        if (data) {
           setProblem(data);
           setCode(data.starterCode);
         }
@@ -86,22 +84,16 @@ function ProblemContent() {
 
       if (user) {
         try {
-          const progressRef = doc(db, "progress", `${user.uid}_${problemId}`);
-          await runTransaction(db, async (transaction) => {
-            const existing = await transaction.get(progressRef);
-            const alreadySolved = existing.exists() && existing.data().solved;
-            transaction.set(
-              progressRef,
-              {
-                userId: user.uid,
-                problemId,
-                attempted: true,
-                solved: alreadySolved || data.correct,
-                lastAttemptAt: Date.now(),
-              },
-              { merge: true },
-            );
-          });
+          if (data.correct) {
+            await progressModel.markSolved(user.uid, problemId);
+          } else {
+            await progressModel.upsert(`${user.uid}_${problemId}`, {
+              userId: user.uid,
+              problemId,
+              attempted: true,
+              lastAttemptAt: Date.now(),
+            });
+          }
         } catch (progressError) {
           console.error("Error saving progress:", progressError);
         }
@@ -126,24 +118,7 @@ function ProblemContent() {
     if (guidance) setCodingView("chat");
     if (guidance && user) {
       try {
-        const progressRef = doc(db, "progress", `${user.uid}_${problemId}`);
-        await runTransaction(db, async (transaction) => {
-          const existing = await transaction.get(progressRef);
-          const currentHistory = existing.exists()
-            ? (existing.data().hintHistory ?? [])
-            : [];
-          transaction.set(
-            progressRef,
-            {
-              userId: user.uid,
-              problemId,
-              attempted: true,
-              hintHistory: [...currentHistory, hintLevel + 1],
-              lastAttemptAt: Date.now(),
-            },
-            { merge: true },
-          );
-        });
+        await progressModel.addHint(user.uid, problemId, hintLevel + 1);
       } catch (hintError) {
         console.error("Error saving hint progress:", hintError);
       }
