@@ -105,6 +105,55 @@ export function useTutor(problemId: string) {
     [hintLevel, helpHistory, brainstormHistory, problemId],
   );
 
+  const sendHelpMessage = useCallback(
+    async (message: string, code: string) => {
+      setLoading(true);
+      try {
+        const userMessage: ChatMessage = {
+          role: "user",
+          content: message,
+          timestamp: Date.now(),
+        };
+
+        const updatedHistory = [...helpHistory, userMessage];
+        setHelpHistory(updatedHistory);
+
+        const res = await fetch("/api/tutor", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code,
+            error: "",
+            hintLevel,
+            history: updatedHistory,
+            problemId,
+            mode: "help",
+            brainstormHistory,
+          }),
+        });
+
+        if (!res.ok) throw new Error("Failed to get help response");
+
+        const data: TutorResponse = await res.json();
+
+        const assistantMessage: ChatMessage = {
+          role: "assistant",
+          content: data.guidance,
+          timestamp: Date.now(),
+        };
+
+        setHelpHistory((prev) => [...prev, assistantMessage]);
+        return data.guidance;
+      } catch (error) {
+        console.error("Help chat error:", error);
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [helpHistory, hintLevel, brainstormHistory, problemId],
+  );
+
   const resetConversation = useCallback(() => {
     setPhase("brainstorm");
     setBrainstormHistory([]);
@@ -121,6 +170,7 @@ export function useTutor(problemId: string) {
     sendBrainstormMessage,
     startCoding,
     requestHelp,
+    sendHelpMessage,
     resetConversation,
   };
 }

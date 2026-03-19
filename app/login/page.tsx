@@ -25,24 +25,27 @@ export default function LoginPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-background-light">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h1 className="mb-2 text-center text-2xl font-bold text-gray-900">
+    <div className="flex min-h-screen items-center justify-center bg-background-light px-4">
+      <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-lg">
+        <div className="flex justify-center mb-6">
+          <span className="material-symbols-outlined text-primary text-5xl">school</span>
+        </div>
+        <h1 className="mb-2 text-center text-2xl font-bold text-slate-900">
           Welcome to Google Hackathon
         </h1>
-        <p className="mb-6 text-center text-sm text-gray-500">
+        <p className="mb-8 text-center text-sm text-slate-500">
           Sign in to start your coding journey
         </p>
         <button
           onClick={handleSignIn}
-          className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+          className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:shadow-md"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24">
             <path

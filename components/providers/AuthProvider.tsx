@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 await setDoc(userRef, {
                   email: firebaseUser.email ?? "",
                   displayName: firebaseUser.displayName ?? "",
-                  role: "user",
+                  role: process.env.NODE_ENV === "development" ? "admin" : "user",
                   createdAt: Date.now(),
                 });
               }

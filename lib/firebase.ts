@@ -3,6 +3,7 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithCredential,
   signOut as firebaseSignOut,
   Auth,
   connectAuthEmulator,
@@ -102,9 +103,20 @@ export const db =
     : (undefined as unknown as Firestore);
 
 export async function signInWithGoogle() {
-  const googleProvider = new GoogleAuthProvider();
-  const result = await signInWithPopup(getFirebaseAuth(), googleProvider);
+  const authInstance = getFirebaseAuth();
 
+  // In development, signInWithPopup is broken in the Firebase Auth emulator.
+  // Use signInWithCredential with a fake Google credential instead.
+  if (process.env.NODE_ENV === "development") {
+    const credential = GoogleAuthProvider.credential(
+      '{"sub": "dev-user-123", "email": "dev@example.com", "name": "Dev User", "picture": "https://via.placeholder.com/96", "email_verified": true}'
+    );
+    const result = await signInWithCredential(authInstance, credential);
+    return result.user;
+  }
+
+  const googleProvider = new GoogleAuthProvider();
+  const result = await signInWithPopup(authInstance, googleProvider);
   return result.user;
 }
 
