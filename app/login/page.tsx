@@ -26,14 +26,14 @@ export default function LoginPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background-light">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-[#FFFCFB]-light">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#630000] border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background-light px-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#FFFCFB]-light px-4">
       <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-lg">
         <div className="flex justify-center mb-6">
           <Logo size={64} />
