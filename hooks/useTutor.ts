@@ -78,12 +78,12 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
         if (session) {
           setBrainstormHistory(session.brainstormMessages || []);
           setHelpHistory(session.helpMessages || []);
+          if (session.hintLevel != null) {
+            setHintLevel(session.hintLevel);
+          }
           if (session.phase) {
             setPhase(session.phase);
           }
-          // Reset hint level based on help messages length?
-          // Or we could store it in UserSession too.
-          setHintLevel(Math.min(session.helpMessages?.length || 0, 3));
         }
       } catch (error) {
         console.error("Error loading session:", error);
@@ -183,7 +183,6 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
     ): Promise<string | null> => {
       if (!currentSessionId) return null;
       const nextLevel = Math.min(hintLevel + 1, 3);
-      setHintLevel(nextLevel);
       setPhase("help");
       setLoading(true);
 
@@ -234,6 +233,10 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
         };
 
         setHelpHistory((prev) => [...prev, assistantMessage]);
+        setHintLevel(nextLevel);
+        if (currentSessionId) {
+          await sessionModel.upsert(currentSessionId, { hintLevel: nextLevel });
+        }
         return data.guidance;
       } catch (error) {
         console.error("Help error:", error);
@@ -336,6 +339,7 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
         phase: "brainstorm",
         brainstormMessages: [],
         helpMessages: [],
+        hintLevel: 0,
       });
     }
   }, [currentSessionId]);
