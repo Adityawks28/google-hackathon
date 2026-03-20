@@ -24,6 +24,7 @@ export interface UseTutorReturn {
   sendHelpMessage: (message: string, code: string) => Promise<string | null>;
   resetConversation: () => Promise<void>;
   createNewSession: () => Promise<UserSession | null>;
+  deleteSession: (sessionId: string) => Promise<void>;
   switchSession: (sessionId: string) => void;
   updateSessionCode: (code: string, language: string) => Promise<void>;
   setHintLevel: (level: number) => void;
@@ -107,6 +108,37 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
         return null;
       }
     }, [userId, problemId]);
+
+  const deleteSession = useCallback(async (sessionId: string): Promise<void> => {
+    if (sessions.length <= 1) {
+      console.warn("Cannot delete the last remaining session.");
+      return;
+    }
+
+    try {
+      await sessionModel.delete(sessionId);
+      setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+      
+      if (currentSessionId === sessionId) {
+        setSessions((prev) => {
+          if (prev.length > 0) {
+            setCurrentSessionId(prev[0].id!);
+          } else if (userId && problemId) {
+            // Fallback (shouldn't be reached due to length check)
+            sessionModel.create(userId, problemId).then((newSession) => {
+              setSessions([newSession]);
+              setCurrentSessionId(newSession.id!);
+            });
+          } else {
+            setCurrentSessionId(null);
+          }
+          return prev;
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting session:", error);
+    }
+  }, [sessions, currentSessionId, userId, problemId]);
 
   const switchSession = useCallback((sessionId: string) => {
     setCurrentSessionId(sessionId);
@@ -356,6 +388,7 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
     sendHelpMessage,
     resetConversation,
     createNewSession,
+    deleteSession,
     switchSession,
     updateSessionCode,
     setHintLevel,

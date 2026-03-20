@@ -3,6 +3,7 @@ import {
   doc,
   getDoc,
   setDoc,
+  deleteDoc,
   getDocs,
   query,
   where,
@@ -64,6 +65,11 @@ export const SessionModel = (db: Firestore) => {
     async setPhase(sessionId: string, phase: TutorPhase): Promise<void> {
       const docRef = doc(colRef, sessionId);
       await setDoc(docRef, { phase, updatedAt: Date.now() }, { merge: true });
+    },
+
+    async delete(sessionId: string): Promise<void> {
+      const docRef = doc(colRef, sessionId);
+      await deleteDoc(docRef);
     },
 
     async addMessage(
