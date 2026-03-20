@@ -6,6 +6,7 @@ import {
   askHelp,
   verifySolution,
   askAssessment,
+  askRevealAnswer,
 } from "@/lib/gemini";
 import { sessionModel, problemModel, progressModel } from "@/lib/db";
 
@@ -17,6 +18,7 @@ export interface TutorStore {
     referenceSolution: string | null;
     hints: string[] | null;
     starterCode: string;
+    language: string;
   };
   verificationResult?: VerifySolutionOutput;
   isCorrect?: boolean;
@@ -26,6 +28,7 @@ type ChatNodePrepRes = {
   hasContext: boolean;
   hasAssistantResponse: boolean;
   isSubmission: boolean;
+  isGivingUp: boolean;
 };
 
 export class ChatNodeClass extends Node<TutorStore, ChatNodePrepRes> {
@@ -40,6 +43,9 @@ export class ChatNodeClass extends Node<TutorStore, ChatNodePrepRes> {
         store.messages[store.messages.length - 1].role === "assistant" &&
         store.messages.length > store.requestBody.history.length,
       isSubmission: lastUserMsg?.content === "Submission",
+      isGivingUp:
+        lastUserMsg?.content ===
+        "I give up. Please explain the solution to me.",
     };
   }
 
@@ -47,9 +53,11 @@ export class ChatNodeClass extends Node<TutorStore, ChatNodePrepRes> {
     hasContext,
     hasAssistantResponse,
     isSubmission,
+    isGivingUp,
   }: ChatNodePrepRes) {
     if (!hasContext) return "fetch_context";
     if (!hasAssistantResponse) {
+      if (isGivingUp) return "reveal_answer";
       return isSubmission ? "verify" : "generate";
     }
     return "done";
@@ -72,6 +80,7 @@ type FetchContextNodeExecRes = {
   referenceSolution: string | null;
   hints: string[] | null;
   starterCode: string;
+  language: string;
   userMessage: ChatMessage;
 };
 
@@ -103,6 +112,7 @@ export class FetchContextNodeClass extends Node<
     let referenceSolution: string | null = null;
     let hints: string[] | null = null;
     let starterCode = "";
+    let language = "javascript";
     try {
       const problem = await problemModel.getById(problemId);
       if (problem) {
@@ -110,6 +120,7 @@ export class FetchContextNodeClass extends Node<
         referenceSolution = problem.referenceSolution ?? null;
         hints = problem.hints ?? null;
         starterCode = problem.starterCode ?? "";
+        language = problem.language ?? "javascript";
       }
 
       await sessionModel.addMessage(sessionId, mode, userMessage);
@@ -122,6 +133,7 @@ export class FetchContextNodeClass extends Node<
       referenceSolution,
       hints,
       starterCode,
+      language,
       userMessage,
     };
   }
@@ -137,6 +149,7 @@ export class FetchContextNodeClass extends Node<
       referenceSolution: execRes.referenceSolution,
       hints: execRes.hints,
       starterCode: execRes.starterCode,
+      language: execRes.language,
     };
     return "continue";
   }
@@ -376,18 +389,89 @@ export class AssessmentNodeClass extends Node<
   }
 }
 
+type RevealAnswerNodePrepRes = {
+  problemDescription: string;
+  referenceSolution: string;
+  language: string;
+  history: ChatMessage[];
+  sessionId: string;
+};
+
+type RevealAnswerNodeExecRes = {
+  guidance: string;
+};
+
+export class RevealAnswerNodeClass extends Node<
+  TutorStore,
+  RevealAnswerNodePrepRes
+> {
+  async prep(store: TutorStore): Promise<RevealAnswerNodePrepRes> {
+    return {
+      problemDescription: store.ragContext?.problemDescription || "",
+      referenceSolution:
+        store.ragContext?.referenceSolution || "No solution available.",
+      language: store.ragContext?.language || "javascript",
+      history: store.messages,
+      sessionId: store.requestBody.sessionId,
+    };
+  }
+
+  async exec({
+    problemDescription,
+    referenceSolution,
+    language,
+    history,
+  }: RevealAnswerNodePrepRes): Promise<RevealAnswerNodeExecRes> {
+    const explanation = await askRevealAnswer({
+      problemDescription,
+      referenceSolution,
+      history,
+    });
+
+    const formattedSolution = `\n\n### Solution\n\`\`\`${language}\n${referenceSolution}\n\`\`\``;
+    return { guidance: explanation + formattedSolution };
+  }
+
+  async post(
+    store: TutorStore,
+    prepRes: RevealAnswerNodePrepRes,
+    execRes: RevealAnswerNodeExecRes,
+  ) {
+    const aiMessage: ChatMessage = {
+      role: "assistant",
+      content: execRes.guidance,
+      timestamp: Date.now(),
+      code: null,
+      error: null,
+      hintLevel: null,
+    };
+    store.messages.push(aiMessage);
+
+    try {
+      await sessionModel.addMessage(prepRes.sessionId, "help", aiMessage);
+    } catch (err) {
+      console.error("Error saving RevealAnswer message:", err);
+    }
+
+    return "continue";
+  }
+}
+
 const chatNode = new ChatNodeClass();
 const fetchContextNode = new FetchContextNodeClass();
 const llmProcessNode = new LLMProcessNodeClass();
 const verifyNode = new VerifyNodeClass();
 const assessmentNode = new AssessmentNodeClass();
+const revealAnswerNode = new RevealAnswerNodeClass();
 
 chatNode.on("fetch_context", fetchContextNode);
 chatNode.on("generate", llmProcessNode);
 chatNode.on("verify", verifyNode);
+chatNode.on("reveal_answer", revealAnswerNode);
 
 fetchContextNode.on("continue", chatNode);
 llmProcessNode.on("continue", chatNode);
+revealAnswerNode.on("continue", chatNode);
 
 verifyNode.on("assessment", assessmentNode);
 assessmentNode.on("continue", chatNode);

@@ -7,6 +7,7 @@ import {
   GenerateSolutionParams,
   VerifySolutionOutput,
   VerifySolutionInput,
+  AskRevealAnswerParams,
 } from "@/types/ai";
 import {
   buildTutorSystemPrompt,
@@ -15,6 +16,7 @@ import {
   buildBrainstormSystemPrompt,
   buildBrainstormUserMessage,
   buildVerifySolutionPrompt,
+  buildRevealAnswerSystemPrompt,
 } from "@/lib/prompt-builder";
 
 let _ai: GoogleGenAI | undefined;
@@ -257,4 +259,25 @@ Generate a clean, well-commented reference solution.`;
   });
 
   return response.text ?? "Unable to generate solution.";
+}
+
+export async function askRevealAnswer({
+  problemDescription,
+  referenceSolution,
+  history,
+}: AskRevealAnswerParams): Promise<string> {
+  const systemInstruction = buildRevealAnswerSystemPrompt({
+    problemDescription,
+    referenceSolution,
+  });
+
+  const contents = history.map(mapToGeminiContent);
+
+  const response = await getAI().models.generateContent({
+    model: GEMINI_MODEL,
+    contents,
+    config: { systemInstruction },
+  });
+
+  return response.text ?? "Here is the solution approach for this problem:";
 }

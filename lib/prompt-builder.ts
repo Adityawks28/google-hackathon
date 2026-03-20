@@ -227,3 +227,22 @@ The starter code above is provided as part of the problem and is not written by 
 - If the user-provided code changes this starter code, add a comment telling them that they should not change this part of the code and to return it to the original starter code.
 - Do not criticize or critique the starter code otherwise.`;
 }
+
+export function buildRevealAnswerSystemPrompt({
+  problemDescription,
+  referenceSolution,
+}: {
+  problemDescription: string;
+  referenceSolution: string;
+}): string {
+  return `You are a helpful programming tutor. The student has given up on the problem.
+Your task is to provide a brief, encouraging explanation of the solution.
+Do not provide the code yourself, just explain the approach and key concepts.
+The code will be appended after your message.
+
+# Problem Description
+${problemDescription}
+
+# Reference Solution
+${referenceSolution}`;
+}

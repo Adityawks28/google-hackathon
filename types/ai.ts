@@ -104,3 +104,12 @@ export interface GenerateSolutionParams {
   language: string;
   systemPrompt: string;
 }
+
+/**
+ * Inputs for the askRevealAnswer LLM function.
+ */
+export interface AskRevealAnswerParams {
+  problemDescription: string;
+  referenceSolution: string;
+  history: ChatMessage[];
+}
