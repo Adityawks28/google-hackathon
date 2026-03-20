@@ -44,16 +44,15 @@ export function useTutor(problemId: string, userId?: string) {
   const sendBrainstormMessage = useCallback(
     async (message: string) => {
       setLoading(true);
+      const userMessage: ChatMessage = {
+        role: "user",
+        content: message,
+        timestamp: Date.now(),
+      };
+
+      setBrainstormHistory((prev) => [...prev, userMessage]);
+
       try {
-        const userMessage: ChatMessage = {
-          role: "user",
-          content: message,
-          timestamp: Date.now(),
-        };
-
-        // UI update immediately
-        setBrainstormHistory((prev) => [...prev, userMessage]);
-
         const res = await fetch("/api/tutor", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -61,7 +60,7 @@ export function useTutor(problemId: string, userId?: string) {
             code: message,
             error: "",
             hintLevel: 0,
-            history: brainstormHistory, // Previous history only
+            history: [...brainstormHistory, userMessage],
             problemId,
             mode: "brainstorm",
             userId,
@@ -149,15 +148,15 @@ export function useTutor(problemId: string, userId?: string) {
   const sendHelpMessage = useCallback(
     async (message: string, code: string) => {
       setLoading(true);
+      const userMessage: ChatMessage = {
+        role: "user",
+        content: message,
+        timestamp: Date.now(),
+      };
+
+      setHelpHistory((prev) => [...prev, userMessage]);
+
       try {
-        const userMessage: ChatMessage = {
-          role: "user",
-          content: message,
-          timestamp: Date.now(),
-        };
-
-        setHelpHistory((prev) => [...prev, userMessage]);
-
         const res = await fetch("/api/tutor", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -165,7 +164,7 @@ export function useTutor(problemId: string, userId?: string) {
             code,
             error: "",
             hintLevel,
-            history: helpHistory, // Previous history
+            history: [...helpHistory, userMessage],
             problemId,
             mode: "help",
             brainstormHistory,

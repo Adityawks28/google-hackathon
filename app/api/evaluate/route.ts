@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: EvaluateRequest = await request.json();
-    const { code, problemId } = body;
+    const { code, problemId, language } = body;
 
     if (!code || !problemId) {
       return NextResponse.json(
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       code,
       problem.description,
       problem.testCases,
-      EVALUATOR_PROMPT,
+      `${EVALUATOR_PROMPT}\n\nThe language being used is: ${language || problem.language}`,
     );
 
     return NextResponse.json(result);
