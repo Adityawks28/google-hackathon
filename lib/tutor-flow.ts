@@ -42,7 +42,7 @@ export class ChatNodeClass extends Node<TutorStore, ChatNodePrepRes> {
 type FetchContextNodePrepRes = {
   problemId: string;
   userMessage: ChatMessage;
-  userId: string;
+  sessionId: string;
   mode: "brainstorm" | "help";
 };
 
@@ -56,8 +56,16 @@ export class FetchContextNodeClass extends Node<
   FetchContextNodePrepRes
 > {
   async prep(store: TutorStore): Promise<FetchContextNodePrepRes> {
-    const { problemId, mode, code, error, hintLevel, userId, message } =
-      store.requestBody;
+    const {
+      problemId,
+      mode,
+      code,
+      error,
+      hintLevel,
+      sessionId,
+      userId,
+      message,
+    } = store.requestBody;
     const userMessage: ChatMessage = {
       role: "user",
       content: message || code,
@@ -66,13 +74,13 @@ export class FetchContextNodeClass extends Node<
       hintLevel: mode === "help" ? hintLevel : null,
       timestamp: Date.now(),
     };
-    return { problemId, userMessage, userId, mode };
+    return { problemId, userMessage, sessionId, mode };
   }
 
   async exec({
     problemId,
     userMessage,
-    userId,
+    sessionId,
     mode,
   }: FetchContextNodePrepRes): Promise<FetchContextNodeExecRes> {
     let problemDescription = "";
@@ -82,8 +90,8 @@ export class FetchContextNodeClass extends Node<
         problemDescription = problem.description ?? "";
       }
 
-      await sessionModel.addMessage(userId, problemId, mode, userMessage);
-      await sessionModel.setPhase(userId, problemId, mode);
+      await sessionModel.addMessage(sessionId, mode, userMessage);
+      await sessionModel.setPhase(sessionId, mode);
     } catch (err) {
       console.error("Error fetching context or saving user message:", err);
     }
@@ -166,8 +174,8 @@ export class LLMProcessNodeClass extends Node<
     store.messages.push(aiMessage);
 
     try {
-      const { userId, problemId, mode } = store.requestBody;
-      await sessionModel.addMessage(userId, problemId, mode, aiMessage);
+      const { sessionId, mode } = store.requestBody;
+      await sessionModel.addMessage(sessionId, mode, aiMessage);
     } catch (err) {
       console.error("Error saving AI message:", err);
     }

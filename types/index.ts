@@ -36,11 +36,15 @@ export interface ChatMessage {
 }
 
 export interface UserSession {
+  id?: string;
   userId: string;
   problemId: string;
   brainstormMessages: ChatMessage[];
   helpMessages: ChatMessage[];
   phase: TutorPhase;
+  code?: string;
+  language?: string;
+  createdAt: number;
   updatedAt: number;
 }
 
@@ -53,6 +57,7 @@ export interface TutorRequest {
   message?: string;
   history: ChatMessage[];
   problemId: string;
+  sessionId: string;
   mode: "brainstorm" | "help";
   brainstormHistory?: ChatMessage[];
   userId: string;
