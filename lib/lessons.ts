@@ -272,7 +272,506 @@ return [seen.get(need), i];
   },
 ];
 
+// ── Beginner Problems Mini Lessons ─────────────────────────
+
+const oddOrEvenLesson: MiniLessonConcept[] = [
+  {
+    title: "What is a function?",
+    explanation:
+      "A function is like a recipe. You give it a name, tell it what ingredient (input) it needs, and write the steps inside. \"return\" means \"here's the final answer.\"",
+    codeExample: `function greet(name) {
+  return "Hello, " + name;
+}
+greet("Ali");   // → "Hello, Ali"`,
+    symbolBreakdown: [
+      { symbol: "function", meaning: "\"I'm defining a new recipe\"" },
+      { symbol: "greet", meaning: "the name you give your recipe" },
+      { symbol: "(name)", meaning: "the input/ingredient the recipe needs" },
+      { symbol: "{ }", meaning: "the steps of the recipe go inside" },
+      { symbol: "return", meaning: "\"here's the answer, I'm done!\"" },
+    ],
+  },
+  {
+    title: "What is if / else?",
+    explanation:
+      "An \"if\" is a decision. Like: \"IF it's raining, bring an umbrella. OTHERWISE (else), wear sunglasses.\" The computer checks the condition and runs only one path.",
+    codeExample: `if (age >= 18) {
+  return "adult";
+} else {
+  return "minor";
+}`,
+    symbolBreakdown: [
+      { symbol: "if", meaning: "\"check if this is true\"" },
+      { symbol: "( )", meaning: "the condition to check goes inside parentheses" },
+      { symbol: "{ }", meaning: "\"if true, do what's inside these curly braces\"" },
+      { symbol: "else", meaning: "\"if it was NOT true, do this instead\"" },
+    ],
+  },
+  {
+    title: "What is % (modulo)?",
+    explanation:
+      "The % symbol gives you the REMAINDER after dividing. If the remainder is 0, it divides evenly. This is how you check \"is this number even?\" — even numbers divide by 2 with no remainder!",
+    codeExample: `4 % 2   // → 0  (even! divides evenly)
+7 % 2   // → 1  (odd! remainder of 1)
+0 % 2   // → 0  (even!)
+-3 % 2  // → -1 (odd!)`,
+    symbolBreakdown: [
+      { symbol: "%", meaning: "\"divide and give me the REMAINDER\"" },
+      { symbol: "% 2 === 0", meaning: "\"the remainder is 0\" = \"it's even\"" },
+      { symbol: "% 2 !== 0", meaning: "\"the remainder is NOT 0\" = \"it's odd\"" },
+      { symbol: "===", meaning: "\"is exactly equal to?\" (comparison)" },
+    ],
+  },
+  {
+    title: "Returning text (strings)",
+    explanation:
+      "When a function needs to give back text, you wrap it in quotes. The return statement sends the answer back to whoever called the function.",
+    codeExample: `function mood(score) {
+  if (score > 7) {
+    return "happy";
+  } else {
+    return "meh";
+  }
+}
+mood(9);  // → "happy"
+mood(3);  // → "meh"`,
+    symbolBreakdown: [
+      { symbol: "\"happy\"", meaning: "text (string) — must be wrapped in quotes" },
+      { symbol: "return", meaning: "\"stop here and give back this answer\"" },
+      { symbol: ">", meaning: "\"is greater than\"" },
+    ],
+  },
+];
+
+const sumArrayLesson: MiniLessonConcept[] = [
+  {
+    title: "What is an array?",
+    explanation:
+      "An array is a list of items, like a shopping list. Each item has a position number starting from 0. You can find out how many items are in it with .length.",
+    codeExample: `const nums = [10, 20, 30];
+nums[0]       // → 10 (first item)
+nums[2]       // → 30 (third item)
+nums.length   // → 3`,
+    symbolBreakdown: [
+      { symbol: "[ ]", meaning: "square brackets create a list (array)" },
+      { symbol: "nums[0]", meaning: "get the item at position 0 (first item)" },
+      { symbol: ".length", meaning: "\"how many items are in this list?\"" },
+    ],
+  },
+  {
+    title: "What is a for loop?",
+    explanation:
+      "A loop repeats an action. Think of it like: \"Go through each item in the list, one by one, and do something.\" It has 3 parts: where to start, when to stop, and how to count.",
+    codeExample: `for (let i = 0; i < 3; i++) {
+  console.log(i);
+}
+// Prints: 0, 1, 2`,
+    symbolBreakdown: [
+      { symbol: "for", meaning: "\"I want to repeat something\"" },
+      { symbol: "let i = 0", meaning: "START: create a counter starting at 0" },
+      { symbol: "i < 3", meaning: "STOP: keep going while i is less than 3" },
+      { symbol: "i++", meaning: "COUNT: add 1 to i each time" },
+      { symbol: "{ }", meaning: "curly braces wrap the code that repeats" },
+    ],
+  },
+  {
+    title: "The accumulator pattern",
+    explanation:
+      "To add up numbers, start with a variable at 0 (the \"accumulator\"), then keep adding each number to it. At the end, the variable holds the total.",
+    codeExample: `let total = 0;
+total += 10;  // total is 10
+total += 20;  // total is 30
+total += 30;  // total is 60`,
+    symbolBreakdown: [
+      { symbol: "let total = 0", meaning: "create a box starting at 0" },
+      { symbol: "+=", meaning: "\"add this to what's already there\"" },
+      { symbol: "total += nums[i]", meaning: "\"add the current number to our running total\"" },
+    ],
+  },
+];
+
+const findMaxLesson: MiniLessonConcept[] = [
+  {
+    title: "What is an array?",
+    explanation:
+      "An array is a numbered list. Each item has a position (index) starting from 0. You can access any item by its position.",
+    codeExample: `const nums = [3, 7, 2, 9];
+nums[0]       // → 3
+nums[3]       // → 9
+nums.length   // → 4`,
+    symbolBreakdown: [
+      { symbol: "[ ]", meaning: "square brackets create a list" },
+      { symbol: "nums[0]", meaning: "get item at position 0" },
+      { symbol: ".length", meaning: "\"how many items?\"" },
+    ],
+  },
+  {
+    title: "Tracking the best so far",
+    explanation:
+      "To find the biggest number, remember the best one you've seen so far. Start with the first item, then check each next item — if it's bigger, that becomes your new best.",
+    codeExample: `let max = nums[0];  // start with the first item
+// then compare each next item...
+if (nums[1] > max) {
+  max = nums[1];  // found a bigger one!
+}`,
+    symbolBreakdown: [
+      { symbol: "let max = nums[0]", meaning: "\"the best so far is the first item\"" },
+      { symbol: ">", meaning: "\"is greater than\"" },
+      { symbol: "max = nums[i]", meaning: "\"update: THIS is now the biggest I've seen\"" },
+    ],
+  },
+  {
+    title: "Looping through a list",
+    explanation:
+      "Use a for loop to visit every item. Since we already used the first item as our starting max, we can start the loop from position 1.",
+    codeExample: `const nums = [3, 7, 2, 9];
+let max = nums[0]; // max = 3
+
+for (let i = 1; i < nums.length; i++) {
+  if (nums[i] > max) {
+    max = nums[i];
+  }
+}
+// max is 9`,
+    symbolBreakdown: [
+      { symbol: "i = 1", meaning: "start at position 1 (we already have position 0)" },
+      { symbol: "i < nums.length", meaning: "keep going until we've checked every item" },
+      { symbol: "nums[i]", meaning: "the actual value at position i" },
+    ],
+  },
+];
+
+const countVowelsLesson: MiniLessonConcept[] = [
+  {
+    title: "What is a string?",
+    explanation:
+      "A string is text — letters, numbers, symbols wrapped in quotes. Each character has a position (index) starting from 0. You can loop through every character just like an array.",
+    codeExample: `const word = "hello";
+word[0]       // → "h"
+word[4]       // → "o"
+word.length   // → 5`,
+    symbolBreakdown: [
+      { symbol: "\" \"", meaning: "quotes tell the computer \"this is text\"" },
+      { symbol: "word[0]", meaning: "get the character at position 0" },
+      { symbol: ".length", meaning: "\"how many characters?\"" },
+    ],
+  },
+  {
+    title: "Checking if something is in a list",
+    explanation:
+      "You can use .includes() to check if a value exists in a string or array. It returns true or false.",
+    codeExample: `"aeiou".includes("a")  // → true
+"aeiou".includes("b")  // → false
+"aeiou".includes("e")  // → true`,
+    symbolBreakdown: [
+      { symbol: ".includes()", meaning: "\"does this contain...?\" → true or false" },
+      { symbol: "\"aeiou\"", meaning: "a string containing all the vowels" },
+      { symbol: "true", meaning: "yes, it's in there!" },
+      { symbol: "false", meaning: "no, it's not" },
+    ],
+  },
+  {
+    title: "Making text lowercase",
+    explanation:
+      "\"A\" and \"a\" are different to a computer. To handle both uppercase and lowercase letters, convert the whole string to lowercase first with .toLowerCase().",
+    codeExample: `"Hello".toLowerCase()  // → "hello"
+"ABC".toLowerCase()    // → "abc"
+
+const char = "A";
+"aeiou".includes(char.toLowerCase())  // → true`,
+    symbolBreakdown: [
+      { symbol: ".toLowerCase()", meaning: "\"convert all letters to lowercase\"" },
+    ],
+  },
+  {
+    title: "Counting with a loop",
+    explanation:
+      "To count vowels: start a counter at 0, loop through each character, and if it's a vowel, add 1 to the counter.",
+    codeExample: `let count = 0;
+const word = "Hi";
+
+// word[0] is "H" → lowercase is "h" → not a vowel
+// word[1] is "i" → lowercase is "i" → vowel! count becomes 1`,
+    symbolBreakdown: [
+      { symbol: "let count = 0", meaning: "start counting from zero" },
+      { symbol: "count++", meaning: "\"add 1 to count\" (same as count = count + 1)" },
+    ],
+  },
+];
+
+const doubleEachLesson: MiniLessonConcept[] = [
+  {
+    title: "What is an array?",
+    explanation:
+      "An array is a list of items. You create one with square brackets. You can add new items to the end with .push().",
+    codeExample: `const nums = [1, 2, 3];
+const result = [];
+result.push(10);
+// result is [10]`,
+    symbolBreakdown: [
+      { symbol: "[ ]", meaning: "square brackets create a list (empty if nothing inside)" },
+      { symbol: ".push()", meaning: "\"add this item to the end of the list\"" },
+    ],
+  },
+  {
+    title: "Looping through a list",
+    explanation:
+      "A for loop lets you visit every item in an array, one at a time. The variable i is the position, and nums[i] is the actual value at that position.",
+    codeExample: `const nums = [4, 5, 6];
+for (let i = 0; i < nums.length; i++) {
+  console.log(nums[i]);
+}
+// Prints: 4, 5, 6`,
+    symbolBreakdown: [
+      { symbol: "i = 0", meaning: "start at the first position" },
+      { symbol: "i < nums.length", meaning: "keep going until we've seen every item" },
+      { symbol: "nums[i]", meaning: "the actual value at position i" },
+      { symbol: "i++", meaning: "move to the next position" },
+    ],
+  },
+  {
+    title: "Building a new list",
+    explanation:
+      "To transform a list, create a new empty list, loop through the original, do something to each item, and push the result into the new list.",
+    codeExample: `const nums = [1, 2, 3];
+const doubled = [];
+
+doubled.push(nums[0] * 2);  // push 2
+doubled.push(nums[1] * 2);  // push 4
+doubled.push(nums[2] * 2);  // push 6
+// doubled is [2, 4, 6]`,
+    symbolBreakdown: [
+      { symbol: "*", meaning: "multiplication (times)" },
+      { symbol: "nums[i] * 2", meaning: "\"take this number and multiply by 2\"" },
+      { symbol: "result.push(...)", meaning: "\"add the doubled number to our new list\"" },
+    ],
+  },
+];
+
 export const seedProblems: Omit<Problem, "createdBy" | "createdAt">[] = [
+  // ── Beginner Problems (simpler than FizzBuzz) ─────────────
+  {
+    id: "odd-or-even",
+    title: "Odd or Even",
+    description: `Write a function \`oddOrEven(n)\` that takes a number and returns the string \`"even"\` if the number is even, or \`"odd"\` if the number is odd.`,
+    starterCode: `function oddOrEven(n) {\n  // Your code here\n}`,
+    testCases: [
+      { input: "4", expectedOutput: '"even"' },
+      { input: "7", expectedOutput: '"odd"' },
+      { input: "0", expectedOutput: '"even"' },
+      { input: "-3", expectedOutput: '"odd"' },
+      { input: "1", expectedOutput: '"odd"' },
+    ],
+    difficulty: "easy",
+    language: "javascript",
+    referenceSolution: `function oddOrEven(n) {
+  if (n % 2 === 0) {
+    return "even";
+  } else {
+    return "odd";
+  }
+}`,
+    hints: [
+      "Think about what makes a number even — it divides by 2 with no remainder.",
+      "The % (modulo) operator gives you the remainder. What is the remainder when an even number is divided by 2?",
+      "Use if (n % 2 === 0) to check if a number is even, and return the appropriate string.",
+    ],
+    miniLesson: oddOrEvenLesson,
+    beginnerStarterCode: `function oddOrEven(n) {
+
+  // TODO: Check if n is even
+  //       Hint: a number is even if n % 2 === 0
+  //       If yes: return "even"
+
+  // TODO: Otherwise, it must be odd
+  //       return "odd"
+
+}`,
+  },
+  {
+    id: "sum-array",
+    title: "Sum of Array",
+    description: `Write a function \`sumArray(nums)\` that takes an array of numbers and returns their total sum.
+
+If the array is empty, return \`0\`.`,
+    starterCode: `function sumArray(nums) {\n  // Your code here\n}`,
+    testCases: [
+      { input: "[1, 2, 3]", expectedOutput: "6" },
+      { input: "[]", expectedOutput: "0" },
+      { input: "[10]", expectedOutput: "10" },
+      { input: "[-1, -2, -3]", expectedOutput: "-6" },
+      { input: "[0, 0, 0]", expectedOutput: "0" },
+    ],
+    difficulty: "easy",
+    language: "javascript",
+    referenceSolution: `function sumArray(nums) {
+  let total = 0;
+  for (let i = 0; i < nums.length; i++) {
+    total += nums[i];
+  }
+  return total;
+}`,
+    hints: [
+      "Start with a variable set to 0 to keep track of the running total.",
+      "Use a for loop to go through each number in the array and add it to your total.",
+      "After the loop finishes, return the total. This also works for an empty array — the loop just won't run, so total stays 0.",
+    ],
+    miniLesson: sumArrayLesson,
+    beginnerStarterCode: `function sumArray(nums) {
+  // Start with a total of 0
+  let total = 0;
+
+  // This loop goes through every number in the array
+  for (let i = 0; i < nums.length; i++) {
+
+    // TODO: Add the current number to the total
+    //       Hint: use "total += nums[i]"
+
+  }
+
+  return total;
+}`,
+  },
+  {
+    id: "find-max",
+    title: "Find the Maximum",
+    description: `Write a function \`findMax(nums)\` that takes an array of numbers and returns the largest number.
+
+You may assume the array always has at least one number.`,
+    starterCode: `function findMax(nums) {\n  // Your code here\n}`,
+    testCases: [
+      { input: "[3, 7, 2, 9, 1]", expectedOutput: "9" },
+      { input: "[5]", expectedOutput: "5" },
+      { input: "[-1, -5, -2]", expectedOutput: "-1" },
+      { input: "[4, 4, 4]", expectedOutput: "4" },
+      { input: "[1, 2, 3, 4, 100]", expectedOutput: "100" },
+    ],
+    difficulty: "easy",
+    language: "javascript",
+    referenceSolution: `function findMax(nums) {
+  let max = nums[0];
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i] > max) {
+      max = nums[i];
+    }
+  }
+  return max;
+}`,
+    hints: [
+      "Start by assuming the first number is the biggest.",
+      "Loop through the rest of the array. For each number, check if it's bigger than your current max.",
+      "If you find a bigger number, update your max variable. After the loop, return max.",
+    ],
+    miniLesson: findMaxLesson,
+    beginnerStarterCode: `function findMax(nums) {
+  // Assume the first number is the biggest (for now)
+  let max = nums[0];
+
+  // Start at position 1 since we already have position 0
+  for (let i = 1; i < nums.length; i++) {
+
+    // TODO: Check if the current number is bigger than max
+    //       Hint: use "if (nums[i] > max)"
+    //       If yes: update max with "max = nums[i]"
+
+  }
+
+  return max;
+}`,
+  },
+  {
+    id: "count-vowels",
+    title: "Count Vowels",
+    description: `Write a function \`countVowels(str)\` that takes a string and returns the number of vowels (a, e, i, o, u) in it.
+
+The function should be case-insensitive — both \`"A"\` and \`"a"\` count as vowels.`,
+    starterCode: `function countVowels(str) {\n  // Your code here\n}`,
+    testCases: [
+      { input: '"hello"', expectedOutput: "2" },
+      { input: '""', expectedOutput: "0" },
+      { input: '"bcdfg"', expectedOutput: "0" },
+      { input: '"aeiou"', expectedOutput: "5" },
+      { input: '"HeLLo WoRLd"', expectedOutput: "3" },
+    ],
+    difficulty: "easy",
+    language: "javascript",
+    referenceSolution: `function countVowels(str) {
+  let count = 0;
+  for (let i = 0; i < str.length; i++) {
+    if ("aeiou".includes(str[i].toLowerCase())) {
+      count++;
+    }
+  }
+  return count;
+}`,
+    hints: [
+      "Loop through each character in the string and check if it's a vowel.",
+      "Use .toLowerCase() on each character so you don't miss uppercase vowels. You can check if a character is a vowel with \"aeiou\".includes(char).",
+      "Keep a counter starting at 0. Each time you find a vowel, add 1 to the counter with count++.",
+    ],
+    miniLesson: countVowelsLesson,
+    beginnerStarterCode: `function countVowels(str) {
+  // Start counting from zero
+  let count = 0;
+
+  // Loop through every character in the string
+  for (let i = 0; i < str.length; i++) {
+
+    // TODO: Check if the current character is a vowel
+    //       Hint: use str[i].toLowerCase() to make it lowercase
+    //       Hint: use "aeiou".includes(...) to check if it's a vowel
+    //       If yes: add 1 to count with "count++"
+
+  }
+
+  return count;
+}`,
+  },
+  {
+    id: "double-each",
+    title: "Double Each",
+    description: `Write a function \`doubleEach(nums)\` that takes an array of numbers and returns a new array where every number is doubled.
+
+If the array is empty, return an empty array \`[]\`.`,
+    starterCode: `function doubleEach(nums) {\n  // Your code here\n}`,
+    testCases: [
+      { input: "[1, 2, 3]", expectedOutput: "[2,4,6]" },
+      { input: "[]", expectedOutput: "[]" },
+      { input: "[5]", expectedOutput: "[10]" },
+      { input: "[0, -1, 4]", expectedOutput: "[0,-2,8]" },
+      { input: "[-3, -5]", expectedOutput: "[-6,-10]" },
+    ],
+    difficulty: "easy",
+    language: "javascript",
+    referenceSolution: `function doubleEach(nums) {
+  const result = [];
+  for (let i = 0; i < nums.length; i++) {
+    result.push(nums[i] * 2);
+  }
+  return result;
+}`,
+    hints: [
+      "Create a new empty array to store the results.",
+      "Loop through each number in the input array, multiply it by 2, and push it into the result array.",
+      "After the loop, return the result array. For an empty input, the loop won't run and you'll return an empty array.",
+    ],
+    miniLesson: doubleEachLesson,
+    beginnerStarterCode: `function doubleEach(nums) {
+  // Create a new empty list for our results
+  const result = [];
+
+  // Loop through every number in the input
+  for (let i = 0; i < nums.length; i++) {
+
+    // TODO: Multiply the current number by 2 and add it to result
+    //       Hint: use "result.push(nums[i] * 2)"
+
+  }
+
+  return result;
+}`,
+  },
+  // ── Original Problems ─────────────────────────────────────
   {
     id: "fizzbuzz",
     title: "FizzBuzz",
