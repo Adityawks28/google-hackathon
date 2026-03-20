@@ -36,6 +36,21 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
             remarkPlugins={[remarkGfm]}
             components={{
               p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+              h1: ({ children }) => (
+                <h1 className="text-xl font-bold mb-3 mt-4 first:mt-0 pb-1 border-b border-slate-200">
+                  {children}
+                </h1>
+              ),
+              h2: ({ children }) => (
+                <h2 className="text-lg font-bold mb-2 mt-4 first:mt-0">
+                  {children}
+                </h2>
+              ),
+              h3: ({ children }) => (
+                <h3 className="text-md font-bold mb-1 mt-3 first:mt-0">
+                  {children}
+                </h3>
+              ),
               code: ({ className, children, ...props }) => {
                 const match = /language-(\w+)/.exec(className || "");
                 return !match ? (
@@ -59,7 +74,7 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
                 <ul className="list-disc ml-4 mb-2">{children}</ul>
               ),
               ol: ({ children }) => (
-                <ul className="list-decimal ml-4 mb-2">{children}</ul>
+                <ol className="list-decimal ml-4 mb-2">{children}</ol>
               ),
               li: ({ children }) => <li className="mb-1">{children}</li>,
               strong: ({ children }) => (

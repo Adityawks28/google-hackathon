@@ -258,9 +258,9 @@ export class VerifyNodeClass extends Node<TutorStore, VerifyNodePrepRes> {
       referenceSolution,
     });
 
-    let guidance = `# AI Verification\nThe solution is: ${is_correct ? "Correct" : "Incorrect"}\n# Reasoning\n${reasoning}`;
+    let guidance = `# AI Verification\n\nThe solution is: ${is_correct ? "Correct" : "Incorrect"}\n\n## Reasoning\n\n${reasoning}`;
     if (mistakes && mistakes.length > 0) {
-      guidance += `\n\n# Mistakes\n${mistakes.map((m) => `- ${m}`).join("\n")}`;
+      guidance += `\n\n## Mistakes\n\n${mistakes.map((m) => `- ${m}`).join("\n")}`;
     }
 
     return { guidance, isCorrect: is_correct };
