@@ -39,6 +39,7 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
     startCoding,
     switchSession,
     createNewSession,
+    deleteSession,
     updateSessionCode,
     setHintLevel,
     phase
@@ -226,9 +227,23 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
             ))}
           </select>
         </div>
-        <button onClick={() => createNewSession()} className="flex items-center gap-1 text-xs font-bold text-primary transition-colors hover:text-primary/80">
-          <span className="material-symbols-outlined text-sm">add</span> NEW SESSION
-        </button>
+        <div className="flex items-center gap-4">
+          {currentSessionId && sessions.length > 1 && (
+            <button
+              onClick={() => {
+                if (window.confirm("Are you sure you want to delete this session?")) {
+                  deleteSession(currentSessionId);
+                }
+              }}
+              className="flex items-center gap-1 text-xs font-bold text-red-500 transition-colors hover:text-red-400"
+            >
+              <span className="material-symbols-outlined text-sm">delete</span> DELETE
+            </button>
+          )}
+          <button onClick={() => createNewSession()} className="flex items-center gap-1 text-xs font-bold text-primary transition-colors hover:text-primary/80">
+            <span className="material-symbols-outlined text-sm">add</span> NEW SESSION
+          </button>
+        </div>
       </div>
 
       {activeTab === "brainstorm" ? (
