@@ -143,7 +143,7 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                       {problem.testCases.map((tc, i) => (
                         <div
                           key={i}
-                          className="p-4 rounded-xl border border-outline-variant/10 bg-surface-container-low"
+                          className="p-4 rounded-xl border border-outline-variant/40 bg-surface-container-low shadow-sm"
                         >
                           <p className="text-sm font-mono break-all">
                             <span className="font-bold text-on-surface-variant">Input:</span>{" "}

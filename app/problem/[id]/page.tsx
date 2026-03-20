@@ -279,15 +279,15 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
               <button
                 onClick={handleBrainstormSend}
                 disabled={loading || !brainstormInput.trim()}
-                className="absolute right-3 bottom-3 bg-primary text-on-primary px-5 py-2 rounded-lg font-bold hover:bg-primary/90 transition-all flex items-center gap-2 text-sm shadow-lg shadow-primary/20 disabled:opacity-50"
+                className=" absolute right-3 bottom-3 bg-primary text-on-primary px-5 py-2 rounded-lg font-bold hover:bg-primary/90 transition-all flex items-center gap-2 text-sm shadow-lg shadow-primary/20 disabled:opacity-50"
               >
-                Send <span className="material-symbols-outlined text-sm">send</span>
+                Send <span className=" bg-primary material-symbols-outlined text-sm">send</span>
               </button>
             </div>
             {phase === "brainstorm" && (
               <button
                 onClick={handleStartCoding}
-                className="w-full bg-accent-blue hover:bg-accent-blue/90 text-on-primary font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all hover:-translate-y-0.5 shadow-lg shadow-accent-blue/20"
+                className="w-full bg-primary text-on-primary font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all hover:-translate-y-0.5 shadow-lg shadow-primary/20"
               >
                 Start Coding <span className="material-symbols-outlined">arrow_forward</span>
               </button>

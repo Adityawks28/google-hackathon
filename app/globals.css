@@ -1,24 +1,24 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-tertiary-fixed: #dfe0ff;
-  --color-surface: #fffbf9;
-  --color-on-surface-variant: #5a413d;
-  --color-outline-variant: #e2bfb9;
-  --color-secondary-fixed-dim: #ffb4a8;
-  --color-surface-container-highest: #f2ebea;
-  --color-on-error-container: #93000a;
-  --color-on-surface: #1f1b1b;
-  --color-error-container: #ffdad6;
-  --color-error: #ba1a1a;
+  --color-tertiary-fixed: #efeacd;
+  --color-surface: #efeacd;
+  --color-on-surface-variant: #341515;
+  --color-outline-variant: #efeacd;
+  --color-secondary-fixed-dim: #efeacd;
+  --color-surface-container-highest: #dadcdd;
+  --color-on-error-container: #810100;
+  --color-on-surface: #1B1717;
+  --color-error-container: #aca494;
+  --color-error: #9c0512;
   --color-tertiary-fixed-dim: #bcc2ff;
   --color-outline: #8e706c;
-  --color-background: #f8e2e7;
+  --color-background: #795d4c;
   --color-tertiary: #00137f;
-  --color-on-primary: #ffffff;
-  --color-surface-container-low: #fffcfb;
-  --color-primary: #7e0112;
-  --color-surface-container-high: #f5efee;
+  --color-on-primary: #efeacd;
+  --color-surface-container-low: #dadcdd;
+  --color-primary: #630000;
+  --color-surface-container-high: #dadcdd;
   
   --color-code-bg: var(--color-surface-container-high);
   
