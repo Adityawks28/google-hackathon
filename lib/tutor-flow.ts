@@ -174,24 +174,24 @@ export class LLMProcessNodeClass extends Node<
     let guidance: string;
 
     if (mode === "brainstorm") {
-      guidance = await askBrainstorm(
-        message || code,
+      guidance = await askBrainstorm({
+        message: message || code,
         history,
         problemDescription,
         starterCode,
-      );
+      });
     } else {
-      guidance = await askHelp(
+      guidance = await askHelp({
         code,
         error,
         hintLevel,
         history,
-        brainstormHistory ?? [],
+        brainstormHistory: brainstormHistory ?? [],
         problemDescription,
         referenceSolution,
         hints,
         message,
-      );
+      });
     }
 
     return { guidance };
@@ -252,11 +252,11 @@ export class VerifyNodeClass extends Node<TutorStore, VerifyNodePrepRes> {
     problemDescription,
     referenceSolution,
   }: VerifyNodePrepRes): Promise<VerifyNodeExecRes> {
-    const { reasoning, is_correct, mistakes } = await verifySolution(
+    const { reasoning, is_correct, mistakes } = await verifySolution({
       code,
       problemDescription,
       referenceSolution,
-    );
+    });
 
     let guidance = `# AI Verification\nThe solution is: ${is_correct ? "Correct" : "Incorrect"}\n# Reasoning\n${reasoning}`;
     if (mistakes && mistakes.length > 0) {

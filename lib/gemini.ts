@@ -1,10 +1,17 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { ChatMessage } from "@/types";
 import {
+  AskBrainstormParams,
+  AskHelpParams,
+  GenerateSolutionParams,
+  VerifySolutionOutput,
+} from "@/types/ai";
+import {
   buildTutorSystemPrompt,
   buildTutorUserMessage,
   buildBrainstormSystemPrompt,
   buildBrainstormUserMessage,
+  buildVerifySolutionPrompt,
 } from "@/lib/prompt-builder";
 
 let _ai: GoogleGenAI | undefined;
@@ -38,12 +45,12 @@ function formatHistory(history: ChatMessage[]): string {
 
 const GEMINI_MODEL = "gemini-2.5-flash-lite";
 
-export async function askBrainstorm(
-  message: string,
-  history: ChatMessage[],
-  problemDescription: string,
-  starterCode: string,
-): Promise<string> {
+export async function askBrainstorm({
+  message,
+  history,
+  problemDescription,
+  starterCode,
+}: AskBrainstormParams): Promise<string> {
   const currentTurnContent = buildBrainstormUserMessage({ message });
 
   const contents = [
@@ -71,17 +78,17 @@ export async function askBrainstorm(
   );
 }
 
-export async function askHelp(
-  code: string,
-  error: string,
-  hintLevel: number,
-  history: ChatMessage[],
-  brainstormHistory: ChatMessage[],
-  problemDescription: string,
-  referenceSolution: string | null,
-  hints: string[] | null,
-  message?: string,
-): Promise<string> {
+export async function askHelp({
+  code,
+  error,
+  hintLevel,
+  history,
+  brainstormHistory,
+  problemDescription,
+  referenceSolution,
+  hints,
+  message,
+}: AskHelpParams): Promise<string> {
   const brainstormPlan =
     brainstormHistory.length > 0
       ? `\n\n# Brainstorm Plan\n${formatHistory(brainstormHistory)}`
@@ -120,22 +127,16 @@ export async function askHelp(
   );
 }
 
-export async function verifySolution(
-  code: string,
-  problemDescription: string,
-  referenceSolution: string | null,
-): Promise<{ reasoning: string; is_correct: boolean; mistakes: string[] }> {
-  const prompt = `You are an expert AI tutor evaluating a student's code.
-Verify the provided user attempt against the problem description and reference solution, and consider edge cases.
-
-User Code:
-${code}
-
-Problem Description:
-${problemDescription}
-
-Reference Solution:
-${referenceSolution || "None provided"}`;
+export async function verifySolution({
+  code,
+  problemDescription,
+  referenceSolution,
+}: VerifySolutionInput): Promise<VerifySolutionOutput> {
+  const prompt = buildVerifySolutionPrompt({
+    code,
+    problemDescription,
+    referenceSolution,
+  });
 
   const response = await getAI().models.generateContent({
     model: GEMINI_MODEL,
@@ -164,7 +165,7 @@ ${referenceSolution || "None provided"}`;
   }
 
   try {
-    return JSON.parse(text);
+    return JSON.parse(text) as VerifySolutionOutput;
   } catch {
     return {
       reasoning: "Failed to parse evaluation.",
@@ -174,11 +175,11 @@ ${referenceSolution || "None provided"}`;
   }
 }
 
-export async function generateSolution(
-  problemDescription: string,
-  language: string,
-  systemPrompt: string,
-): Promise<string> {
+export async function generateSolution({
+  problemDescription,
+  language,
+  systemPrompt,
+}: GenerateSolutionParams): Promise<string> {
   const userMessage = `
 Problem: ${problemDescription}
 Language: ${language}
