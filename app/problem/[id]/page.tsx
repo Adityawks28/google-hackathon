@@ -245,9 +245,9 @@ function ProblemContent() {
         <section className="w-1/2 flex flex-col">
           {/* ===== PHASE 1: BRAINSTORM ===== */}
           {phase === "brainstorm" && (
-            <div className="flex flex-1 flex-col bg-background-light">
+            <div className="flex flex-1 flex-col bg-background-light min-h-0">
               {/* Chat Header */}
-              <div className="px-6 py-4 flex items-center gap-3 border-b border-slate-200 bg-white">
+              <div className="px-6 py-4 flex items-center gap-3 border-b border-slate-200 bg-white shrink-0">
                 <div className="w-10 h-10 rounded-full bg-accent-purple flex items-center justify-center text-white">
                   <span className="material-symbols-outlined text-xl">psychology</span>
                 </div>
@@ -261,7 +261,7 @@ function ProblemContent() {
               </div>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+              <div className="flex-1 overflow-y-auto p-6 custom-scrollbar min-h-0">
                 {brainstormHistory.length === 0 && (
                   <div className="flex gap-3 mb-4">
                     <div className="shrink-0 w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center">
@@ -287,7 +287,7 @@ function ProblemContent() {
               </div>
 
               {/* Input Area */}
-              <div className="p-6 bg-white border-t border-slate-200">
+              <div className="p-6 bg-white border-t border-slate-200 shrink-0">
                 <div className="relative mb-4">
                   <textarea
                     value={brainstormInput}
@@ -324,7 +324,7 @@ function ProblemContent() {
 
           {/* ===== PHASE 2 & 3: CODE + HELP ===== */}
           {(phase === "code" || phase === "help") && (
-            <div className="flex flex-1 flex-col">
+            <div className="flex flex-1 flex-col min-h-0">
               {/* Tab Toggle: Code / Chat */}
               <div className="flex border-b border-slate-200 bg-white shrink-0">
                 <button
@@ -358,7 +358,7 @@ function ProblemContent() {
 
               {/* Code View */}
               {codingView === "code" && (
-                <>
+                <div className="flex flex-1 flex-col min-h-0">
                   <div className="flex-1 bg-code-bg">
                     <CodeEditor
                       value={code}
@@ -370,7 +370,7 @@ function ProblemContent() {
                   {/* Feedback Banner */}
                   {feedback && (
                     <div
-                      className={`border-t px-5 py-3 ${
+                      className={`border-t px-5 py-3 shrink-0 ${
                         correct
                           ? "border-emerald-200 bg-emerald-50"
                           : "border-red-200 bg-red-50"
@@ -426,12 +426,12 @@ function ProblemContent() {
                               : "I Give Up — Teach Me"}
                     </button>
                   </div>
-                </>
+                </div>
               )}
 
               {/* Chat View */}
               {codingView === "chat" && (
-                <>
+                <div className="flex flex-1 flex-col min-h-0">
                   {/* Chat Header */}
                   <div className="px-6 py-3 flex items-center gap-3 border-b border-slate-200 bg-white shrink-0">
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -446,7 +446,7 @@ function ProblemContent() {
                     </div>
                   </div>
 
-                  <div className="flex-1 overflow-y-auto p-6 bg-background-light custom-scrollbar">
+                  <div className="flex-1 overflow-y-auto p-6 bg-background-light custom-scrollbar min-h-0">
                     {helpHistory.length === 0 && (
                       <div className="flex gap-3 mb-4">
                         <div className="shrink-0 w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center">
@@ -496,7 +496,7 @@ function ProblemContent() {
                       </button>
                     </div>
                   </div>
-                </>
+                </div>
               )}
             </div>
           )}
