@@ -1,5 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 import type { ChatMessage } from "@/types";
+import {
+  buildTutorSystemPrompt,
+  buildTutorUserMessage,
+} from "@/lib/prompt-builder";
 
 let _ai: GoogleGenAI | undefined;
 function getAI(): GoogleGenAI {
@@ -67,36 +71,27 @@ export async function askHelp(
   history: ChatMessage[],
   brainstormHistory: ChatMessage[],
   problemDescription: string,
-  systemPrompt: string,
   referenceSolution: string | null,
   hints: string[] | null,
+  message?: string,
 ): Promise<string> {
   const brainstormPlan =
     brainstormHistory.length > 0
-      ? `\n\nBRAINSTORM PLAN (What the learner planned):\n${formatHistory(brainstormHistory)}`
+      ? `\n\n# Brainstorm Plan\n${formatHistory(brainstormHistory)}`
       : "";
 
-  const refSolutionContext = referenceSolution
-    ? `\n\nREFERENCE SOLUTION:\n${referenceSolution}`
-    : "";
-  const hintsContext =
-    hints && hints.length > 0
-      ? `\n\nAVAILABLE HINTS:\n${hints.map((h, i) => `${i + 1}. ${h}`).join("\n")}`
-      : "";
+  let systemInstruction = buildTutorSystemPrompt({
+    problemDescription,
+    referenceSolution,
+    hints,
+    hintLevel,
+  });
 
-  const systemInstruction = `${systemPrompt}\n\nPROBLEM CONTEXT:\n${problemDescription}${refSolutionContext}${hintsContext}${brainstormPlan}`;
+  if (brainstormPlan) {
+    systemInstruction += brainstormPlan;
+  }
 
-  const currentTurnContent = `
-Learner's current code:
-\`\`\`
-${code}
-\`\`\`
-
-${error ? `Error message: ${error}` : "No specific error reported."}
-
-Current help level: ${hintLevel} (1=hint, 2=more specific, 3=teach/give up)
-
-Provide level ${hintLevel} help based on their specific code and mistakes.`;
+  const currentTurnContent = buildTutorUserMessage({ message, code, error });
 
   const contents = [
     ...history.map(mapToGeminiContent),

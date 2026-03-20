@@ -145,7 +145,15 @@ export class LLMProcessNodeClass extends Node<
     body,
     ragContext,
   }: LLMProcessNodePrepRes): Promise<LLMProcessNodeExecRes> {
-    const { mode, code, error, hintLevel, history, brainstormHistory } = body;
+    const {
+      mode,
+      code,
+      error,
+      hintLevel,
+      history,
+      brainstormHistory,
+      message,
+    } = body;
     const problemDescription = ragContext?.problemDescription || "";
     const referenceSolution = ragContext?.referenceSolution || null;
     const hints = ragContext?.hints || null;
@@ -166,11 +174,12 @@ export class LLMProcessNodeClass extends Node<
         history,
         brainstormHistory ?? [],
         problemDescription,
-        HELP_SYSTEM_PROMPT,
         referenceSolution,
         hints,
+        message,
       );
     }
+
     return { guidance };
   }
 
