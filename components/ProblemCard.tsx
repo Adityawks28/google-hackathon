@@ -13,7 +13,12 @@ const difficultyConfig = {
   hard: { color: "bg-red-100 text-red-700", label: "Hard" },
 };
 
-export function ProblemCard({ id, title, difficulty, solved }: ProblemCardProps) {
+export function ProblemCard({
+  id,
+  title,
+  difficulty,
+  solved,
+}: ProblemCardProps) {
   const { color, label } = difficultyConfig[difficulty];
 
   return (
@@ -42,7 +47,9 @@ export function ProblemCard({ id, title, difficulty, solved }: ProblemCardProps)
       <div className="flex items-center gap-3">
         {solved && (
           <span className="text-emerald-600 text-xs font-bold flex items-center gap-1">
-            <span className="material-symbols-outlined text-sm">check_circle</span>
+            <span className="material-symbols-outlined text-sm">
+              check_circle
+            </span>
             Solved
           </span>
         )}

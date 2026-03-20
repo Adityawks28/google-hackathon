@@ -6,8 +6,12 @@ export default function Home() {
       {/* Header */}
       <header className="flex items-center justify-between border-b border-slate-200 px-6 py-4 md:px-20 lg:px-40 bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-3xl text-primary">school</span>
-          <h2 className="text-slate-900 text-xl font-bold tracking-tight">Google Hackathon</h2>
+          <span className="material-symbols-outlined text-3xl text-primary">
+            school
+          </span>
+          <h2 className="text-slate-900 text-xl font-bold tracking-tight">
+            Google Hackathon
+          </h2>
         </div>
         <div className="flex items-center gap-6">
           <Link
@@ -36,8 +40,11 @@ export default function Home() {
               Google Hackathon
             </h1>
             <p className="text-slate-600 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">
-              Learn to code through guided practice. Our Socratic AI tutor helps you discover solutions —{" "}
-              <span className="text-slate-900 font-semibold">never just gives you the answer.</span>
+              Learn to code through guided practice. Our Socratic AI tutor helps
+              you discover solutions —{" "}
+              <span className="text-slate-900 font-semibold">
+                never just gives you the answer.
+              </span>
             </p>
             <div className="pt-4">
               <Link
@@ -53,37 +60,51 @@ export default function Home() {
         {/* Features */}
         <section className="px-6 py-20 lg:px-40">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900">Why Google Hackathon?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900">
+              Why Google Hackathon?
+            </h2>
             <p className="text-slate-600 max-w-xl mx-auto">
-              Experience a new way of learning that emphasizes understanding over memorization.
+              Experience a new way of learning that emphasizes understanding
+              over memorization.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-8 rounded-2xl border border-slate-200 bg-white hover:shadow-lg transition-shadow">
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6">
-                <span className="material-symbols-outlined">psychology_alt</span>
+                <span className="material-symbols-outlined">
+                  psychology_alt
+                </span>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Socratic Method</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-3">
+                Socratic Method
+              </h3>
               <p className="text-slate-600 leading-relaxed">
-                Our AI asks the right questions to lead you to the solution, building deep mental models.
+                Our AI asks the right questions to lead you to the solution,
+                building deep mental models.
               </p>
             </div>
             <div className="p-8 rounded-2xl border border-slate-200 bg-white hover:shadow-lg transition-shadow">
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6">
                 <span className="material-symbols-outlined">terminal</span>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Guided Practice</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-3">
+                Guided Practice
+              </h3>
               <p className="text-slate-600 leading-relaxed">
-                Build real projects with a tutor that understands your code and logic in real-time.
+                Build real projects with a tutor that understands your code and
+                logic in real-time.
               </p>
             </div>
             <div className="p-8 rounded-2xl border border-slate-200 bg-white hover:shadow-lg transition-shadow">
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6">
                 <span className="material-symbols-outlined">bolt</span>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Instant Feedback</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-3">
+                Instant Feedback
+              </h3>
               <p className="text-slate-600 leading-relaxed">
-                Get hints and explanations the moment you get stuck. No more waiting for stack overflow.
+                Get hints and explanations the moment you get stuck. No more
+                waiting for stack overflow.
               </p>
             </div>
           </div>
@@ -92,9 +113,12 @@ export default function Home() {
         {/* CTA */}
         <section className="px-6 py-20 bg-primary/5">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-3xl md:text-5xl font-black text-slate-900">Ready to master coding?</h2>
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900">
+              Ready to master coding?
+            </h2>
             <p className="text-slate-600 text-lg">
-              Join thousands of students learning with their personal AI tutor. Start your journey today.
+              Join thousands of students learning with their personal AI tutor.
+              Start your journey today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Link
@@ -111,10 +135,14 @@ export default function Home() {
       <footer className="bg-white border-t border-slate-200 px-6 py-12 md:px-20 lg:px-40">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary">school</span>
+            <span className="material-symbols-outlined text-primary">
+              school
+            </span>
             <span className="font-bold text-slate-900">Google Hackathon</span>
           </div>
-          <p className="text-slate-400 text-sm">&copy; 2024 Google Hackathon. All rights reserved.</p>
+          <p className="text-slate-400 text-sm">
+            &copy; 2024 Google Hackathon. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>

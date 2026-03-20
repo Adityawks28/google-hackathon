@@ -37,7 +37,7 @@ function ProblemContent() {
     startCoding,
     requestHelp,
     sendHelpMessage,
-  } = useTutor(problemId);
+  } = useTutor(problemId, user?.uid);
 
   useEffect(() => {
     async function fetchProblem() {
@@ -114,7 +114,8 @@ function ProblemContent() {
   }
 
   async function handleGetHelp() {
-    const guidance = await requestHelp(code, "");
+    const errorMsg = correct === false ? feedback || "" : "";
+    const guidance = await requestHelp(code, errorMsg);
     if (guidance) setCodingView("chat");
     if (guidance && user) {
       try {
@@ -137,7 +138,9 @@ function ProblemContent() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background-light">
         <div className="text-center">
-          <span className="material-symbols-outlined text-4xl text-red-400 mb-3">error</span>
+          <span className="material-symbols-outlined text-4xl text-red-400 mb-3">
+            error
+          </span>
           <p className="text-red-500 font-medium">Failed to load problem.</p>
           <button
             onClick={() => window.location.reload()}
@@ -159,9 +162,15 @@ function ProblemContent() {
   }
 
   const phaseConfig = {
-    brainstorm: { label: "Brainstorm", color: "bg-accent-purple/10 text-accent-purple" },
+    brainstorm: {
+      label: "Brainstorm",
+      color: "bg-accent-purple/10 text-accent-purple",
+    },
     code: { label: "Coding", color: "bg-blue-100 text-blue-700" },
-    help: { label: `Help (Level ${hintLevel})`, color: "bg-orange-100 text-orange-700" },
+    help: {
+      label: `Help (Level ${hintLevel})`,
+      color: "bg-orange-100 text-orange-700",
+    },
   };
 
   const currentPhase = phaseConfig[phase];
@@ -175,16 +184,22 @@ function ProblemContent() {
             href="/dashboard"
             className="flex items-center justify-center rounded-lg h-9 w-9 hover:bg-slate-100 transition-colors"
           >
-            <span className="material-symbols-outlined text-slate-500">arrow_back</span>
+            <span className="material-symbols-outlined text-slate-500">
+              arrow_back
+            </span>
           </Link>
           <div className="flex items-center gap-3">
             <div className="p-1.5 bg-primary/10 rounded-lg">
-              <span className="material-symbols-outlined text-primary text-lg">code</span>
+              <span className="material-symbols-outlined text-primary text-lg">
+                code
+              </span>
             </div>
             <h2 className="text-base font-bold tracking-tight text-slate-900">
               {problem.title}
             </h2>
-            <span className={`px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider ${currentPhase.color}`}>
+            <span
+              className={`px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider ${currentPhase.color}`}
+            >
               {currentPhase.label}
             </span>
           </div>
@@ -196,7 +211,9 @@ function ProblemContent() {
         {/* Left Panel: Problem Description */}
         <section className="w-1/2 flex flex-col border-r border-slate-200 bg-white overflow-y-auto custom-scrollbar">
           <div className="p-8 max-w-2xl mx-auto w-full">
-            <h1 className="text-3xl font-extrabold text-slate-900 mb-4">{problem.title}</h1>
+            <h1 className="text-3xl font-extrabold text-slate-900 mb-4">
+              {problem.title}
+            </h1>
             <div className="flex items-center gap-3 mb-8">
               <span
                 className={`px-2.5 py-0.5 rounded text-xs font-bold ${
@@ -207,7 +224,8 @@ function ProblemContent() {
                       : "bg-red-50 text-red-600"
                 }`}
               >
-                {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
+                {problem.difficulty.charAt(0).toUpperCase() +
+                  problem.difficulty.slice(1)}
               </span>
             </div>
             <p className="text-slate-600 leading-relaxed mb-8 whitespace-pre-wrap">
@@ -217,7 +235,9 @@ function ProblemContent() {
             {/* Test Cases */}
             <div className="space-y-4">
               <h3 className="text-lg font-bold flex items-center gap-2 text-slate-900">
-                <span className="material-symbols-outlined text-primary">rule</span>
+                <span className="material-symbols-outlined text-primary">
+                  rule
+                </span>
                 Test Cases
               </h3>
               <div className="space-y-3">
@@ -231,8 +251,12 @@ function ProblemContent() {
                       <span className="text-slate-600">{tc.input}</span>
                     </p>
                     <p className="text-sm font-mono mt-1">
-                      <span className="font-bold text-slate-700">Expected:</span>{" "}
-                      <span className="text-accent-purple">{tc.expectedOutput}</span>
+                      <span className="font-bold text-slate-700">
+                        Expected:
+                      </span>{" "}
+                      <span className="text-accent-purple">
+                        {tc.expectedOutput}
+                      </span>
                     </p>
                   </div>
                 ))}
@@ -249,7 +273,9 @@ function ProblemContent() {
               {/* Chat Header */}
               <div className="px-6 py-4 flex items-center gap-3 border-b border-slate-200 bg-white">
                 <div className="w-10 h-10 rounded-full bg-accent-purple flex items-center justify-center text-white">
-                  <span className="material-symbols-outlined text-xl">psychology</span>
+                  <span className="material-symbols-outlined text-xl">
+                    psychology
+                  </span>
                 </div>
                 <div>
                   <p className="font-bold text-slate-900">Brainstorm</p>
@@ -265,11 +291,14 @@ function ProblemContent() {
                 {brainstormHistory.length === 0 && (
                   <div className="flex gap-3 mb-4">
                     <div className="shrink-0 w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center">
-                      <span className="material-symbols-outlined text-slate-500 text-sm">smart_toy</span>
+                      <span className="material-symbols-outlined text-slate-500 text-sm">
+                        smart_toy
+                      </span>
                     </div>
                     <div className="bg-slate-100 px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%]">
                       <p className="text-sm text-slate-800 leading-relaxed">
-                        Before we start coding, let&apos;s think through this problem. How would you approach this?
+                        Before we start coding, let&apos;s think through this
+                        problem. How would you approach this?
                       </p>
                     </div>
                   </div>
@@ -308,7 +337,9 @@ function ProblemContent() {
                     className="absolute right-3 bottom-3 bg-accent-purple text-white px-5 py-2 rounded-lg font-bold hover:bg-accent-purple/90 transition-all flex items-center gap-2 text-sm shadow-lg shadow-accent-purple/20 disabled:opacity-50"
                   >
                     Send
-                    <span className="material-symbols-outlined text-sm">send</span>
+                    <span className="material-symbols-outlined text-sm">
+                      send
+                    </span>
                   </button>
                 </div>
                 <button
@@ -316,7 +347,9 @@ function ProblemContent() {
                   className="w-full bg-accent-blue hover:bg-accent-blue/90 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all hover:-translate-y-0.5 shadow-lg shadow-accent-blue/20"
                 >
                   Start Coding
-                  <span className="material-symbols-outlined">arrow_forward</span>
+                  <span className="material-symbols-outlined">
+                    arrow_forward
+                  </span>
                 </button>
               </div>
             </div>
@@ -335,7 +368,9 @@ function ProblemContent() {
                       : "text-slate-500 hover:text-slate-700"
                   }`}
                 >
-                  <span className="material-symbols-outlined text-base">code</span>
+                  <span className="material-symbols-outlined text-base">
+                    code
+                  </span>
                   Code Editor
                 </button>
                 <button
@@ -346,7 +381,9 @@ function ProblemContent() {
                       : "text-slate-500 hover:text-slate-700"
                   }`}
                 >
-                  <span className="material-symbols-outlined text-base">chat</span>
+                  <span className="material-symbols-outlined text-base">
+                    chat
+                  </span>
                   AI Chat
                   {helpHistory.length > 0 && (
                     <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
@@ -382,15 +419,22 @@ function ProblemContent() {
                             check_circle
                           </span>
                           <div>
-                            <p className="text-base font-bold text-emerald-800">Solved!</p>
-                            <p className="text-sm text-emerald-700">{feedback}</p>
+                            <p className="text-base font-bold text-emerald-800">
+                              Solved!
+                            </p>
+                            <p className="text-sm text-emerald-700">
+                              {feedback}
+                            </p>
                           </div>
                         </div>
                       ) : (
                         <div className="flex items-center gap-3">
-                          <span className="material-symbols-outlined text-red-500">cancel</span>
+                          <span className="material-symbols-outlined text-red-500">
+                            cancel
+                          </span>
                           <div className="text-sm text-red-800">
-                            <span className="font-semibold">Not quite.</span> {feedback}
+                            <span className="font-semibold">Not quite.</span>{" "}
+                            {feedback}
                           </div>
                         </div>
                       )}
@@ -405,7 +449,9 @@ function ProblemContent() {
                         disabled={submitting}
                         className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
                       >
-                        <span className="material-symbols-outlined text-sm">cloud_upload</span>
+                        <span className="material-symbols-outlined text-sm">
+                          cloud_upload
+                        </span>
                         {submitting ? "Evaluating..." : "Submit"}
                       </button>
                     </div>
@@ -414,7 +460,9 @@ function ProblemContent() {
                       disabled={loading || hintLevel >= 3}
                       className="flex items-center gap-2 px-4 py-2.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 rounded-lg text-sm font-semibold transition-all disabled:opacity-50"
                     >
-                      <span className="material-symbols-outlined text-sm">lightbulb</span>
+                      <span className="material-symbols-outlined text-sm">
+                        lightbulb
+                      </span>
                       {loading
                         ? "Loading..."
                         : hintLevel >= 3
@@ -435,10 +483,14 @@ function ProblemContent() {
                   {/* Chat Header */}
                   <div className="px-6 py-3 flex items-center gap-3 border-b border-slate-200 bg-white shrink-0">
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="material-symbols-outlined text-primary text-sm">smart_toy</span>
+                      <span className="material-symbols-outlined text-primary text-sm">
+                        smart_toy
+                      </span>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-slate-900">AI Tutor</p>
+                      <p className="text-sm font-bold text-slate-900">
+                        AI Tutor
+                      </p>
                       <p className="text-[10px] text-slate-500 flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
                         Online
@@ -450,18 +502,26 @@ function ProblemContent() {
                     {helpHistory.length === 0 && (
                       <div className="flex gap-3 mb-4">
                         <div className="shrink-0 w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center">
-                          <span className="material-symbols-outlined text-slate-500 text-sm">smart_toy</span>
+                          <span className="material-symbols-outlined text-slate-500 text-sm">
+                            smart_toy
+                          </span>
                         </div>
                         <div className="bg-slate-100 px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%]">
                           <p className="text-sm text-slate-800 leading-relaxed">
-                            Ask questions about your code or approach. You can also use &quot;Get Help&quot; on the Code tab for progressive hints.
+                            Ask questions about your code or approach. You can
+                            also use &quot;Get Help&quot; on the Code tab for
+                            progressive hints.
                           </p>
                         </div>
                       </div>
                     )}
 
                     {helpHistory.map((msg, i) => (
-                      <ChatMessage key={i} role={msg.role} content={msg.content} />
+                      <ChatMessage
+                        key={i}
+                        role={msg.role}
+                        content={msg.content}
+                      />
                     ))}
 
                     {loading && (
@@ -492,7 +552,9 @@ function ProblemContent() {
                         className="absolute right-3 bottom-3 bg-primary text-white px-4 py-1.5 rounded-lg font-bold hover:bg-primary/90 transition-all flex items-center gap-1.5 text-sm disabled:opacity-50"
                       >
                         Send
-                        <span className="material-symbols-outlined text-sm">send</span>
+                        <span className="material-symbols-outlined text-sm">
+                          send
+                        </span>
                       </button>
                     </div>
                   </div>

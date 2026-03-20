@@ -17,6 +17,8 @@ function formatHistory(history: ChatMessage[]): string {
     .join("\n");
 }
 
+const GEMINI_MODEL = "gemini-2.5-flash-lite";
+
 export async function askBrainstorm(
   message: string,
   history: ChatMessage[],
@@ -34,7 +36,7 @@ Learner: ${message}
 Respond as the tutor. Help them think through the approach — no code.`;
 
   const response = await getAI().models.generateContent({
-    model: "gemini-2.0-flash",
+    model: GEMINI_MODEL,
     contents: userMessage,
     config: { systemInstruction: systemPrompt },
   });
@@ -77,7 +79,7 @@ ${helpConversation ? `Help conversation so far:\n${helpConversation}` : ""}
 Provide level ${hintLevel} help based on their specific code and mistakes.`;
 
   const response = await getAI().models.generateContent({
-    model: "gemini-2.0-flash",
+    model: GEMINI_MODEL,
     contents: userMessage,
     config: { systemInstruction: systemPrompt },
   });
@@ -108,7 +110,7 @@ ${code}
 Evaluate this solution and respond with a JSON object containing "correct" (boolean) and "feedback" (string).`;
 
   const response = await getAI().models.generateContent({
-    model: "gemini-2.0-flash",
+    model: GEMINI_MODEL,
     contents: userMessage,
     config: {
       systemInstruction: systemPrompt,
@@ -139,7 +141,7 @@ Language: ${language}
 Generate a clean, well-commented reference solution.`;
 
   const response = await getAI().models.generateContent({
-    model: "gemini-2.0-flash",
+    model: GEMINI_MODEL,
     contents: userMessage,
     config: {
       systemInstruction: systemPrompt,
