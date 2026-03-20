@@ -174,7 +174,7 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
               : "opacity-40 grayscale-[0.5] hover:opacity-80 hover:grayscale-0"
           }`}
         >
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "brainstorm" ? "bg-accent-purple" : "bg-surface-container-highest"}`}>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "brainstorm" ? "bg-primary shadow-primary/20" : "bg-surface-container-highest"}`}>
             <span className="material-symbols-outlined text-xl">psychology</span>
           </div>
           <div className="text-left">
