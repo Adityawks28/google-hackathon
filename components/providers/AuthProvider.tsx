@@ -32,7 +32,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 await userModel.create(firebaseUser.uid, {
                   email: firebaseUser.email ?? "",
                   displayName: firebaseUser.displayName ?? "",
-                  role: process.env.NODE_ENV === "development" ? "admin" : "user",
+                  role:
+                    process.env.NODE_ENV === "development" ? "admin" : "user",
                   createdAt: Date.now(),
                 });
               }

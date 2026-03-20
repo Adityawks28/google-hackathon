@@ -1,14 +1,45 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { ChatMessage, TutorPhase, TutorResponse } from "@/types";
+import { sessionModel } from "@/lib/db";
 
-export function useTutor(problemId: string) {
+export function useTutor(problemId: string, userId?: string) {
   const [phase, setPhase] = useState<TutorPhase>("brainstorm");
   const [brainstormHistory, setBrainstormHistory] = useState<ChatMessage[]>([]);
   const [helpHistory, setHelpHistory] = useState<ChatMessage[]>([]);
   const [hintLevel, setHintLevel] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadSession() {
+      if (!userId || !problemId) return;
+      try {
+        const session = await sessionModel.getById(userId, problemId);
+        if (session) {
+          setBrainstormHistory(session.brainstormMessages || []);
+          setHelpHistory(session.helpMessages || []);
+          if (session.phase) {
+            setPhase(session.phase);
+          } else {
+            // Fallback for legacy sessions
+            if (session.helpMessages?.length > 0) {
+              setPhase("help");
+            } else if (session.brainstormMessages?.length > 0) {
+              setPhase("brainstorm");
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error loading session:", error);
+      } finally {
+        setIsLoaded(true);
+      }
+    }
+
+    loadSession();
+  }, [userId, problemId]);
 
   const sendBrainstormMessage = useCallback(
     async (message: string) => {
@@ -32,6 +63,7 @@ export function useTutor(problemId: string) {
             history: [...brainstormHistory, userMessage],
             problemId,
             mode: "brainstorm",
+            userId,
           }),
         });
 
@@ -54,12 +86,15 @@ export function useTutor(problemId: string) {
         setLoading(false);
       }
     },
-    [brainstormHistory, problemId],
+    [brainstormHistory, problemId, userId],
   );
 
-  const startCoding = useCallback(() => {
+  const startCoding = useCallback(async () => {
     setPhase("code");
-  }, []);
+    if (userId && problemId) {
+      await sessionModel.setPhase(userId, problemId, "code");
+    }
+  }, [userId, problemId]);
 
   const requestHelp = useCallback(
     async (code: string, error: string) => {
@@ -67,6 +102,10 @@ export function useTutor(problemId: string) {
       setHintLevel(nextLevel);
       setPhase("help");
       setLoading(true);
+
+      if (userId && problemId) {
+        await sessionModel.setPhase(userId, problemId, "help");
+      }
 
       try {
         const res = await fetch("/api/tutor", {
@@ -80,6 +119,7 @@ export function useTutor(problemId: string) {
             problemId,
             mode: "help",
             brainstormHistory,
+            userId,
           }),
         });
 
@@ -102,7 +142,7 @@ export function useTutor(problemId: string) {
         setLoading(false);
       }
     },
-    [hintLevel, helpHistory, brainstormHistory, problemId],
+    [hintLevel, helpHistory, brainstormHistory, problemId, userId],
   );
 
   const sendHelpMessage = useCallback(
@@ -128,6 +168,7 @@ export function useTutor(problemId: string) {
             problemId,
             mode: "help",
             brainstormHistory,
+            userId,
           }),
         });
 
@@ -150,15 +191,22 @@ export function useTutor(problemId: string) {
         setLoading(false);
       }
     },
-    [helpHistory, hintLevel, brainstormHistory, problemId],
+    [helpHistory, hintLevel, brainstormHistory, problemId, userId],
   );
 
-  const resetConversation = useCallback(() => {
+  const resetConversation = useCallback(async () => {
     setPhase("brainstorm");
     setBrainstormHistory([]);
     setHelpHistory([]);
     setHintLevel(0);
-  }, []);
+    if (userId && problemId) {
+      await sessionModel.upsert(userId, problemId, {
+        phase: "brainstorm",
+        brainstormMessages: [],
+        helpMessages: [],
+      });
+    }
+  }, [userId, problemId]);
 
   return {
     phase,
@@ -166,6 +214,7 @@ export function useTutor(problemId: string) {
     helpHistory,
     hintLevel,
     loading,
+    isLoaded,
     sendBrainstormMessage,
     startCoding,
     requestHelp,

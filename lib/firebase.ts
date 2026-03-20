@@ -112,7 +112,7 @@ export async function signInWithGoogle() {
   // Use signInWithCredential with a fake Google credential instead.
   if (process.env.NODE_ENV === "development") {
     const credential = GoogleAuthProvider.credential(
-      '{"sub": "dev-user-123", "email": "dev@example.com", "name": "Dev User", "picture": "https://via.placeholder.com/96", "email_verified": true}'
+      '{"sub": "dev-user-123", "email": "dev@example.com", "name": "Dev User", "picture": "https://via.placeholder.com/96", "email_verified": true}',
     );
     const result = await signInWithCredential(authInstance, credential);
     return result.user;

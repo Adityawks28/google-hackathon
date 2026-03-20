@@ -36,7 +36,9 @@ export function ProgressTracker({
           <span className="text-xs font-medium text-blue-600">Attempted</span>
         </div>
         <div className="flex flex-col items-center p-3 rounded-xl bg-slate-50">
-          <span className="text-xl font-bold text-slate-700">{totalProblems}</span>
+          <span className="text-xl font-bold text-slate-700">
+            {totalProblems}
+          </span>
           <span className="text-xs font-medium text-slate-500">Total</span>
         </div>
       </div>
