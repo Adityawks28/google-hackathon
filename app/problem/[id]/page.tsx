@@ -257,8 +257,8 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
                 <div className="shrink-0 w-8 h-8 rounded-lg bg-[#FFFBF9]-container-highest flex items-center justify-center">
                   <span className="material-symbols-outlined text-[#671818] text-sm">smart_toy</span>
                 </div>
-                <div className="bg-[#FFFBF9]-container-high px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%]">
-                  <p className="text-sm text-[#671818] leading-relaxed">Before we start coding, let&apos;s think through this problem. How would you approach this?</p>
+                <div className="p-6 shadow-xl leading-relaxed text-[15px] bg-[#630000] text-white rounded-2xl rounded-tl-none border border-[#FFFCFB]/10 shadow-sm shadow-[#630000]/20">
+                  <p className="prose prose-sm max-w-none prose-invert">Before we start coding, let&apos;s think through this problem. How would you approach this?</p>
                 </div>
               </div>
             )}

@@ -117,7 +117,7 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                     <span
                       className={`px-2.5 py-0.5 rounded text-xs font-bold ${
                         problem.difficulty === "easy"
-                          ? "bg-emerald-50 text-emerald-600"
+                          ? "bg-[#FFDCD6] text-[#783126]"
                           : problem.difficulty === "medium"
                             ? "bg-orange-50 text-orange-600"
                             : "bg-red-50 text-red-600"
