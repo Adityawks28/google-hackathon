@@ -46,6 +46,13 @@ export const UserModel = (db: Firestore) => {
       await updateDoc(docRef, data);
     },
 
+    async isAdminEmail(email: string | null): Promise<boolean> {
+      if (!email) return false;
+      const adminDocRef = doc(db, "admins", email);
+      const snapshot = await getDoc(adminDocRef);
+      return snapshot.exists();
+    },
+
     subscribeToRole(
       uid: string,
       callback: (role: "user" | "admin" | undefined) => void,
