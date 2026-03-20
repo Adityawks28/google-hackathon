@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+@theme {
+  --animate-hint-flash: hint-flash 1s ease-out;
+
+  @keyframes hint-flash {
+    0% {
+      background-color: rgba(99, 0, 0, 0.4);
+    }
+    100% {
+      background-color: rgba(99, 0, 0, 0);
+    }
+  }
+}
+
 /* Firebase Emulator Warning Banner Override */
 /* Fix described in https://noh.ink/articles/P64wnQAgpKv6QNeaQ8iv */
 .firebase-emulator-warning {
