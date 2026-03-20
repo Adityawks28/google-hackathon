@@ -5,7 +5,7 @@ An AI coding tutor that guides learners through programming problems using progr
 ## Tech Stack
 
 - **Frontend:** Next.js 16 (App Router), TypeScript, Tailwind CSS
-- **AI:** Google Gemini API (`gemini-2.0-flash`)
+- **AI:** Google Gemini API (`gemini-2.5-flash-lite`)
 - **Auth:** Firebase Authentication (Google Sign-In)
 - **Database:** Cloud Firestore
 - **Containerization:** Docker, Docker Compose
