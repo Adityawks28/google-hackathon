@@ -1,6 +1,12 @@
 import { Node, Flow } from "pocketflow";
 import { ChatMessage, TutorRequest } from "@/types";
-import { askBrainstorm, askHelp, verifySolution } from "@/lib/gemini";
+import { VerifySolutionOutput } from "@/types/ai";
+import {
+  askBrainstorm,
+  askHelp,
+  verifySolution,
+  askAssessment,
+} from "@/lib/gemini";
 import { sessionModel, problemModel, progressModel } from "@/lib/db";
 
 export interface TutorStore {
@@ -12,6 +18,8 @@ export interface TutorStore {
     hints: string[] | null;
     starterCode: string;
   };
+  verificationResult?: VerifySolutionOutput;
+  isCorrect?: boolean;
 }
 
 type ChatNodePrepRes = {
@@ -190,6 +198,7 @@ export class LLMProcessNodeClass extends Node<
         problemDescription,
         referenceSolution,
         hints,
+        starterCode,
         message,
       });
     }
@@ -227,13 +236,11 @@ type VerifyNodePrepRes = {
   code: string;
   problemDescription: string;
   referenceSolution: string | null;
-  userId: string;
-  problemId: string;
+  starterCode: string;
 };
 
 type VerifyNodeExecRes = {
-  guidance: string;
-  isCorrect: boolean;
+  verificationResult: VerifySolutionOutput;
 };
 
 export class VerifyNodeClass extends Node<TutorStore, VerifyNodePrepRes> {
@@ -242,8 +249,7 @@ export class VerifyNodeClass extends Node<TutorStore, VerifyNodePrepRes> {
       code: store.requestBody.code,
       problemDescription: store.ragContext?.problemDescription || "",
       referenceSolution: store.ragContext?.referenceSolution || null,
-      userId: store.requestBody.userId,
-      problemId: store.requestBody.problemId,
+      starterCode: store.ragContext?.starterCode || "",
     };
   }
 
@@ -251,25 +257,91 @@ export class VerifyNodeClass extends Node<TutorStore, VerifyNodePrepRes> {
     code,
     problemDescription,
     referenceSolution,
+    starterCode,
   }: VerifyNodePrepRes): Promise<VerifyNodeExecRes> {
-    const { reasoning, is_correct, mistakes } = await verifySolution({
+    const verificationResult = await verifySolution({
       code,
       problemDescription,
       referenceSolution,
+      starterCode,
     });
 
-    let guidance = `# Assesment Result\n\nThe solution is: ${is_correct ? "Correct" : "Incorrect"}\n\n## Reasoning\n\n${reasoning}`;
-    if (mistakes && mistakes.length > 0) {
-      guidance += `\n\n## Mistakes\n\n${mistakes.map((m) => `- ${m}`).join("\n")}`;
-    }
-
-    return { guidance, isCorrect: is_correct };
+    return { verificationResult };
   }
 
   async post(
     store: TutorStore,
     prepRes: VerifyNodePrepRes,
     execRes: VerifyNodeExecRes,
+  ) {
+    store.verificationResult = execRes.verificationResult;
+    store.isCorrect = execRes.verificationResult.is_correct;
+    return "assessment";
+  }
+}
+
+type AssessmentNodePrepRes = {
+  verificationResult: VerifySolutionOutput;
+  body: TutorRequest;
+  ragContext: TutorStore["ragContext"];
+  userId: string;
+  problemId: string;
+};
+
+type AssessmentNodeExecRes = {
+  guidance: string;
+};
+
+export class AssessmentNodeClass extends Node<
+  TutorStore,
+  AssessmentNodePrepRes
+> {
+  async prep(store: TutorStore): Promise<AssessmentNodePrepRes> {
+    if (!store.verificationResult) {
+      throw new Error("Verification result missing in store");
+    }
+    return {
+      verificationResult: store.verificationResult,
+      body: store.requestBody,
+      ragContext: store.ragContext,
+      userId: store.requestBody.userId,
+      problemId: store.requestBody.problemId,
+    };
+  }
+
+  async exec({
+    verificationResult,
+    body,
+    ragContext,
+  }: AssessmentNodePrepRes): Promise<AssessmentNodeExecRes> {
+    const { code, error, hintLevel, history, brainstormHistory, message } =
+      body;
+    const problemDescription = ragContext?.problemDescription || "";
+    const referenceSolution = ragContext?.referenceSolution || null;
+    const hints = ragContext?.hints || null;
+    const starterCode = ragContext?.starterCode || "";
+
+    const guidance = await askAssessment({
+      code,
+      error,
+      hintLevel,
+      history,
+      brainstormHistory: brainstormHistory ?? [],
+      problemDescription,
+      referenceSolution,
+      hints,
+      starterCode,
+      message,
+      verificationResult,
+    });
+
+    return { guidance };
+  }
+
+  async post(
+    store: TutorStore,
+    prepRes: AssessmentNodePrepRes,
+    execRes: AssessmentNodeExecRes,
   ) {
     const aiMessage: ChatMessage = {
       role: "assistant",
@@ -278,6 +350,7 @@ export class VerifyNodeClass extends Node<TutorStore, VerifyNodePrepRes> {
       code: null,
       error: null,
       hintLevel: null,
+      isCorrect: prepRes.verificationResult.is_correct,
     };
     store.messages.push(aiMessage);
 
@@ -285,7 +358,7 @@ export class VerifyNodeClass extends Node<TutorStore, VerifyNodePrepRes> {
       const { sessionId, mode } = store.requestBody;
       await sessionModel.addMessage(sessionId, mode, aiMessage);
 
-      if (execRes.isCorrect) {
+      if (prepRes.verificationResult.is_correct) {
         await progressModel.markSolved(prepRes.userId, prepRes.problemId);
       } else {
         await progressModel.upsert(`${prepRes.userId}_${prepRes.problemId}`, {
@@ -296,7 +369,7 @@ export class VerifyNodeClass extends Node<TutorStore, VerifyNodePrepRes> {
         });
       }
     } catch (err) {
-      console.error("Error saving verification message or progress:", err);
+      console.error("Error saving assessment message or progress:", err);
     }
 
     return "continue";
@@ -307,6 +380,7 @@ const chatNode = new ChatNodeClass();
 const fetchContextNode = new FetchContextNodeClass();
 const llmProcessNode = new LLMProcessNodeClass();
 const verifyNode = new VerifyNodeClass();
+const assessmentNode = new AssessmentNodeClass();
 
 chatNode.on("fetch_context", fetchContextNode);
 chatNode.on("generate", llmProcessNode);
@@ -314,6 +388,8 @@ chatNode.on("verify", verifyNode);
 
 fetchContextNode.on("continue", chatNode);
 llmProcessNode.on("continue", chatNode);
-verifyNode.on("continue", chatNode);
+
+verifyNode.on("assessment", assessmentNode);
+assessmentNode.on("continue", chatNode);
 
 export const tutorFlow = new Flow<TutorStore>(chatNode);

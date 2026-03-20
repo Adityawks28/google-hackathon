@@ -30,7 +30,11 @@ function ProblemContent({
   const [helpInput, setHelpInput] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const pendingSaveRef = useRef<{ code: string; language: string; sessionId: string } | null>(null);
+  const pendingSaveRef = useRef<{
+    code: string;
+    language: string;
+    sessionId: string;
+  } | null>(null);
 
   const {
     brainstormHistory,
@@ -85,7 +89,11 @@ function ProblemContent({
   // Persist code changes (debounced, flush on session switch)
   useEffect(() => {
     if (currentSessionId && code && selectedLanguage) {
-      pendingSaveRef.current = { code, language: selectedLanguage, sessionId: currentSessionId };
+      pendingSaveRef.current = {
+        code,
+        language: selectedLanguage,
+        sessionId: currentSessionId,
+      };
       const timer = setTimeout(() => {
         updateSessionCode(code, selectedLanguage);
         pendingSaveRef.current = null;
@@ -225,11 +233,18 @@ function ProblemContent({
             <p className="font-bold text-[#630000]">&lt;&gt; Coding</p>
             <p className="text-xs text-[#671818] flex items-center gap-1 justify-end">
               {activeTab === "code" ? (
-                <><span className="w-2 h-2 rounded-full bg-[#FFFCFB]" /> AI Assistant Online</>
-              ) : "Jump to Code"}
+                <>
+                  <span className="w-2 h-2 rounded-full bg-[#FFFCFB]" /> AI
+                  Assistant Online
+                </>
+              ) : (
+                "Jump to Code"
+              )}
             </p>
           </div>
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "code" ? "bg-[#630000] shadow-[#630000]/20" : "bg-[#FFFBF9]-container-highest"}`}>
+          <div
+            className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "code" ? "bg-[#630000] shadow-[#630000]/20" : "bg-[#FFFBF9]-container-highest"}`}
+          >
             <span className="material-symbols-outlined text-xl">code</span>
           </div>
         </button>
@@ -238,7 +253,9 @@ function ProblemContent({
       {/* Session Selector */}
       <div className="flex items-center justify-between border-b border-[#FFFCFB]/10 bg-[#FFFBF9]-container-low px-4 py-2 shrink-0">
         <div className="flex items-center gap-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#671818]">Session:</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-[#671818]">
+            Session:
+          </span>
           <select
             value={currentSessionId || ""}
             onChange={(e) => { flushPendingSave(); switchSession(e.target.value); }}
@@ -292,15 +309,25 @@ function ProblemContent({
             {brainstormHistory.length === 0 && (
               <div className="flex gap-3 mb-4">
                 <div className="shrink-0 w-8 h-8 rounded-lg bg-[#FFFBF9]-container-highest flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[#671818] text-sm">smart_toy</span>
+                  <span className="material-symbols-outlined text-[#671818] text-sm">
+                    smart_toy
+                  </span>
                 </div>
                 <div className="p-6 shadow-xl leading-relaxed text-[15px] bg-[#630000] text-white rounded-2xl rounded-tl-none border border-[#FFFCFB]/10 shadow-sm shadow-[#630000]/20">
-                  <p className="prose prose-sm max-w-none prose-invert">Before we start coding, let&apos;s think through this problem. How would you approach this?</p>
+                  <p className="prose prose-sm max-w-none prose-invert">
+                    Before we start coding, let&apos;s think through this
+                    problem. How would you approach this?
+                  </p>
                 </div>
               </div>
             )}
             {brainstormHistory.map((msg, i) => (
-              <ChatMessage key={i} role={msg.role} content={msg.content} />
+              <ChatMessage
+                key={i}
+                role={msg.role}
+                content={msg.content}
+                isCorrect={msg.isCorrect}
+              />
             ))}
             {loading && <ChatMessage role="assistant" content="Thinking..." />}
             <div ref={chatEndRef} />
@@ -326,7 +353,9 @@ function ProblemContent({
                 className=" absolute right-3 bottom-3 bg-[#630000] text-[#FFFCFB] px-5 py-2 rounded-lg font-bold hover:bg-[#630000]/90 transition-all flex items-center gap-2 text-sm shadow-lg shadow-[#630000]/20 disabled:opacity-50"
               >
                 Send{" "}
-                <span className="bg-[#630000] material-symbols-outlined text-sm">send</span>
+                <span className="bg-[#630000] material-symbols-outlined text-sm">
+                  send
+                </span>
               </button>
             </div>
             {phase === "brainstorm" && (
@@ -367,22 +396,49 @@ function ProblemContent({
               onClick={() => setCodingView("chat")}
               className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold transition-colors ${codingView === "chat" ? "border-b-2 border-[#630000] text-[#630000]" : "text-[#671818] hover:text-[#630000]"}`}
             >
-              <span className="material-symbols-outlined text-base">chat</span> AI Chat
-              {helpHistory.length > 0 && <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#630000]/10 text-xs font-bold text-[#630000]">{helpHistory.length}</span>}
+              <span className="material-symbols-outlined text-base">chat</span>{" "}
+              AI Chat
+              {helpHistory.length > 0 && (
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#630000]/10 text-xs font-bold text-[#630000]">
+                  {helpHistory.length}
+                </span>
+              )}
             </button>
           </div>
 
           {codingView === "code" ? (
             <div className="flex flex-1 flex-col min-h-0">
               <div className="flex-1 bg-[#4A0000]">
-                <CodeEditor value={code} onChange={setCode} language={selectedLanguage} />
+                <CodeEditor
+                  value={code}
+                  onChange={setCode}
+                  language={selectedLanguage}
+                />
               </div>
               <div className="flex items-center justify-between border-t border-[#FFFCFB]/10 bg-[#FFFBF9] px-4 py-3 shrink-0">
-                <button onClick={handleSubmit} disabled={loading} className="flex items-center gap-2 bg-[#630000] hover:bg-[#630000]/90 text-[#FFFCFB] px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg shadow-[#630000]/20 disabled:opacity-50">
-                  <span className="material-symbols-outlined text-sm">cloud_upload</span> {loading ? "Evaluating..." : "Submit"}
+                <button
+                  onClick={handleSubmit}
+                  disabled={loading}
+                  className="flex items-center gap-2 bg-[#630000] hover:bg-[#630000]/90 text-[#FFFCFB] px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg shadow-[#630000]/20 disabled:opacity-50"
+                >
+                  <span className="material-symbols-outlined text-sm">
+                    cloud_upload
+                  </span>{" "}
+                  {loading ? "Evaluating..." : "Submit"}
                 </button>
-                <button onClick={handleGetHelp} disabled={loading} className="flex items-center gap-2 px-4 py-2.5 bg-[#630000]/10 hover:bg-[#630000]/20 text-[#630000] border border-[#630000]/30 rounded-lg text-sm font-semibold transition-all disabled:opacity-50">
-                  <span className="material-symbols-outlined text-sm">lightbulb</span> {loading ? "Loading..." : hintLevel >= 3 ? "I Give Up - Teach Me" : `Review Hint ${hintLevel + 1}`}
+                <button
+                  onClick={handleGetHelp}
+                  disabled={loading}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-[#630000]/10 hover:bg-[#630000]/20 text-[#630000] border border-[#630000]/30 rounded-lg text-sm font-semibold transition-all disabled:opacity-50"
+                >
+                  <span className="material-symbols-outlined text-sm">
+                    lightbulb
+                  </span>{" "}
+                  {loading
+                    ? "Loading..."
+                    : hintLevel >= 3
+                      ? "I Give Up - Teach Me"
+                      : `Review Hint ${hintLevel + 1}`}
                 </button>
               </div>
             </div>
@@ -391,12 +447,27 @@ function ProblemContent({
               <div className="flex-1 overflow-y-auto p-6 bg-[#FFFBF9]-container-low/30 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#e2bfb9] [&::-webkit-scrollbar-thumb]:rounded-full min-h-0">
                 {helpHistory.length === 0 && (
                   <div className="flex gap-3 mb-4">
-                    <div className="shrink-0 w-8 h-8 rounded-lg bg-[#FFFBF9]-container-highest flex items-center justify-center"><span className="material-symbols-outlined text-[#671818] text-sm">smart_toy</span></div>
-                    <div className="text-white bg-[#FFFBF9]-container-high px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%]"><p className="text-sm text-[#671818] leading-relaxed">Ask questions about your code or approach. You can also use &quot;Get Help&quot; on the Code tab for progressive hints.</p></div>
+                    <div className="shrink-0 w-8 h-8 rounded-lg bg-[#FFFBF9]-container-highest flex items-center justify-center">
+                      <span className="material-symbols-outlined text-[#671818] text-sm">
+                        smart_toy
+                      </span>
+                    </div>
+                    <div className="text-white bg-[#FFFBF9]-container-high px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%]">
+                      <p className="text-sm text-[#671818] leading-relaxed">
+                        Ask questions about your code or approach. You can also
+                        use &quot;Get Help&quot; on the Code tab for progressive
+                        hints.
+                      </p>
+                    </div>
                   </div>
                 )}
                 {helpHistory.map((msg, i) => (
-                  <ChatMessage key={i} role={msg.role} content={msg.content} />
+                  <ChatMessage
+                    key={i}
+                    role={msg.role}
+                    content={msg.content}
+                    isCorrect={msg.isCorrect}
+                  />
                 ))}
                 {loading && (
                   <ChatMessage role="assistant" content="Thinking..." />
@@ -405,9 +476,28 @@ function ProblemContent({
               </div>
               <div className="p-4 bg-[#FFFBF9] border-t border-[#FFFCFB]/10 shrink-0">
                 <div className="relative">
-                  <textarea value={helpInput} onChange={(e) => setHelpInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleHelpSend(); } }} placeholder="Ask about your code..." rows={2} className="w-full bg-[#F5EFEE] border border-[#FFFCFB]/10 rounded-xl py-3 pl-4 pr-20 focus:ring-2 resize-none text-sm text-[#1B1717]" />
-                  <button onClick={handleHelpSend} disabled={loading || !helpInput.trim()} className="absolute right-3 bottom-3 px-4 py-1.5 rounded-lg font-bold flex items-center gap-1.5 text-sm ">
-                    Send <span className="material-symbols-outlined text-sm">send</span>
+                  <textarea
+                    value={helpInput}
+                    onChange={(e) => setHelpInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleHelpSend();
+                      }
+                    }}
+                    placeholder="Ask about your code..."
+                    rows={2}
+                    className="w-full bg-[#F5EFEE] border border-[#FFFCFB]/10 rounded-xl py-3 pl-4 pr-20 focus:ring-2 resize-none text-sm text-[#1B1717]"
+                  />
+                  <button
+                    onClick={handleHelpSend}
+                    disabled={loading || !helpInput.trim()}
+                    className="absolute right-3 bottom-3 px-4 py-1.5 rounded-lg font-bold flex items-center gap-1.5 text-sm "
+                  >
+                    Send{" "}
+                    <span className="material-symbols-outlined text-sm">
+                      send
+                    </span>
                   </button>
                 </div>
               </div>

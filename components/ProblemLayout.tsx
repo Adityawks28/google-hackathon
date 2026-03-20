@@ -318,11 +318,12 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                         >
                           <h4 className="text-sm font-bold text-[#630000] mb-2 uppercase tracking-wider flex items-center gap-2">
                             <span className="h-2 w-2 rounded-full bg-[#630000]" />
-                            
                           </h4>
                           <div className="space-y-2">
                             <p className="text-sm font-fira-code break-all">
-                              <span className="font-bold text-[#671818]">Input:</span>{" "}
+                              <span className="font-bold text-[#671818]">
+                                Input:
+                              </span>{" "}
                               <span className="text-[#671818]">{tc.input}</span>
                             </p>
                             <p className="text-sm font-fira-code break-all">
@@ -355,7 +356,10 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                       {Object.entries(displayHints)
                         .sort(([a], [b]) => Number(a) - Number(b))
                         .map(([level, content]) => (
-                          <div key={level} className="p-5 rounded-xl border border-[#630000]/20 bg-[#FFFBF9] shadow-sm">
+                          <div
+                            key={level}
+                            className="p-5 rounded-xl border border-[#630000]/20 bg-[#FFFBF9] shadow-sm"
+                          >
                             <h4 className="text-sm font-bold text-[#630000] mb-2 uppercase tracking-wider flex items-center gap-2">
                               <span className="h-2 w-2 rounded-full bg-[#630000]" />
                               Hint {level}

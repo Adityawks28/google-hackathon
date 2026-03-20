@@ -8,6 +8,16 @@ export interface TutorSystemPromptInput {
   referenceSolution: string | null;
   hints: string[] | null;
   hintLevel: number;
+  starterCode: string;
+}
+
+/**
+ * Inputs for building the Assessment System Prompt.
+ */
+export interface AssessmentSystemPromptInput extends TutorSystemPromptInput {
+  is_correct: boolean;
+  reasoning: string;
+  mistakes: string[];
 }
 
 /**
@@ -41,6 +51,7 @@ export interface VerifySolutionInput {
   code: string;
   problemDescription: string;
   referenceSolution: string | null;
+  starterCode: string;
 }
 
 /**
@@ -74,7 +85,15 @@ export interface AskHelpParams {
   problemDescription: string;
   referenceSolution: string | null;
   hints: string[] | null;
+  starterCode: string;
   message?: string | null;
+}
+
+/**
+ * Inputs for the askAssessment LLM function.
+ */
+export interface AskAssessmentParams extends AskHelpParams {
+  verificationResult: VerifySolutionOutput;
 }
 
 /**
