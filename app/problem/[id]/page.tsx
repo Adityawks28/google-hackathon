@@ -373,10 +373,12 @@ function ProblemContent() {
                   >
                     {sessions.map((s) => (
                       <option key={s.id || s.createdAt} value={s.id || ""}>
-                        {new Date(s.createdAt).toLocaleDateString("en-US", {
-                          month: "long",
+                        {new Date(s.createdAt).toLocaleString("en-US", {
+                          month: "short",
                           day: "numeric",
                           year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
                         })}
                         {s.id === currentSessionId ? " (current)" : ""}
                       </option>
@@ -477,10 +479,12 @@ function ProblemContent() {
                   >
                     {sessions.map((s) => (
                       <option key={s.id || s.createdAt} value={s.id || ""}>
-                        {new Date(s.createdAt).toLocaleDateString("en-US", {
-                          month: "long",
+                        {new Date(s.createdAt).toLocaleString("en-US", {
+                          month: "short",
                           day: "numeric",
                           year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
                         })}
                         {s.id === currentSessionId ? " (current)" : ""}
                       </option>
