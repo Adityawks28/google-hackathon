@@ -28,16 +28,6 @@ export function Header() {
         <div className="flex items-center gap-4">
           <nav className="flex items-center gap-3 pr-4 border-r border-slate-200">
             <Link
-              href="/analytics"
-              className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-200 transition-colors"
-            >
-              <span className="material-symbols-outlined text-sm">
-                analytics
-              </span>
-              Analytics
-            </Link>
-
-            <Link
               href="/dashboard"
               className="flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors"
             >
