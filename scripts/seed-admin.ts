@@ -1,36 +1,56 @@
 /**
- * Seed admin script — run this once to promote a user to admin.
+ * Seed admin script — run this to promote a user or email to admin.
  *
- * Usage:
- *   npx tsx scripts/seed-admin.ts <user-uid>
+ * Usage (Promote UID):
+ *   npx tsx scripts/seed-admin.ts uid <user-uid>
+ *
+ * Usage (Promote Email):
+ *   npx tsx scripts/seed-admin.ts email <user-email>
  */
 
 import { userModel } from "@/lib/db";
+import { db } from "@/lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
 
-const uid = process.argv[2];
+const type = process.argv[2];
+const identifier = process.argv[3];
 
-if (!uid) {
-  console.error("Usage: npx tsx scripts/seed-admin.ts <user-uid>");
+if (!type || !identifier || (type !== "uid" && type !== "email")) {
+  console.error("Usage:");
+  console.error("  npx tsx scripts/seed-admin.ts uid <user-uid>");
+  console.error("  npx tsx scripts/seed-admin.ts email <user-email>");
   process.exit(1);
 }
 
 async function seedAdmin() {
-  const user = await userModel.getById(uid);
-
-  if (user) {
-    await userModel.updateRole(uid, "admin");
-    console.log(`Updated existing user ${uid} to admin.`);
+  if (type === "uid") {
+    const user = await userModel.getById(identifier);
+    if (user) {
+      await userModel.updateRole(identifier, "admin");
+      console.log(`Updated existing user ${identifier} to admin.`);
+    } else {
+      await userModel.create(identifier, {
+        email: "admin@manual",
+        displayName: "Admin",
+        role: "admin",
+        createdAt: Date.now(),
+      });
+      console.log(`Created new admin user doc for ${identifier}.`);
+    }
   } else {
-    await userModel.create(uid, {
-      email: "admin@manual",
-      displayName: "Admin",
-      role: "admin",
-      createdAt: Date.now(),
+    // Promote by email in the 'admins' collection
+    const adminDocRef = doc(db, "admins", identifier);
+    await setDoc(adminDocRef, {
+      enabled: true,
+      addedAt: Date.now(),
     });
-    console.log(`Created new admin user doc for ${uid}.`);
+    console.log(`Email ${identifier} added to 'admins' collection.`);
+    console.log(
+      "The user will be promoted to admin automatically on their next sign-in.",
+    );
   }
 
-  console.log("Done! Refresh the app to see admin access.");
+  console.log("Done!");
   process.exit(0);
 }
 

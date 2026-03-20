@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { CodeEditor } from "@/components/CodeEditor";
 import { ChatMessage } from "@/components/ChatMessage";
-import { useTutor } from "@/hooks/useTutor";
+import { useTutor, type UseTutorReturn } from "@/hooks/useTutor";
 import type { Problem, EvaluateResponse } from "@/types";
 import Link from "next/link";
 
@@ -34,11 +34,16 @@ function ProblemContent() {
     helpHistory,
     hintLevel,
     loading,
+    sessions,
+    currentSessionId,
     sendBrainstormMessage,
     startCoding,
     requestHelp,
     sendHelpMessage,
-  } = useTutor(problemId, user?.uid);
+    createNewSession,
+    switchSession,
+    updateSessionCode,
+  }: UseTutorReturn = useTutor(problemId, user?.uid);
 
   useEffect(() => {
     async function fetchProblem() {
@@ -46,8 +51,11 @@ function ProblemContent() {
         const data = await problemModel.getById(problemId);
         if (data) {
           setProblem(data);
-          setCode(data.starterCode);
-          setSelectedLanguage(data.language);
+          // Only set initial code if no session is active or session has no code
+          if (!currentSessionId) {
+            setCode(data.starterCode);
+            setSelectedLanguage(data.language);
+          }
         }
       } catch (error) {
         console.error("Error fetching problem:", error);
@@ -58,7 +66,37 @@ function ProblemContent() {
     }
 
     fetchProblem();
-  }, [problemId]);
+  }, [problemId, currentSessionId]);
+
+  // Sync code/language when session changes
+  useEffect(() => {
+    if (currentSessionId && sessions.length > 0) {
+      const session = sessions.find((s) => s.id === currentSessionId);
+      if (session) {
+        if (session.code) {
+          setCode(session.code);
+        } else if (problem) {
+          setCode(problem.starterCode);
+        }
+
+        if (session.language) {
+          setSelectedLanguage(session.language);
+        } else if (problem) {
+          setSelectedLanguage(problem.language);
+        }
+      }
+    }
+  }, [currentSessionId, sessions, problem]);
+
+  // Persist code changes
+  useEffect(() => {
+    if (currentSessionId && code && selectedLanguage) {
+      const timer = setTimeout(() => {
+        updateSessionCode(code, selectedLanguage);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [code, selectedLanguage, currentSessionId, updateSessionCode]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -206,9 +244,10 @@ function ProblemContent() {
       label: `Help (Level ${hintLevel})`,
       color: "bg-orange-100 text-orange-700",
     },
-  };
+  } as const;
 
-  const currentPhase = phaseConfig[phase];
+  const currentPhase =
+    phaseConfig[phase as keyof typeof phaseConfig] || phaseConfig.brainstorm;
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-background-light">
@@ -321,6 +360,40 @@ function ProblemContent() {
                 </div>
               </div>
 
+              {/* Session Selector */}
+              <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-6 py-2 shrink-0">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Session:
+                  </span>
+                  <select
+                    value={currentSessionId || ""}
+                    onChange={(e) => switchSession(e.target.value)}
+                    className="rounded-md border-slate-200 bg-white py-1 pl-2 pr-8 text-sm font-medium focus:border-primary focus:ring-primary"
+                  >
+                    {sessions.map((s) => (
+                      <option key={s.id || s.createdAt} value={s.id || ""}>
+                        {new Date(s.createdAt).toLocaleString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                        {s.id === currentSessionId ? " (current)" : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  onClick={() => createNewSession()}
+                  className="flex items-center gap-1 text-xs font-bold text-primary transition-colors hover:text-primary/80"
+                >
+                  <span className="material-symbols-outlined text-sm">add</span>
+                  NEW SESSION
+                </button>
+              </div>
+
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-6 custom-scrollbar min-h-0 bg-slate-50/30">
                 {brainstormHistory.length === 0 && (
@@ -393,7 +466,42 @@ function ProblemContent() {
           {/* ===== PHASE 2 & 3: CODE + HELP ===== */}
           {(phase === "code" || phase === "help") && (
             <div className="flex flex-1 flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-0">
+              {/* Session Selector */}
+              <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2 shrink-0">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Session:
+                  </span>
+                  <select
+                    value={currentSessionId || ""}
+                    onChange={(e) => switchSession(e.target.value)}
+                    className="rounded-md border-slate-200 bg-white py-1 pl-2 pr-8 text-sm font-medium focus:border-primary focus:ring-primary"
+                  >
+                    {sessions.map((s) => (
+                      <option key={s.id || s.createdAt} value={s.id || ""}>
+                        {new Date(s.createdAt).toLocaleString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                        {s.id === currentSessionId ? " (current)" : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  onClick={() => createNewSession()}
+                  className="flex items-center gap-1 text-xs font-bold text-primary transition-colors hover:text-primary/80"
+                >
+                  <span className="material-symbols-outlined text-sm">add</span>
+                  NEW SESSION
+                </button>
+              </div>
+
               {/* Tab Toggle: Code / Chat */}
+
               <div className="flex border-b border-slate-200 bg-white shrink-0">
                 <button
                   onClick={() => setCodingView("code")}

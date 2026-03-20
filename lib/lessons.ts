@@ -21,6 +21,26 @@ export const seedProblems: Omit<Problem, "createdBy" | "createdAt">[] = [
     ],
     difficulty: "easy",
     language: "javascript",
+    referenceSolution: `function fizzBuzz(n) {
+  const result = [];
+  for (let i = 1; i <= n; i++) {
+    if (i % 3 === 0 && i % 5 === 0) {
+      result.push("FizzBuzz");
+    } else if (i % 3 === 0) {
+      result.push("Fizz");
+    } else if (i % 5 === 0) {
+      result.push("Buzz");
+    } else {
+      result.push(i.toString());
+    }
+  }
+  return result;
+}`,
+    hints: [
+      "Use a loop to iterate from 1 to n.",
+      "Check for the multiples of both 3 and 5 first (i.e., multiples of 15), as this condition needs to be evaluated before checking for just 3 or just 5.",
+      "Remember to convert numbers to strings before pushing them to the result array.",
+    ],
   },
   {
     id: "reverse-string",
@@ -36,6 +56,18 @@ Do not use the built-in \`.reverse()\` method.`,
     ],
     difficulty: "easy",
     language: "javascript",
+    referenceSolution: `function reverseString(str) {
+  let reversed = '';
+  for (let i = str.length - 1; i >= 0; i--) {
+    reversed += str[i];
+  }
+  return reversed;
+}`,
+    hints: [
+      "You can iterate over the string backwards.",
+      "Start a loop at the last character's index (str.length - 1) and decrement until you reach 0.",
+      "Create an empty string and append each character from the backward loop to it.",
+    ],
   },
   {
     id: "two-sum",
@@ -53,5 +85,21 @@ Write a function \`twoSum(nums, target)\` that returns an array of two indices.`
     ],
     difficulty: "medium",
     language: "javascript",
+    referenceSolution: `function twoSum(nums, target) {
+  const numMap = new Map();
+  for (let i = 0; i < nums.length; i++) {
+    const complement = target - nums[i];
+    if (numMap.has(complement)) {
+      return [numMap.get(complement), i];
+    }
+    numMap.set(nums[i], i);
+  }
+  return []; // Should not happen given problem constraints
+}`,
+    hints: [
+      "A brute force approach uses nested loops to check every pair, but there's a more efficient way.",
+      "Consider using a Map or object to store the numbers you've seen so far and their indices.",
+      "As you iterate through the array, calculate the 'complement' (target - current number). If the complement is in your Map, you've found the two indices!",
+    ],
   },
 ];

@@ -91,6 +91,8 @@ const submissions = [
   },
 ];
 
+import { Header } from "@/components/Header";
+
 const difficultyColors = {
   easy: "bg-emerald-100 text-emerald-700",
   medium: "bg-orange-100 text-orange-700",
@@ -98,54 +100,11 @@ const difficultyColors = {
 };
 
 function AnalyticsContent() {
-  const { user, signOut } = useAuth();
-
   return (
     <div className="min-h-screen bg-background-light">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary text-2xl">
-                terminal
-              </span>
-              <h2 className="text-lg font-bold tracking-tight text-slate-900">
-                Google Hackathon
-              </h2>
-            </div>
-            <nav className="hidden md:flex items-center gap-6 ml-6">
-              <Link
-                href="/dashboard"
-                className="text-sm font-medium text-slate-600 hover:text-primary transition-colors"
-              >
-                Dashboard
-              </Link>
-              <span className="text-sm font-medium text-primary border-b-2 border-primary pb-1">
-                Analytics
-              </span>
-            </nav>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary text-sm">
-                person
-              </span>
-            </div>
-            <span className="text-sm font-medium text-slate-700">
-              {user?.displayName}
-            </span>
-            <button
-              onClick={signOut}
-              className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
-            >
-              Sign out
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
-      <main className="mx-auto max-w-6xl px-6 py-8 space-y-8">
+      <main className="mx-auto max-w-5xl px-6 py-8 space-y-8">
         {/* Sample data banner */}
         <div className="flex items-center gap-3 rounded-xl bg-amber-50 border border-amber-200 px-5 py-3">
           <span className="material-symbols-outlined text-amber-600">info</span>
