@@ -196,13 +196,13 @@ function ProblemContent({
           }`}
         >
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "brainstorm" ? "bg-accent-purple" : "bg-slate-400"}`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "brainstorm" ? "bg-[#630000]" : "bg-slate-400"}`}
           >
             <span className="material-symbols-outlined text-xl">
               psychology
             </span>
           </div>
-          <div className="text-left">
+          <div className={`text-left transition-opacity ${activeTab === "brainstorm" ? "opacity-100" : "opacity-40"}`}>
             <p className="font-bold text-[#630000]">Brainstorm</p>
             <p className="text-xs text-[#671818] flex items-center gap-1">
               {activeTab === "brainstorm" ? (
@@ -229,7 +229,7 @@ function ProblemContent({
               : "opacity-40 grayscale-[0.5] hover:opacity-80 hover:grayscale-0"
           }`}
         >
-          <div className="text-right">
+          <div className={`text-right transition-opacity ${activeTab === "code" ? "opacity-100" : "opacity-40"}`}>
             <p className="font-bold text-[#630000]">&lt;&gt; Coding</p>
             <p className="text-xs text-[#671818] flex items-center gap-1 justify-end">
               {activeTab === "code" ? (
