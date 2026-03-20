@@ -10,6 +10,7 @@ export interface TutorStore {
     problemDescription: string;
     referenceSolution: string | null;
     hints: string[] | null;
+    starterCode: string;
   };
 }
 
@@ -51,6 +52,7 @@ type FetchContextNodeExecRes = {
   problemDescription: string;
   referenceSolution: string | null;
   hints: string[] | null;
+  starterCode: string;
   userMessage: ChatMessage;
 };
 
@@ -81,12 +83,14 @@ export class FetchContextNodeClass extends Node<
     let problemDescription = "";
     let referenceSolution: string | null = null;
     let hints: string[] | null = null;
+    let starterCode = "";
     try {
       const problem = await problemModel.getById(problemId);
       if (problem) {
         problemDescription = problem.description ?? "";
         referenceSolution = problem.referenceSolution ?? null;
         hints = problem.hints ?? null;
+        starterCode = problem.starterCode ?? "";
       }
 
       await sessionModel.addMessage(sessionId, mode, userMessage);
@@ -94,7 +98,13 @@ export class FetchContextNodeClass extends Node<
     } catch (err) {
       console.error("Error fetching context or saving user message:", err);
     }
-    return { problemDescription, referenceSolution, hints, userMessage };
+    return {
+      problemDescription,
+      referenceSolution,
+      hints,
+      starterCode,
+      userMessage,
+    };
   }
 
   async post(
@@ -107,6 +117,7 @@ export class FetchContextNodeClass extends Node<
       problemDescription: execRes.problemDescription,
       referenceSolution: execRes.referenceSolution,
       hints: execRes.hints,
+      starterCode: execRes.starterCode,
     };
     return "continue";
   }
@@ -148,6 +159,7 @@ export class LLMProcessNodeClass extends Node<
     const problemDescription = ragContext?.problemDescription || "";
     const referenceSolution = ragContext?.referenceSolution || null;
     const hints = ragContext?.hints || null;
+    const starterCode = ragContext?.starterCode || "";
     let guidance: string;
 
     if (mode === "brainstorm") {
@@ -155,6 +167,7 @@ export class LLMProcessNodeClass extends Node<
         message || code,
         history,
         problemDescription,
+        starterCode,
       );
     } else {
       guidance = await askHelp(

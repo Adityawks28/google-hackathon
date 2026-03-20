@@ -42,6 +42,7 @@ export async function askBrainstorm(
   message: string,
   history: ChatMessage[],
   problemDescription: string,
+  starterCode: string,
 ): Promise<string> {
   const currentTurnContent = buildBrainstormUserMessage({ message });
 
@@ -55,6 +56,7 @@ export async function askBrainstorm(
 
   const systemInstruction = buildBrainstormSystemPrompt({
     problemDescription,
+    starterCode,
   });
 
   const response = await getAI().models.generateContent({

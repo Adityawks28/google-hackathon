@@ -80,8 +80,10 @@ ${errorText}`;
 
 export function buildBrainstormSystemPrompt({
   problemDescription,
+  starterCode,
 }: {
   problemDescription: string;
+  starterCode: string;
 }): string {
   return `You are CodeSensei, an AI coding tutor. Right now you are in the BRAINSTORM phase — the learner has not started coding yet.
 
@@ -101,7 +103,15 @@ IMPORTANT:
 - Keep responses concise — 2-4 sentences max.
 
 # Problem Description
-${problemDescription}`;
+${problemDescription}
+
+# Starter Code
+${starterCode}
+
+IMPORTANT REGARDING STARTER CODE:
+The starter code above is provided as part of the problem and is not written by the user. 
+- If the user-provided code changes this starter code, add a comment telling them that they should not change this part of the code and to return it to the original starter code.
+- Do not criticize or critique the starter code otherwise.`;
 }
 
 export function buildBrainstormUserMessage({
