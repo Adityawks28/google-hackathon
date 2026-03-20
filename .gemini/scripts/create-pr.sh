@@ -14,6 +14,16 @@ if [ -z "$TITLE" ]; then
     exit 1
 fi
 
+# Get the current branch name
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Push the current branch with --set-upstream
+echo "Pushing branch '$CURRENT_BRANCH' to remote..."
+if ! git push --set-upstream origin "$CURRENT_BRANCH"; then
+    echo "Error: Failed to push branch '$CURRENT_BRANCH' to remote."
+    exit 1
+fi
+
 # Create PR using the provided title and either a provided body or the template file
 if [ -z "$BODY" ]; then
     # Use template file directly if no body is provided
