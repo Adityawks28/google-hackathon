@@ -377,18 +377,9 @@ function ProblemContent({
               <div className="flex-1 bg-[#4A0000]">
                 <CodeEditor value={code} onChange={setCode} language={selectedLanguage} />
               </div>
-              {feedback && (
-                <div className={`border-t px-5 py-3 shrink-0 ${correct ? "border-[#FFFCFB] bg-[#FFFCFB]-dim/20" : "border-[#FFFCFB] bg-[#FFFCFB]/20"}`}>
-                  {correct ? (
-                    <div className="flex items-center gap-3"><span className="material-symbols-outlined text-[#00137f] text-2xl">check_circle</span><div><p className="text-base font-bold text-[#00137f]">Solved!</p><p className="text-sm text-[#00137f]/80">{feedback}</p></div></div>
-                  ) : (
-                    <div className="flex items-center gap-3"><span className="material-symbols-outlined text-[#9c0512]">cancel</span><div className="text-sm text-[#810100]"><span className="font-semibold">Not quite.</span> {feedback}</div></div>
-                  )}
-                </div>
-              )}
               <div className="flex items-center justify-between border-t border-[#FFFCFB]/10 bg-[#FFFBF9] px-4 py-3 shrink-0">
-                <button onClick={handleSubmit} disabled={submitting} className="flex items-center gap-2 bg-[#630000] hover:bg-[#630000]/90 text-[#FFFCFB] px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg shadow-[#630000]/20 disabled:opacity-50">
-                  <span className="material-symbols-outlined text-sm">cloud_upload</span> {submitting ? "Evaluating..." : "Submit"}
+                <button onClick={handleSubmit} disabled={loading} className="flex items-center gap-2 bg-[#630000] hover:bg-[#630000]/90 text-[#FFFCFB] px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg shadow-[#630000]/20 disabled:opacity-50">
+                  <span className="material-symbols-outlined text-sm">cloud_upload</span> {loading ? "Evaluating..." : "Submit"}
                 </button>
                 <button onClick={handleGetHelp} disabled={loading} className="flex items-center gap-2 px-4 py-2.5 bg-[#630000]/10 hover:bg-[#630000]/20 text-[#630000] border border-[#630000]/30 rounded-lg text-sm font-semibold transition-all disabled:opacity-50">
                   <span className="material-symbols-outlined text-sm">lightbulb</span> {loading ? "Loading..." : hintLevel >= 3 ? "I Give Up - Teach Me" : `Review Hint ${hintLevel + 1}`}
