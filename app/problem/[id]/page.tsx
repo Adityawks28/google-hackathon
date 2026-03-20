@@ -226,11 +226,11 @@ function ProblemContent() {
                     key={i}
                     className="p-4 rounded-xl border border-slate-200 bg-slate-50"
                   >
-                    <p className="text-sm font-mono">
+                    <p className="text-sm font-mono break-all">
                       <span className="font-bold text-slate-700">Input:</span>{" "}
                       <span className="text-slate-600">{tc.input}</span>
                     </p>
-                    <p className="text-sm font-mono mt-1">
+                    <p className="text-sm font-mono mt-1 break-all">
                       <span className="font-bold text-slate-700">Expected:</span>{" "}
                       <span className="text-accent-purple">{tc.expectedOutput}</span>
                     </p>
