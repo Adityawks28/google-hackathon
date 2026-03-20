@@ -11,19 +11,22 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-8">
-          {/* Logo */}
-          <Link href="/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <span className="material-symbols-outlined text-primary text-2xl">
-              terminal
-            </span>
-            <h1 className="text-lg font-bold tracking-tight text-slate-900">
-              Google Hackathon
-            </h1>
-          </Link>
+        {/* Logo */}
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+        >
+          <span className="material-symbols-outlined text-primary text-2xl">
+            terminal
+          </span>
+          <h1 className="text-lg font-bold tracking-tight text-slate-900">
+            Google Hackathon
+          </h1>
+        </Link>
 
-          {/* Navigation */}
-          <nav className="flex items-center gap-3">
+        {/* Right side navigation and profile */}
+        <div className="flex items-center gap-4">
+          <nav className="flex items-center gap-3 pr-4 border-r border-slate-200">
             <Link
               href="/analytics"
               className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-200 transition-colors"
@@ -33,7 +36,7 @@ export function Header() {
               </span>
               Analytics
             </Link>
-            
+
             <Link
               href="/dashboard"
               className="flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors"
@@ -56,24 +59,24 @@ export function Header() {
               </Link>
             )}
           </nav>
-        </div>
 
-        {/* User Profile */}
-        <div className="flex items-center gap-3 pl-3 border-l border-slate-200">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="material-symbols-outlined text-primary text-sm">
-              person
+          {/* User Profile */}
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <span className="material-symbols-outlined text-primary text-sm">
+                person
+              </span>
+            </div>
+            <span className="text-sm font-medium text-slate-700">
+              {user?.displayName}
             </span>
+            <button
+              onClick={signOut}
+              className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
+            >
+              Sign out
+            </button>
           </div>
-          <span className="text-sm font-medium text-slate-700">
-            {user?.displayName}
-          </span>
-          <button
-            onClick={signOut}
-            className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
-          >
-            Sign out
-          </button>
         </div>
       </div>
     </header>
