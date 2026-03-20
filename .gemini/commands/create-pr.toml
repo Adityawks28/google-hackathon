@@ -1,0 +1,14 @@
+description = "Create a GitHub Pull Request with the current branch."
+prompt = """
+To create a new PR on GitHub, follow these steps:
+
+1.  **Analyze changes**: Review the current changes using `git status` and `git diff HEAD`.
+2.  **Read template**: Read the PR template in `.github/PULL_REQUEST_TEMPLATE.md`.
+3.  **Formulate title**: Generate a descriptive PR title. If "{{args}}" is provided, use it as a base.
+4.  **Generate body**: Generate a PR body by filling out the sections of the template (e.g., Features, Changes) based on your analysis of the code.
+5.  **Execute script**: Run the PR creation script:
+    `bash .gemini/scripts/create-pr.sh "[generated-title]" "[generated-body]"`
+    Replace `[generated-title]` and `[generated-body]` with your formulated content.
+
+Make sure your changes are pushed to a remote branch before executing.
+"""

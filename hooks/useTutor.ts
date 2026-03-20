@@ -44,6 +44,14 @@ export function useTutor(problemId: string, userId?: string) {
   const sendBrainstormMessage = useCallback(
     async (message: string) => {
       setLoading(true);
+      const userMessage: ChatMessage = {
+        role: "user",
+        content: message,
+        timestamp: Date.now(),
+      };
+
+      setBrainstormHistory((prev) => [...prev, userMessage]);
+
       try {
         const userMessage: ChatMessage = {
           role: "user",
@@ -170,6 +178,14 @@ export function useTutor(problemId: string, userId?: string) {
   const sendHelpMessage = useCallback(
     async (message: string, code: string) => {
       setLoading(true);
+      const userMessage: ChatMessage = {
+        role: "user",
+        content: message,
+        timestamp: Date.now(),
+      };
+
+      setHelpHistory((prev) => [...prev, userMessage]);
+
       try {
         const userMessage: ChatMessage = {
           role: "user",
