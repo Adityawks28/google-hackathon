@@ -26,6 +26,7 @@ export interface UseTutorReturn {
   createNewSession: () => Promise<UserSession | null>;
   switchSession: (sessionId: string) => void;
   updateSessionCode: (code: string, language: string) => Promise<void>;
+  setHintLevel: (level: number) => void;
 }
 
 export function useTutor(problemId: string, userId?: string): UseTutorReturn {
@@ -230,7 +231,7 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
           timestamp: Date.now(),
           code: null,
           error: null,
-          hintLevel: null,
+          hintLevel: nextLevel,
         };
 
         setHelpHistory((prev) => [...prev, assistantMessage]);
@@ -295,7 +296,7 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
           timestamp: Date.now(),
           code: null,
           error: null,
-          hintLevel: null,
+          hintLevel,
         };
 
         setHelpHistory((prev) => [...prev, assistantMessage]);
@@ -357,5 +358,6 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
     createNewSession,
     switchSession,
     updateSessionCode,
+    setHintLevel,
   };
 }
