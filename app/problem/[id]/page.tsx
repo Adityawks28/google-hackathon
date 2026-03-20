@@ -187,7 +187,7 @@ function ProblemContent({
       {/* Header Tabs */}
       <div className="px-6 py-4 flex items-center justify-between border-b border-[#FFFCFB]/10 bg-[#FFFBF9] shrink-0">
         {/* Left: Brainstorm */}
-         <button
+        <button
           onClick={() => setActiveTab("brainstorm")}
           className={`flex items-center gap-3 transition-all ${
             activeTab === "brainstorm"
