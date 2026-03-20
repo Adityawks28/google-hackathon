@@ -20,7 +20,7 @@ export interface UseTutorReturn {
   currentSessionId: string | null;
   sendBrainstormMessage: (message: string) => Promise<string | null>;
   startCoding: () => Promise<void>;
-  requestHelp: (code: string, error: string) => Promise<string | null>;
+  requestHelp: (code: string, error: string, message?: string) => Promise<string | null>;
   sendHelpMessage: (message: string, code: string) => Promise<string | null>;
   resetConversation: () => Promise<void>;
   createNewSession: () => Promise<UserSession | null>;
