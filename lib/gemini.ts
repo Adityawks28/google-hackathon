@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import type { ChatMessage } from "@/types";
 import {
   buildTutorSystemPrompt,
@@ -120,42 +120,57 @@ export async function askHelp(
   );
 }
 
-export async function evaluateCode(
+export async function verifySolution(
   code: string,
   problemDescription: string,
-  testCases: { input: string; expectedOutput: string }[],
-  systemPrompt: string,
-): Promise<{ correct: boolean; feedback: string }> {
-  const userMessage = `
-Problem: ${problemDescription}
+  referenceSolution: string | null,
+): Promise<{ reasoning: string; is_correct: boolean; mistakes: string[] }> {
+  const prompt = `You are an expert AI tutor evaluating a student's code.
+Verify the provided user attempt against the problem description and reference solution, and consider edge cases.
 
-Test Cases:
-${testCases.map((tc, i) => `${i + 1}. Input: ${tc.input} → Expected: ${tc.expectedOutput}`).join("\n")}
-
-User's Solution:
-\`\`\`
+User Code:
 ${code}
-\`\`\`
 
-Evaluate this solution and respond with a JSON object containing "correct" (boolean) and "feedback" (string).`;
+Problem Description:
+${problemDescription}
+
+Reference Solution:
+${referenceSolution || "None provided"}`;
 
   const response = await getAI().models.generateContent({
     model: GEMINI_MODEL,
-    contents: userMessage,
+    contents: prompt,
     config: {
-      systemInstruction: systemPrompt,
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          reasoning: { type: Type.STRING },
+          is_correct: { type: Type.BOOLEAN },
+          mistakes: { type: Type.ARRAY, items: { type: Type.STRING } },
+        },
+        required: ["reasoning", "is_correct", "mistakes"],
+      },
     },
   });
 
-  const text =
-    response.text ??
-    '{"correct": false, "feedback": "Unable to evaluate. Please try again."}';
+  const text = response.text;
+  if (!text) {
+    return {
+      reasoning: "Failed to generate evaluation.",
+      is_correct: false,
+      mistakes: [],
+    };
+  }
 
   try {
-    const cleaned = text.replace(/```json\n?|\n?```/g, "").trim();
-    return JSON.parse(cleaned);
+    return JSON.parse(text);
   } catch {
-    return { correct: false, feedback: text };
+    return {
+      reasoning: "Failed to parse evaluation.",
+      is_correct: false,
+      mistakes: [],
+    };
   }
 }
 

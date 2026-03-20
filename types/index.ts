@@ -68,17 +68,6 @@ export interface TutorResponse {
   guidance: string;
 }
 
-export interface EvaluateRequest {
-  code: string;
-  problemId: string;
-  language?: string;
-}
-
-export interface EvaluateResponse {
-  correct: boolean;
-  feedback: string;
-}
-
 export interface AppUser {
   uid: string;
   email: string;
