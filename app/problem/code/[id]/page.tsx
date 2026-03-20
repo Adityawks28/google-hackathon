@@ -416,9 +416,10 @@ function CodeContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Probl
                 </div>
                 <div className="bg-slate-100 px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%]">
                   <p className="text-sm text-slate-800 leading-relaxed">
-                    Ask questions about your code or approach. You can
-                    also use &quot;Get Help&quot; on the Code tab for
-                    progressive hints.
+                    Ask questions about your code or approach. If you
+                    have syntax questions, check out the{" "}
+                    <strong>Mini Lesson</strong> tab on the left panel
+                    for step-by-step coding basics!
                   </p>
                 </div>
               </div>
