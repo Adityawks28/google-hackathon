@@ -13,8 +13,13 @@ export interface TutorStore {
   };
 }
 
-export class ChatNodeClass extends Node<TutorStore> {
-  async prep(store: TutorStore) {
+type ChatNodePrepRes = {
+  hasContext: boolean;
+  hasAssistantResponse: boolean;
+};
+
+export class ChatNodeClass extends Node<TutorStore, ChatNodePrepRes> {
+  async prep(store: TutorStore): Promise<ChatNodePrepRes> {
     return {
       hasContext: !!store.ragContext,
       hasAssistantResponse:
@@ -24,25 +29,33 @@ export class ChatNodeClass extends Node<TutorStore> {
     };
   }
 
-  async exec({
-    hasContext,
-    hasAssistantResponse,
-  }: {
-    hasContext: boolean;
-    hasAssistantResponse: boolean;
-  }) {
+  async exec({ hasContext, hasAssistantResponse }: ChatNodePrepRes) {
     if (!hasContext) return "fetch_context";
     if (!hasAssistantResponse) return "generate";
     return "done";
   }
 
-  async post(store: TutorStore, prepRes: any, execRes: string) {
+  async post(store: TutorStore, prepRes: ChatNodePrepRes, execRes: string) {
     return execRes;
   }
 }
 
-export class FetchContextNodeClass extends Node<TutorStore> {
-  async prep(store: TutorStore) {
+type FetchContextNodePrepRes = {
+  problemId: string;
+  userMessage: ChatMessage;
+  userId: string;
+};
+
+type FetchContextNodeExecRes = {
+  problemDescription: string;
+  userMessage: ChatMessage;
+};
+
+export class FetchContextNodeClass extends Node<
+  TutorStore,
+  FetchContextNodePrepRes
+> {
+  async prep(store: TutorStore): Promise<FetchContextNodePrepRes> {
     const { problemId, mode, code, error, hintLevel, userId } =
       store.requestBody;
     let content = code;
@@ -61,11 +74,7 @@ export class FetchContextNodeClass extends Node<TutorStore> {
     problemId,
     userMessage,
     userId,
-  }: {
-    problemId: string;
-    userMessage: ChatMessage;
-    userId: string;
-  }) {
+  }: FetchContextNodePrepRes): Promise<FetchContextNodeExecRes> {
     let problemDescription = "";
     try {
       const problemDoc = await getDoc(doc(db, "problems", problemId));
@@ -92,8 +101,8 @@ export class FetchContextNodeClass extends Node<TutorStore> {
 
   async post(
     store: TutorStore,
-    prepRes: any,
-    execRes: { problemDescription: string; userMessage: ChatMessage },
+    prepRes: FetchContextNodePrepRes,
+    execRes: FetchContextNodeExecRes,
   ) {
     store.messages.push(execRes.userMessage);
     store.ragContext = { problemDescription: execRes.problemDescription };
@@ -101,15 +110,30 @@ export class FetchContextNodeClass extends Node<TutorStore> {
   }
 }
 
-export class LLMProcessNodeClass extends Node<TutorStore> {
-  async prep(store: TutorStore) {
+type LLMProcessNodePrepRes = {
+  body: TutorRequest;
+  ragContext: TutorStore["ragContext"];
+};
+
+type LLMProcessNodeExecRes = {
+  guidance: string;
+};
+
+export class LLMProcessNodeClass extends Node<
+  TutorStore,
+  LLMProcessNodePrepRes
+> {
+  async prep(store: TutorStore): Promise<LLMProcessNodePrepRes> {
     return {
       body: store.requestBody,
       ragContext: store.ragContext,
     };
   }
 
-  async exec({ body, ragContext }: { body: TutorRequest; ragContext: any }) {
+  async exec({
+    body,
+    ragContext,
+  }: LLMProcessNodePrepRes): Promise<LLMProcessNodeExecRes> {
     const { mode, code, error, hintLevel, history, brainstormHistory } = body;
     const problemDescription = ragContext?.problemDescription || "";
     let guidance: string;
@@ -135,7 +159,11 @@ export class LLMProcessNodeClass extends Node<TutorStore> {
     return { guidance };
   }
 
-  async post(store: TutorStore, prepRes: any, execRes: { guidance: string }) {
+  async post(
+    store: TutorStore,
+    prepRes: LLMProcessNodePrepRes,
+    execRes: LLMProcessNodeExecRes,
+  ) {
     const aiMessage: ChatMessage = {
       role: "assistant",
       content: execRes.guidance,
