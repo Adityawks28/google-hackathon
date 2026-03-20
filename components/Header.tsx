@@ -9,27 +9,27 @@ export function Header() {
   const { isAdmin } = useAdmin();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-outline-variant/10 bg-surface/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-[#FFFCFB]/10 bg-[#FFFBF9]/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-8 py-4">
         {/* Logo */}
         <Link
           href="/dashboard"
           className="flex items-center gap-3 hover:opacity-80 transition-opacity"
         >
-          <span className="material-symbols-outlined text-primary text-2xl">
+          <span className="material-symbols-outlined text-[#630000] text-2xl">
             terminal
           </span>
-          <h1 className="text-2xl font-bold tracking-tighter text-primary font-headline">
+          <h1 className="text-2xl font-bold tracking-tighter text-[#630000] font-newsreader">
             Google Hackathon
           </h1>
         </Link>
 
         {/* Right side navigation and profile */}
         <div className="flex items-center gap-6">
-          <nav className="flex items-center gap-8 pr-6 border-r border-outline-variant/10">
+          <nav className="flex items-center gap-8 pr-6 border-r border-[#FFFCFB]/10">
             <Link
               href="/analytics"
-              className="flex items-center gap-2 text-sm font-medium font-headline tracking-tight text-on-surface-variant hover:text-primary transition-colors duration-200"
+              className="flex items-center gap-2 text-sm font-medium font-newsreader tracking-tight text-[#671818] hover:text-[#630000] transition-colors duration-200"
             >
               <span className="material-symbols-outlined text-lg">
                 analytics
@@ -39,7 +39,7 @@ export function Header() {
 
             <Link
               href="/dashboard"
-              className="flex items-center gap-2 text-sm font-medium font-headline tracking-tight text-on-surface-variant hover:text-primary transition-colors duration-200"
+              className="flex items-center gap-2 text-sm font-medium font-newsreader tracking-tight text-[#671818] hover:text-[#630000] transition-colors duration-200"
             >
               <span className="material-symbols-outlined text-lg">
                 dashboard
@@ -50,7 +50,7 @@ export function Header() {
             {isAdmin && (
               <Link
                 href="/admin"
-                className="flex items-center gap-2 text-sm font-medium font-headline tracking-tight text-on-surface-variant hover:text-primary transition-colors duration-200"
+                className="flex items-center gap-2 text-sm font-medium font-newsreader tracking-tight text-[#671818] hover:text-[#630000] transition-colors duration-200"
               >
                 <span className="material-symbols-outlined text-lg">
                   admin_panel_settings
@@ -62,17 +62,17 @@ export function Header() {
 
           {/* User Profile */}
           <div className="flex items-center gap-4">
-            <div className="w-9 h-9 rounded-full bg-surface-container-highest flex items-center justify-center border border-outline-variant/20 shadow-sm">
-              <span className="material-symbols-outlined text-primary text-base">
+            <div className="w-9 h-9 rounded-full bg-[#FFFBF9]-container-highest flex items-center justify-center border border-[#FFFCFB]/20 shadow-sm">
+              <span className="material-symbols-outlined text-[#630000] text-base">
                 person
               </span>
             </div>
-            <span className="text-sm font-medium font-headline text-on-surface-variant">
+            <span className="text-sm font-medium font-newsreader text-[#671818]">
               {user?.displayName}
             </span>
             <button
               onClick={signOut}
-              className="text-sm font-medium text-outline hover:text-primary transition-colors duration-200"
+              className="text-sm font-medium text-[#8e706c] hover:text-[#630000] transition-colors duration-200"
             >
               Sign out
             </button>

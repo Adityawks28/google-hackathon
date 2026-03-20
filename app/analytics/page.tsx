@@ -100,7 +100,7 @@ const difficultyColors = {
 
 function AnalyticsContent() {
   return (
-    <div className="min-h-screen bg-background-light">
+    <div className="min-h-screen bg-[#FFFCFB]-light">
       <Header />
 
       <main className="mx-auto max-w-5xl px-6 py-8 space-y-8">
@@ -134,7 +134,7 @@ function AnalyticsContent() {
                 <p className="text-slate-500 text-sm font-medium">
                   {stat.label}
                 </p>
-                <span className="material-symbols-outlined text-primary">
+                <span className="material-symbols-outlined text-[#630000]">
                   {stat.icon}
                 </span>
               </div>
@@ -165,7 +165,7 @@ function AnalyticsContent() {
                 {weeklyData.map((week) => (
                   <div
                     key={week.week}
-                    className="w-[10%] bg-primary/60 hover:bg-primary rounded-t-lg relative group transition-colors cursor-pointer"
+                    className="w-[10%] bg-[#630000]/60 hover:bg-[#630000] rounded-t-lg relative group transition-colors cursor-pointer"
                     style={{ height: week.height }}
                   >
                     <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
@@ -201,7 +201,7 @@ function AnalyticsContent() {
                   </div>
                   <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-primary rounded-full transition-all duration-500"
+                      className="h-full bg-[#630000] rounded-full transition-all duration-500"
                       style={{ width: `${topic.percent}%` }}
                     />
                   </div>
@@ -255,7 +255,7 @@ function AnalyticsContent() {
                         {sub.difficulty}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm font-mono text-slate-600">
+                    <td className="px-6 py-4 text-sm font-fira-code text-slate-600">
                       {sub.language}
                     </td>
                     <td className="px-6 py-4 text-sm">
@@ -291,7 +291,7 @@ function AnalyticsContent() {
         <div className="flex gap-6">
           <Link
             href="/dashboard"
-            className="text-sm text-slate-500 hover:text-primary"
+            className="text-sm text-slate-500 hover:text-[#630000]"
           >
             Dashboard
           </Link>

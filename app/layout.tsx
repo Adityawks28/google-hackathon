@@ -41,7 +41,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased">
+      <body className="font-manrope bg-[#FFFCFB] text-[#1B1717] antialiased">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

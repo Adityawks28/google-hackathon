@@ -14,13 +14,13 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
       <div
         className={`h-10 w-10 flex-shrink-0 flex items-center justify-center ${
           isUser 
-            ? "rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant/20 shadow-md" 
-            : "rounded-xl bg-primary text-on-primary shadow-lg shadow-primary/20"
+            ? "rounded-full bg-[#FFFBF9]-container-highest overflow-hidden border border-[#FFFCFB]/20 shadow-md" 
+            : "rounded-xl bg-[#630000] text-[#FFFCFB] shadow-lg shadow-[#630000]/20"
         }`}
       >
         <span
           className={`material-symbols-outlined text-base ${
-            isUser ? "text-primary" : ""
+            isUser ? "text-[#630000]" : ""
           }`}
         >
           {isUser ? "person" : "auto_awesome"}
@@ -29,11 +29,11 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
       <div
         className={`p-6 shadow-xl leading-relaxed text-[15px] ${
           isUser
-            ? "message-gradient-user text-on-primary rounded-2xl rounded-tr-none"
-            : "message-gradient-ai text-on-surface-variant rounded-2xl rounded-tl-none border border-outline-variant/10 shadow-sm"
+            ? "bg-[linear-gradient(135deg,#570000_0%,#4a0000_100%)] text-[#FFFCFB] rounded-2xl rounded-tr-none"
+            : "bg-[#630000] text-white rounded-2xl rounded-tl-none border border-[#FFFCFB]/10 shadow-sm shadow-[#630000]/20"
         }`}
       >
-        <div className={`prose prose-sm max-w-none ${isUser ? "prose-invert" : ""}`}>
+        <div className="prose prose-sm max-w-none prose-invert">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
@@ -42,14 +42,14 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
                 const match = /language-(\w+)/.exec(className || "");
                 return !match ? (
                   <code
-                    className={`${isUser ? "bg-white/10 text-white" : "bg-primary/5 text-primary"} px-1.5 py-0.5 rounded font-mono text-sm`}
+                    className="bg-white/10 text-white px-1.5 py-0.5 rounded font-fira-code text-sm"
                     {...props}
                   >
                     {children}
                   </code>
                 ) : (
                   <pre
-                    className={`${isUser ? "bg-black/20 text-white" : "bg-surface-container-highest/50 text-on-surface"} p-4 rounded-lg overflow-x-auto my-3 font-mono text-sm border border-outline-variant/10`}
+                    className="bg-black/20 text-white p-4 rounded-lg overflow-x-auto my-3 font-fira-code text-sm border border-[#FFFCFB]/10"
                   >
                     <code className={className} {...props}>
                       {children}
@@ -58,14 +58,14 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
                 );
               },
               ul: ({ children }) => (
-                <ul className="list-disc ml-6 mb-4 marker:text-primary">{children}</ul>
+                <ul className="list-disc ml-6 mb-4 marker:text-white/70">{children}</ul>
               ),
               ol: ({ children }) => (
                 <ul className="list-decimal ml-6 mb-4">{children}</ul>
               ),
               li: ({ children }) => <li className="mb-2">{children}</li>,
               strong: ({ children }) => (
-                <strong className={`font-bold ${isUser ? "text-white" : "text-primary"}`}>{children}</strong>
+                <strong className="font-bold text-white">{children}</strong>
               ),
               em: ({ children }) => <em className="italic">{children}</em>,
             }}

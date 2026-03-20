@@ -106,7 +106,7 @@ function AdminContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background-light">
+    <div className="min-h-screen bg-[#FFFCFB]-light">
       <Header />
 
       <main className="mx-auto max-w-5xl px-4 py-8">

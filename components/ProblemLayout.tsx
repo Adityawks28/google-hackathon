@@ -46,15 +46,15 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
 
   if (loadingProblem) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-[#FFFCFB]">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#630000] border-t-transparent" />
       </div>
     );
   }
 
   if (fetchError || !problem) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="flex min-h-screen items-center justify-center bg-[#FFFCFB]">
         <div className="text-center">
           <span className="material-symbols-outlined text-4xl text-red-400 mb-3">
             error
@@ -62,7 +62,7 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
           <p className="text-red-500 font-medium">{!problem ? "Problem not found." : "Failed to load problem."}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 rounded-lg bg-primary px-5 py-2 text-sm font-bold text-on-primary hover:bg-primary/90 transition-colors"
+            className="mt-4 rounded-lg bg-[#630000] px-5 py-2 text-sm font-bold text-[#FFFCFB] hover:bg-[#630000]/90 transition-colors"
           >
             Retry
           </button>
@@ -91,26 +91,26 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
 
   return (
     <ProtectedRoute>
-      <div className="flex flex-col h-screen overflow-hidden bg-background">
+      <div className="flex flex-col h-screen overflow-hidden bg-[#FFFCFB]">
         <Header />
 
         {/* Main Split View */}
         <main className="flex flex-1 overflow-hidden">
           {/* Left Panel: Problem Description */}
-          <section className="w-1/2 flex flex-col pl-4 pr-2 py-4 bg-background overflow-hidden">
-            <div className="flex flex-1 flex-col bg-surface rounded-2xl border border-outline-variant/10 shadow-sm overflow-hidden min-h-0 relative">
+          <section className="w-1/2 flex flex-col pl-4 pr-2 py-4 bg-[#FFFCFB] overflow-hidden">
+            <div className="flex flex-1 flex-col bg-[#FFFBF9] rounded-2xl border border-[#FFFCFB]/10 shadow-sm overflow-hidden min-h-0 relative">
               <Link
                 href="/dashboard"
-                className="absolute top-4 left-4 z-10 flex items-center justify-center rounded-lg h-9 w-9 bg-surface/80 backdrop-blur-sm border border-outline-variant/10 text-on-surface-variant hover:bg-surface-container-high transition-colors shadow-sm"
+                className="absolute top-4 left-4 z-10 flex items-center justify-center rounded-lg h-9 w-9 bg-[#FFFBF9]/80 backdrop-blur-sm border border-[#FFFCFB]/10 text-[#671818] hover:bg-[#FFFBF9]-container-high transition-colors shadow-sm"
               >
                 <span className="material-symbols-outlined">
                   arrow_back
                 </span>
               </Link>
               {/* Problem Section */}
-              <div className={`${hintLevel > 0 ? "h-3/5" : "h-full"} overflow-y-auto thin-scrollbar`}>
+              <div className={`${hintLevel > 0 ? "h-3/5" : "h-full"} overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#e2bfb9] [&::-webkit-scrollbar-thumb]:rounded-full`}>
                 <div className="p-8 max-w-2xl mx-auto w-full">
-                  <h1 className="text-3xl font-headline font-extrabold tracking-tight text-primary mb-4">
+                  <h1 className="text-3xl font-newsreader font-extrabold tracking-tight text-[#630000] mb-4">
                     {problem.title}
                   </h1>
                   <div className="flex items-center gap-3 mb-8">
@@ -127,36 +127,42 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                         problem.difficulty.slice(1)}
                     </span>
                   </div>
-                  <div className="text-on-surface-variant leading-relaxed mb-8 prose prose-slate max-w-none">
+                  <div className="text-[#671818] leading-relaxed mb-8 prose prose-slate max-w-none">
                     <ReactMarkdown>{problem.description}</ReactMarkdown>
                   </div>
 
                   {/* Test Cases */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-bold flex items-center gap-2 text-primary">
-                      <span className="material-symbols-outlined text-primary">
+                  <div className="">
+                    <h3 className="text-lg font-bold flex items-center gap-2 text-[#630000] mb-6">
+                      <span className="material-symbols-outlined text-[#630000]">
                         rule
                       </span>
                       Test Cases
                     </h3>
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {problem.testCases.map((tc, i) => (
                         <div
                           key={i}
-                          className="p-4 rounded-xl border border-outline-variant/40 bg-surface-container-low shadow-sm"
+                          className="p-5 rounded-xl border border-[#630000]/20 bg-[#FFFBF9] shadow-sm"
                         >
-                          <p className="text-sm font-mono break-all">
-                            <span className="font-bold text-on-surface-variant">Input:</span>{" "}
-                            <span className="text-on-surface-variant">{tc.input}</span>
-                          </p>
-                          <p className="text-sm font-mono mt-1 break-all">
-                            <span className="font-bold text-on-surface-variant">
-                              Expected:
-                            </span>{" "}
-                            <span className="text-accent-purple">
-                              {tc.expectedOutput}
-                            </span>
-                          </p>
+                          <h4 className="text-sm font-bold text-[#630000] mb-2 uppercase tracking-wider flex items-center gap-2">
+                            <span className="h-2 w-2 rounded-full bg-[#630000]" />
+                            Test Case {i + 1}
+                          </h4>
+                          <div className="space-y-2">
+                            <p className="text-sm font-fira-code break-all">
+                              <span className="font-bold text-[#671818]">Input:</span>{" "}
+                              <span className="text-[#671818]">{tc.input}</span>
+                            </p>
+                            <p className="text-sm font-fira-code break-all">
+                              <span className="font-bold text-[#671818]">
+                                Expected:
+                              </span>{" "}
+                              <span className="text-[#630000] font-bold">
+                                {tc.expectedOutput}
+                              </span>
+                            </p>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -166,10 +172,10 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
 
               {/* Revealed Hints Section */}
               {hintLevel > 0 && (
-                <div className="h-2/5 border-t border-outline-variant/10 bg-surface-container-low/50 overflow-y-auto thin-scrollbar">
+                <div className="h-2/5 border-t border-[#FFFCFB]/10 bg-[#FFFBF9]-container-low/50 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#e2bfb9] [&::-webkit-scrollbar-thumb]:rounded-full">
                   <div className="p-8 max-w-2xl mx-auto w-full">
-                    <h3 className="text-lg font-bold flex items-center gap-2 text-primary mb-6">
-                      <span className="material-symbols-outlined text-primary">
+                    <h3 className="text-lg font-bold flex items-center gap-2 text-[#630000] mb-6">
+                      <span className="material-symbols-outlined text-[#630000]">
                         lightbulb
                       </span>
                       Revealed Hints
@@ -178,12 +184,12 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                       {Object.entries(displayHints)
                         .sort(([a], [b]) => Number(a) - Number(b))
                         .map(([level, content]) => (
-                          <div key={level} className="p-5 rounded-xl border border-primary/20 bg-surface shadow-sm">
-                            <h4 className="text-sm font-bold text-primary mb-2 uppercase tracking-wider flex items-center gap-2">
-                              <span className="h-2 w-2 rounded-full bg-primary" />
+                          <div key={level} className="p-5 rounded-xl border border-[#630000]/20 bg-[#FFFBF9] shadow-sm">
+                            <h4 className="text-sm font-bold text-[#630000] mb-2 uppercase tracking-wider flex items-center gap-2">
+                              <span className="h-2 w-2 rounded-full bg-[#630000]" />
                               Hint {level}
                             </h4>
-                            <div className="text-sm text-on-surface-variant prose prose-slate max-w-none">
+                            <div className="text-sm text-[#671818] prose prose-slate max-w-none">
                               <ReactMarkdown>{content}</ReactMarkdown>
                             </div>
                           </div>
@@ -196,7 +202,7 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
           </section>
 
           {/* Right Panel */}
-          <section className="w-1/2 flex flex-col pl-2 pr-4 py-4 bg-background overflow-hidden">
+          <section className="w-1/2 flex flex-col pl-2 pr-4 py-4 bg-[#FFFCFB] overflow-hidden">
             {children(tutor, problem)}
           </section>
         </main>
