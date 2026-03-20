@@ -5,6 +5,7 @@ import {
   AskHelpParams,
   GenerateSolutionParams,
   VerifySolutionOutput,
+  VerifySolutionInput,
 } from "@/types/ai";
 import {
   buildTutorSystemPrompt,
