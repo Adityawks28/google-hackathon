@@ -84,9 +84,6 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
           if (session.phase) {
             setPhase(session.phase);
           }
-          // Reset hint level based on help messages length?
-          // Or we could store it in UserSession too.
-          setHintLevel(Math.min(session.helpMessages?.length || 0, 3));
         }
       } catch (error) {
         console.error("Error loading session:", error);
@@ -237,8 +234,8 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
 
         setHelpHistory((prev) => [...prev, assistantMessage]);
         setHintLevel(nextLevel);
-        if (userId && problemId) {
-          await sessionModel.upsert(userId, problemId, { hintLevel: nextLevel });
+        if (currentSessionId) {
+          await sessionModel.upsert(currentSessionId, { hintLevel: nextLevel });
         }
         return data.guidance;
       } catch (error) {
