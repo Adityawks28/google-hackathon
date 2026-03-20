@@ -75,16 +75,22 @@ function ProblemContent() {
     }
 
     // Generate a simple skeleton for other languages
-    const functionName = problem.id.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+    const functionName = problem.id.replace(/-([a-z])/g, (g) =>
+      g[1].toUpperCase(),
+    );
     switch (newLanguage) {
       case "python":
         setCode(`def ${functionName}(n):\n    # Your code here\n    pass`);
         break;
       case "java":
-        setCode(`public class Solution {\n    public void ${functionName}(int n) {\n        // Your code here\n    }\n}`);
+        setCode(
+          `public class Solution {\n    public void ${functionName}(int n) {\n        // Your code here\n    }\n}`,
+        );
         break;
       case "cpp":
-        setCode(`class Solution {\npublic:\n    void ${functionName}(int n) {\n        // Your code here\n    }\n};`);
+        setCode(
+          `class Solution {\npublic:\n    void ${functionName}(int n) {\n        // Your code here\n    }\n};`,
+        );
         break;
       default:
         setCode("// Your code here");
@@ -275,7 +281,6 @@ function ProblemContent() {
                     key={i}
                     className="p-4 rounded-xl border border-slate-200 bg-slate-50"
                   >
-
                     <p className="text-sm font-mono break-all">
                       <span className="font-bold text-slate-700">Input:</span>{" "}
                       <span className="text-slate-600">{tc.input}</span>

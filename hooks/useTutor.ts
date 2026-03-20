@@ -48,6 +48,9 @@ export function useTutor(problemId: string, userId?: string) {
         role: "user",
         content: message,
         timestamp: Date.now(),
+        code: null,
+        error: null,
+        hintLevel: null,
       };
 
       setBrainstormHistory((prev) => [...prev, userMessage]);
@@ -60,7 +63,8 @@ export function useTutor(problemId: string, userId?: string) {
             code: message,
             error: "",
             hintLevel: 0,
-            history: [...brainstormHistory, userMessage],
+            message,
+            history: brainstormHistory,
             problemId,
             mode: "brainstorm",
             userId,
@@ -75,6 +79,9 @@ export function useTutor(problemId: string, userId?: string) {
           role: "assistant",
           content: data.guidance,
           timestamp: Date.now(),
+          code: null,
+          error: null,
+          hintLevel: null,
         };
 
         setBrainstormHistory((prev) => [...prev, assistantMessage]);
@@ -97,11 +104,22 @@ export function useTutor(problemId: string, userId?: string) {
   }, [userId, problemId]);
 
   const requestHelp = useCallback(
-    async (code: string, error: string) => {
+    async (code: string, error: string, message?: string) => {
       const nextLevel = Math.min(hintLevel + 1, 3);
       setHintLevel(nextLevel);
       setPhase("help");
       setLoading(true);
+
+      const userMessageText = message || "I need help with my code.";
+      const userMessage: ChatMessage = {
+        role: "user",
+        content: userMessageText,
+        timestamp: Date.now(),
+        code,
+        error: error || null,
+        hintLevel: nextLevel,
+      };
+      setHelpHistory((prev) => [...prev, userMessage]);
 
       if (userId && problemId) {
         await sessionModel.setPhase(userId, problemId, "help");
@@ -115,6 +133,7 @@ export function useTutor(problemId: string, userId?: string) {
             code,
             error,
             hintLevel: nextLevel,
+            message: userMessageText,
             history: helpHistory,
             problemId,
             mode: "help",
@@ -131,6 +150,9 @@ export function useTutor(problemId: string, userId?: string) {
           role: "assistant",
           content: data.guidance,
           timestamp: Date.now(),
+          code: null,
+          error: null,
+          hintLevel: null,
         };
 
         setHelpHistory((prev) => [...prev, assistantMessage]);
@@ -152,6 +174,9 @@ export function useTutor(problemId: string, userId?: string) {
         role: "user",
         content: message,
         timestamp: Date.now(),
+        code,
+        error: null,
+        hintLevel,
       };
 
       setHelpHistory((prev) => [...prev, userMessage]);
@@ -164,7 +189,8 @@ export function useTutor(problemId: string, userId?: string) {
             code,
             error: "",
             hintLevel,
-            history: [...helpHistory, userMessage],
+            message,
+            history: helpHistory, // Previous history
             problemId,
             mode: "help",
             brainstormHistory,
@@ -180,6 +206,9 @@ export function useTutor(problemId: string, userId?: string) {
           role: "assistant",
           content: data.guidance,
           timestamp: Date.now(),
+          code: null,
+          error: null,
+          hintLevel: null,
         };
 
         setHelpHistory((prev) => [...prev, assistantMessage]);
