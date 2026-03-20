@@ -181,20 +181,14 @@ function ProblemContent({
         {/* Left: Brainstorm */}
         <button
           onClick={() => setActiveTab("brainstorm")}
-          className={`flex items-center gap-3 transition-all ${
-            activeTab === "brainstorm"
-              ? "opacity-100 hover:opacity-80"
-              : "opacity-40 grayscale-[0.5] hover:opacity-80 hover:grayscale-0"
-          }`}
+          className="flex items-center gap-3 transition-all cursor-pointer hover:opacity-80"
         >
-          <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "brainstorm" ? "bg-accent-purple" : "bg-slate-400"}`}
-          >
+          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#630000] text-white shadow-sm shadow-[#630000]/20">
             <span className="material-symbols-outlined text-xl">
               psychology
             </span>
           </div>
-          <div className="text-left">
+          <div className={`text-left transition-opacity ${activeTab === "brainstorm" ? "opacity-100" : "opacity-40"}`}>
             <p className="font-bold text-[#630000]">Brainstorm</p>
             <p className="text-xs text-[#671818] flex items-center gap-1">
               {activeTab === "brainstorm" ? (
@@ -215,13 +209,9 @@ function ProblemContent({
         {/* Right: Coding */}
         <button
           onClick={() => setActiveTab("code")}
-          className={`flex items-center gap-3 transition-all ${
-            activeTab === "code"
-              ? "opacity-100 hover:opacity-80"
-              : "opacity-40 grayscale-[0.5] hover:opacity-80 hover:grayscale-0"
-          }`}
+          className="flex items-center gap-3 transition-all cursor-pointer hover:opacity-80"
         >
-          <div className="text-right">
+          <div className={`text-right transition-opacity ${activeTab === "code" ? "opacity-100" : "opacity-40"}`}>
             <p className="font-bold text-[#630000]">&lt;&gt; Coding</p>
             <p className="text-xs text-[#671818] flex items-center gap-1 justify-end">
               {activeTab === "code" ? (
@@ -229,7 +219,7 @@ function ProblemContent({
               ) : "Jump to Code"}
             </p>
           </div>
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "code" ? "bg-[#630000] shadow-[#630000]/20" : "bg-[#FFFBF9]-container-highest"}`}>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#630000] text-white shadow-sm shadow-[#630000]/20">
             <span className="material-symbols-outlined text-xl">code</span>
           </div>
         </button>
