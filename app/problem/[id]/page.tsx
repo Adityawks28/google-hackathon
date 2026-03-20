@@ -187,11 +187,17 @@ function ProblemContent({
       {/* Header Tabs */}
       <div className="px-6 py-4 flex items-center justify-between border-b border-[#FFFCFB]/10 bg-[#FFFBF9] shrink-0">
         {/* Left: Brainstorm */}
-        <button
+         <button
           onClick={() => setActiveTab("brainstorm")}
-          className="flex items-center gap-3 transition-all cursor-pointer hover:opacity-80"
+          className={`flex items-center gap-3 transition-all ${
+            activeTab === "brainstorm"
+              ? "opacity-100 hover:opacity-80"
+              : "opacity-40 grayscale-[0.5] hover:opacity-80 hover:grayscale-0"
+          }`}
         >
-          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#630000] text-white shadow-sm shadow-[#630000]/20">
+          <div
+            className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "brainstorm" ? "bg-[#630000]" : "bg-slate-400"}`}
+          >
             <span className="material-symbols-outlined text-xl">
               psychology
             </span>
@@ -217,7 +223,11 @@ function ProblemContent({
         {/* Right: Coding */}
         <button
           onClick={() => setActiveTab("code")}
-          className="flex items-center gap-3 transition-all cursor-pointer hover:opacity-80"
+          className={`flex items-center gap-3 transition-all ${
+            activeTab === "code"
+              ? "opacity-100 hover:opacity-80"
+              : "opacity-40 grayscale-[0.5] hover:opacity-80 hover:grayscale-0"
+          }`}
         >
           <div className={`text-right transition-opacity ${activeTab === "code" ? "opacity-100" : "opacity-40"}`}>
             <p className="font-bold text-[#630000]">&lt;&gt; Coding</p>
