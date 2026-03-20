@@ -1,9 +1,8 @@
 import { Node, Flow } from "pocketflow";
 import { ChatMessage, TutorRequest } from "@/types";
-import { doc, getDoc, setDoc, arrayUnion } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 import { askBrainstorm, askHelp } from "@/lib/gemini";
 import { BRAINSTORM_SYSTEM_PROMPT, HELP_SYSTEM_PROMPT } from "@/lib/prompts";
+import { sessionModel, problemModel } from "@/lib/db";
 
 export interface TutorStore {
   requestBody: TutorRequest;
@@ -44,6 +43,7 @@ type FetchContextNodePrepRes = {
   problemId: string;
   userMessage: ChatMessage;
   userId: string;
+  mode: "brainstorm" | "help";
 };
 
 type FetchContextNodeExecRes = {
@@ -67,32 +67,24 @@ export class FetchContextNodeClass extends Node<
       content,
       timestamp: Date.now(),
     };
-    return { problemId, userMessage, userId };
+    return { problemId, userMessage, userId, mode };
   }
 
   async exec({
     problemId,
     userMessage,
     userId,
+    mode,
   }: FetchContextNodePrepRes): Promise<FetchContextNodeExecRes> {
     let problemDescription = "";
     try {
-      const problemDoc = await getDoc(doc(db, "problems", problemId));
-      if (problemDoc.exists()) {
-        problemDescription = problemDoc.data().description ?? "";
+      const problem = await problemModel.getById(problemId);
+      if (problem) {
+        problemDescription = problem.description ?? "";
       }
 
-      const sessionRef = doc(db, "user_sessions", `${userId}_${problemId}`);
-      await setDoc(
-        sessionRef,
-        {
-          userId,
-          problemId,
-          updatedAt: Date.now(),
-          messages: arrayUnion(userMessage),
-        },
-        { merge: true },
-      );
+      await sessionModel.addMessage(userId, problemId, mode, userMessage);
+      await sessionModel.setPhase(userId, problemId, mode);
     } catch (err) {
       console.error("Error fetching context or saving user message:", err);
     }
@@ -172,16 +164,8 @@ export class LLMProcessNodeClass extends Node<
     store.messages.push(aiMessage);
 
     try {
-      const { userId, problemId } = store.requestBody;
-      const sessionRef = doc(db, "user_sessions", `${userId}_${problemId}`);
-      await setDoc(
-        sessionRef,
-        {
-          updatedAt: Date.now(),
-          messages: arrayUnion(aiMessage),
-        },
-        { merge: true },
-      );
+      const { userId, problemId, mode } = store.requestBody;
+      await sessionModel.addMessage(userId, problemId, mode, aiMessage);
     } catch (err) {
       console.error("Error saving AI message:", err);
     }

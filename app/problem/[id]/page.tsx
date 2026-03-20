@@ -37,7 +37,7 @@ function ProblemContent() {
     startCoding,
     requestHelp,
     sendHelpMessage,
-  } = useTutor(problemId);
+  } = useTutor(problemId, user?.uid);
 
   useEffect(() => {
     async function fetchProblem() {
@@ -114,7 +114,8 @@ function ProblemContent() {
   }
 
   async function handleGetHelp() {
-    const guidance = await requestHelp(code, "");
+    const errorMsg = correct === false ? feedback || "" : "";
+    const guidance = await requestHelp(code, errorMsg);
     if (guidance) setCodingView("chat");
     if (guidance && user) {
       try {

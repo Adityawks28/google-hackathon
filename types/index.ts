@@ -32,6 +32,15 @@ export interface ChatMessage {
   timestamp: number;
 }
 
+export interface UserSession {
+  userId: string;
+  problemId: string;
+  brainstormMessages: ChatMessage[];
+  helpMessages: ChatMessage[];
+  phase: TutorPhase;
+  updatedAt: number;
+}
+
 export type TutorPhase = "brainstorm" | "code" | "help";
 
 export interface TutorRequest {
