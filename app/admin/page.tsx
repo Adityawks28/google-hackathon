@@ -103,29 +103,36 @@ function AdminContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-4">
-            <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
-            <span className="rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-700">
+    <div className="min-h-screen bg-background-light">
+      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+            <span className="material-symbols-outlined text-primary text-2xl">admin_panel_settings</span>
+            <h1 className="text-lg font-bold tracking-tight text-slate-900">Admin Panel</h1>
+            <span className="rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-bold text-red-700 uppercase tracking-wider">
               Admin
             </span>
           </div>
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard"
-              className="text-sm text-blue-600 hover:underline"
+              className="flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors"
             >
+              <span className="material-symbols-outlined text-sm">dashboard</span>
               Dashboard
             </Link>
-            <span className="text-sm text-gray-600">{user?.displayName}</span>
-            <button
-              onClick={signOut}
-              className="text-sm text-gray-500 hover:text-gray-700"
-            >
-              Sign out
-            </button>
+            <div className="flex items-center gap-3 pl-3 border-l border-slate-200">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="material-symbols-outlined text-primary text-sm">person</span>
+              </div>
+              <span className="text-sm font-medium text-slate-700">{user?.displayName}</span>
+              <button
+                onClick={signOut}
+                className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                Sign out
+              </button>
+            </div>
           </div>
         </div>
       </header>
