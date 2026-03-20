@@ -280,7 +280,7 @@ function ProblemContent() {
                       <span className="font-bold text-slate-700">Input:</span>{" "}
                       <span className="text-slate-600">{tc.input}</span>
                     </p>
-                    <p className="text-sm font-mono mt-1">
+                    <p className="text-sm font-mono mt-1 break-all">
                       <span className="font-bold text-slate-700">
                         Expected:
                       </span>{" "}
