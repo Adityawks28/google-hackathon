@@ -162,9 +162,9 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
   }
 
   return (
-    <div className="flex flex-1 flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-0">
+    <div className="flex flex-1 flex-col bg-surface rounded-2xl border border-outline-variant/10 shadow-sm overflow-hidden min-h-0">
       {/* Header Tabs */}
-      <div className="px-6 py-4 flex items-center justify-between border-b border-slate-200 bg-white shrink-0">
+      <div className="px-6 py-4 flex items-center justify-between border-b border-outline-variant/10 bg-surface shrink-0">
         {/* Left: Brainstorm */}
         <button
           onClick={() => setActiveTab("brainstorm")}
@@ -174,21 +174,21 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
               : "opacity-40 grayscale-[0.5] hover:opacity-80 hover:grayscale-0"
           }`}
         >
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "brainstorm" ? "bg-accent-purple" : "bg-slate-400"}`}>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "brainstorm" ? "bg-accent-purple" : "bg-surface-container-highest"}`}>
             <span className="material-symbols-outlined text-xl">psychology</span>
           </div>
           <div className="text-left">
-            <p className="font-bold text-slate-900">Brainstorm</p>
-            <p className="text-xs text-slate-500 flex items-center gap-1">
+            <p className="font-bold text-primary">Brainstorm</p>
+            <p className="text-xs text-on-surface-variant flex items-center gap-1">
               {activeTab === "brainstorm" ? (
-                <><span className="w-2 h-2 rounded-full bg-green-500" /> AI Assistant Online</>
+                <><span className="w-2 h-2 rounded-full bg-secondary-fixed-dim" /> AI Assistant Online</>
               ) : "View History"}
             </p>
           </div>
         </button>
 
         {/* Divider */}
-        <div className="flex-1 mx-8 border-t border-dashed border-slate-200" />
+        <div className="flex-1 mx-8 border-t border-dashed border-outline-variant/10" />
 
         {/* Right: Coding */}
         <button
@@ -200,27 +200,27 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
           }`}
         >
           <div className="text-right">
-            <p className="font-bold text-slate-900">&lt;&gt; Coding</p>
-            <p className="text-xs text-slate-500 flex items-center gap-1 justify-end">
+            <p className="font-bold text-primary">&lt;&gt; Coding</p>
+            <p className="text-xs text-on-surface-variant flex items-center gap-1 justify-end">
               {activeTab === "code" ? (
-                <><span className="w-2 h-2 rounded-full bg-green-500" /> AI Assistant Online</>
+                <><span className="w-2 h-2 rounded-full bg-secondary-fixed-dim" /> AI Assistant Online</>
               ) : "Jump to Code"}
             </p>
           </div>
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "code" ? "bg-orange-500 shadow-orange-500/20" : "bg-slate-400"}`}>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "code" ? "bg-primary shadow-primary/20" : "bg-surface-container-highest"}`}>
             <span className="material-symbols-outlined text-xl">code</span>
           </div>
         </button>
       </div>
 
       {/* Session Selector */}
-      <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2 shrink-0">
+      <div className="flex items-center justify-between border-b border-outline-variant/10 bg-surface-container-low px-4 py-2 shrink-0">
         <div className="flex items-center gap-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Session:</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Session:</span>
           <select
             value={currentSessionId || ""}
             onChange={(e) => switchSession(e.target.value)}
-            className="rounded-md border-slate-200 bg-white py-1 pl-2 pr-8 text-sm font-medium focus:border-primary focus:ring-primary"
+            className="rounded-md border-outline-variant/10 bg-surface py-1 pl-2 pr-8 text-sm font-medium focus:border-primary focus:ring-primary"
           >
             {sessions.map((s) => (
               <option key={s.id || s.createdAt} value={s.id || ""}>
@@ -238,7 +238,7 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
                   deleteSession(currentSessionId);
                 }
               }}
-              className="flex items-center gap-1 text-xs font-bold text-red-500 transition-colors hover:text-red-400"
+              className="flex items-center gap-1 text-xs font-bold text-error transition-colors hover:opacity-80"
             >
               <span className="material-symbols-outlined text-sm">delete</span> DELETE
             </button>
@@ -251,14 +251,14 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
 
       {activeTab === "brainstorm" ? (
         <>
-          <div className="flex-1 overflow-y-auto p-6 custom-scrollbar min-h-0 bg-slate-50/30">
+          <div className="flex-1 overflow-y-auto p-6 thin-scrollbar min-h-0 bg-surface-container-low/30">
             {brainstormHistory.length === 0 && (
               <div className="flex gap-3 mb-4">
-                <div className="shrink-0 w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-slate-500 text-sm">smart_toy</span>
+                <div className="shrink-0 w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center">
+                  <span className="material-symbols-outlined text-on-surface-variant text-sm">smart_toy</span>
                 </div>
-                <div className="bg-slate-100 px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%]">
-                  <p className="text-sm text-slate-800 leading-relaxed">Before we start coding, let&apos;s think through this problem. How would you approach this?</p>
+                <div className="bg-surface-container-high px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%]">
+                  <p className="text-sm text-on-surface-variant leading-relaxed">Before we start coding, let&apos;s think through this problem. How would you approach this?</p>
                 </div>
               </div>
             )}
@@ -266,7 +266,7 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
             {loading && <ChatMessage role="assistant" content="Thinking..." />}
             <div ref={chatEndRef} />
           </div>
-          <div className="p-6 bg-white border-t border-slate-200 shrink-0">
+          <div className="p-6 bg-surface border-t border-outline-variant/10 shrink-0">
             <div className="relative mb-4">
               <textarea
                 value={brainstormInput}
@@ -274,12 +274,12 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
                 onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleBrainstormSend(); } }}
                 placeholder="Type your approach here..."
                 rows={3}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-4 pl-4 pr-24 focus:ring-2 focus:ring-accent-purple focus:border-transparent resize-none text-sm text-slate-800"
+                className="w-full bg-surface-container-high border border-outline-variant/10 rounded-xl py-4 pl-4 pr-24 focus:ring-2 focus:ring-primary/20 focus:border-transparent resize-none text-sm text-on-surface"
               />
               <button
                 onClick={handleBrainstormSend}
                 disabled={loading || !brainstormInput.trim()}
-                className="absolute right-3 bottom-3 bg-accent-purple text-white px-5 py-2 rounded-lg font-bold hover:bg-accent-purple/90 transition-all flex items-center gap-2 text-sm shadow-lg shadow-accent-purple/20 disabled:opacity-50"
+                className="absolute right-3 bottom-3 bg-primary text-on-primary px-5 py-2 rounded-lg font-bold hover:bg-primary/90 transition-all flex items-center gap-2 text-sm shadow-lg shadow-primary/20 disabled:opacity-50"
               >
                 Send <span className="material-symbols-outlined text-sm">send</span>
               </button>
@@ -287,7 +287,7 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
             {phase === "brainstorm" && (
               <button
                 onClick={handleStartCoding}
-                className="w-full bg-accent-blue hover:bg-accent-blue/90 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all hover:-translate-y-0.5 shadow-lg shadow-accent-blue/20"
+                className="w-full bg-accent-blue hover:bg-accent-blue/90 text-on-primary font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all hover:-translate-y-0.5 shadow-lg shadow-accent-blue/20"
               >
                 Start Coding <span className="material-symbols-outlined">arrow_forward</span>
               </button>
@@ -296,10 +296,10 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
         </>
       ) : (
         <>
-          <div className="flex border-b border-slate-200 bg-white shrink-0">
+          <div className="flex border-b border-outline-variant/10 bg-surface shrink-0">
             <button
               onClick={() => setCodingView("code")}
-              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold transition-colors ${codingView === "code" ? "border-b-2 border-primary text-primary" : "text-slate-500 hover:text-slate-700"}`}
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold transition-colors ${codingView === "code" ? "border-b-2 border-primary text-primary" : "text-on-surface-variant hover:text-primary"}`}
             >
               <span className="material-symbols-outlined text-base">code</span> Code Editor
               <select value={selectedLanguage} onChange={(e) => { e.stopPropagation(); handleLanguageChange(e.target.value); }} className="ml-1.5 text-sm font-semibold opacity-50 bg-transparent border-none focus:ring-0 cursor-pointer outline-none hover:opacity-100 transition-opacity">
@@ -311,7 +311,7 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
             </button>
             <button
               onClick={() => setCodingView("chat")}
-              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold transition-colors ${codingView === "chat" ? "border-b-2 border-primary text-primary" : "text-slate-500 hover:text-slate-700"}`}
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold transition-colors ${codingView === "chat" ? "border-b-2 border-primary text-primary" : "text-on-surface-variant hover:text-primary"}`}
             >
               <span className="material-symbols-outlined text-base">chat</span> AI Chat
               {helpHistory.length > 0 && <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">{helpHistory.length}</span>}
@@ -324,16 +324,16 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
                 <CodeEditor value={code} onChange={setCode} language={selectedLanguage} />
               </div>
               {feedback && (
-                <div className={`border-t px-5 py-3 shrink-0 ${correct ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"}`}>
+                <div className={`border-t px-5 py-3 shrink-0 ${correct ? "border-tertiary-fixed bg-tertiary-fixed-dim/20" : "border-error-container bg-error-container/20"}`}>
                   {correct ? (
-                    <div className="flex items-center gap-3"><span className="material-symbols-outlined text-emerald-600 text-2xl">check_circle</span><div><p className="text-base font-bold text-emerald-800">Solved!</p><p className="text-sm text-emerald-700">{feedback}</p></div></div>
+                    <div className="flex items-center gap-3"><span className="material-symbols-outlined text-tertiary text-2xl">check_circle</span><div><p className="text-base font-bold text-tertiary">Solved!</p><p className="text-sm text-tertiary/80">{feedback}</p></div></div>
                   ) : (
-                    <div className="flex items-center gap-3"><span className="material-symbols-outlined text-red-500">cancel</span><div className="text-sm text-red-800"><span className="font-semibold">Not quite.</span> {feedback}</div></div>
+                    <div className="flex items-center gap-3"><span className="material-symbols-outlined text-error">cancel</span><div className="text-sm text-on-error-container"><span className="font-semibold">Not quite.</span> {feedback}</div></div>
                   )}
                 </div>
               )}
-              <div className="flex items-center justify-between border-t border-slate-200 bg-white px-4 py-3 shrink-0">
-                <button onClick={handleSubmit} disabled={submitting} className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20 disabled:opacity-50">
+              <div className="flex items-center justify-between border-t border-outline-variant/10 bg-surface px-4 py-3 shrink-0">
+                <button onClick={handleSubmit} disabled={submitting} className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-on-primary px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20 disabled:opacity-50">
                   <span className="material-symbols-outlined text-sm">cloud_upload</span> {submitting ? "Evaluating..." : "Submit"}
                 </button>
                 <button onClick={handleGetHelp} disabled={loading} className="flex items-center gap-2 px-4 py-2.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 rounded-lg text-sm font-semibold transition-all disabled:opacity-50">
@@ -343,21 +343,21 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
             </div>
           ) : (
             <div className="flex flex-1 flex-col min-h-0">
-              <div className="flex-1 overflow-y-auto p-6 bg-slate-50/30 custom-scrollbar min-h-0">
+              <div className="flex-1 overflow-y-auto p-6 bg-surface-container-low/30 thin-scrollbar min-h-0">
                 {helpHistory.length === 0 && (
                   <div className="flex gap-3 mb-4">
-                    <div className="shrink-0 w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center"><span className="material-symbols-outlined text-slate-500 text-sm">smart_toy</span></div>
-                    <div className="bg-slate-100 px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%]"><p className="text-sm text-slate-800 leading-relaxed">Ask questions about your code or approach. You can also use &quot;Get Help&quot; on the Code tab for progressive hints.</p></div>
+                    <div className="shrink-0 w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center"><span className="material-symbols-outlined text-on-surface-variant text-sm">smart_toy</span></div>
+                    <div className="bg-surface-container-high px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%]"><p className="text-sm text-on-surface-variant leading-relaxed">Ask questions about your code or approach. You can also use &quot;Get Help&quot; on the Code tab for progressive hints.</p></div>
                   </div>
                 )}
                 {helpHistory.map((msg, i) => <ChatMessage key={i} role={msg.role} content={msg.content} />)}
                 {loading && <ChatMessage role="assistant" content="Thinking..." />}
                 <div ref={chatEndRef} />
               </div>
-              <div className="p-4 bg-white border-t border-slate-200 shrink-0">
+              <div className="p-4 bg-surface border-t border-outline-variant/10 shrink-0">
                 <div className="relative">
-                  <textarea value={helpInput} onChange={(e) => setHelpInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleHelpSend(); } }} placeholder="Ask about your code..." rows={2} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-4 pr-20 focus:ring-2 focus:ring-primary focus:border-transparent resize-none text-sm text-slate-800" />
-                  <button onClick={handleHelpSend} disabled={loading || !helpInput.trim()} className="absolute right-3 bottom-3 bg-primary text-white px-4 py-1.5 rounded-lg font-bold hover:bg-primary/90 transition-all flex items-center gap-1.5 text-sm disabled:opacity-50">
+                  <textarea value={helpInput} onChange={(e) => setHelpInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleHelpSend(); } }} placeholder="Ask about your code..." rows={2} className="w-full bg-surface-container-high border border-outline-variant/10 rounded-xl py-3 pl-4 pr-20 focus:ring-2 focus:ring-primary/20 focus:border-transparent resize-none text-sm text-on-surface" />
+                  <button onClick={handleHelpSend} disabled={loading || !helpInput.trim()} className="absolute right-3 bottom-3 bg-primary text-on-primary px-4 py-1.5 rounded-lg font-bold hover:bg-primary/90 transition-all flex items-center gap-1.5 text-sm disabled:opacity-50">
                     Send <span className="material-symbols-outlined text-sm">send</span>
                   </button>
                 </div>

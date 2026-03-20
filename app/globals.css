@@ -1,30 +1,60 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #ec5b13;
-  --color-background-light: #f8f6f6;
-  --color-background-dark: #221610;
-  --color-accent-purple: #7c3aed;
-  --color-accent-blue: #2563eb;
-  --color-code-bg: #1e1e1e;
-  --font-sans: var(--font-inter), sans-serif;
-  --font-mono: var(--font-fira-code), monospace;
+  --color-tertiary-fixed: #dfe0ff;
+  --color-surface: #fffbf9;
+  --color-on-surface-variant: #5a413d;
+  --color-outline-variant: #e2bfb9;
+  --color-secondary-fixed-dim: #ffb4a8;
+  --color-surface-container-highest: #f2ebea;
+  --color-on-error-container: #93000a;
+  --color-on-surface: #1f1b1b;
+  --color-error-container: #ffdad6;
+  --color-error: #ba1a1a;
+  --color-tertiary-fixed-dim: #bcc2ff;
+  --color-outline: #8e706c;
+  --color-background: #f8e2e7;
+  --color-tertiary: #00137f;
+  --color-on-primary: #ffffff;
+  --color-surface-container-low: #fffcfb;
+  --color-primary: #7e0112;
+  --color-surface-container-high: #f5efee;
+  
+  --color-code-bg: var(--color-surface-container-high);
+  
+  --font-headline: var(--font-newsreader);
+  --font-body: var(--font-manrope);
+  --font-label: var(--font-manrope);
+  --font-mono: var(--font-fira-code);
+  --font-sans: var(--font-manrope);
 }
 
 body {
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
   -webkit-font-smoothing: antialiased;
 }
 
+.thin-scrollbar::-webkit-scrollbar,
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
+.thin-scrollbar::-webkit-scrollbar-track,
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
+.thin-scrollbar::-webkit-scrollbar-thumb,
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #e2bfb9;
   border-radius: 10px;
+}
+
+.message-gradient-ai {
+  background: linear-gradient(135deg, #ffffff 0%, #fefcfb 100%);
+}
+.message-gradient-user {
+  background: linear-gradient(135deg, #570000 0%, #4a0000 100%);
 }
 
 /* Firebase Emulator Warning Banner Override */

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;0,700;1,400&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-fixed": "#000c61",
+              "tertiary-fixed": "#dfe0ff",
+              "on-tertiary-fixed-variant": "#1830c2",
+              "surface": "#fffbf9", // Less pink, pale peach off-white
+              "on-secondary-container": "#783126",
+              "inverse-on-surface": "#f8eeee",
+              "secondary-container": "#ffdcd6", // Toned down secondary
+              "on-surface-variant": "#5a413d",
+              "outline-variant": "#e2bfb9",
+              "tertiary-container": "#0021b9",
+              "surface-variant": "#f7f2f1",
+              "secondary-fixed": "#ffdad4",
+              "secondary": "#96473b",
+              "on-primary-fixed-variant": "#8f0f07",
+              "on-primary-fixed": "#410000",
+              "secondary-fixed-dim": "#ffb4a8",
+              "surface-dim": "#e8e1e0",
+              "surface-container": "#fbf8f7",
+              "surface-container-highest": "#f2ebea",
+              "on-error": "#ffffff",
+              "on-background": "#1f1b1b",
+              "inverse-surface": "#342f30",
+              "on-error-container": "#93000a",
+              "on-surface": "#1f1b1b",
+              "on-tertiary-container": "#94a0ff",
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "surface-bright": "#fffbf9",
+              "on-secondary-fixed-variant": "#783026",
+              "tertiary-fixed-dim": "#bcc2ff",
+              "surface-tint": "#570000", // Hankyu Maroon
+              "outline": "#8e706c",
+              "surface-container-lowest": "#ffffff",
+              "background": "#fffbf9", // Pale peach white
+              "primary-fixed-dim": "#ffb4a8",
+              "tertiary": "#00137f",
+              "on-primary-container": "#ff8371",
+              "primary-container": "#570000", // Hankyu Maroon
+              "inverse-primary": "#ffb4a8",
+              "on-primary": "#ffffff",
+              "surface-container-low": "#fffcfb",
+              "on-tertiary": "#ffffff",
+              "on-secondary": "#ffffff",
+              "primary": "#570000", // Hankyu Maroon
+              "surface-container-high": "#f5efee",
+              "primary-fixed": "#ffdad4",
+              "on-secondary-fixed": "#3e0502"
+            },
+            fontFamily: {
+              "headline": ["Newsreader", "serif"],
+              "body": ["Manrope", "sans-serif"],
+              "label": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {
+                "DEFAULT": "1rem", 
+                "lg": "1.25rem", 
+                "xl": "1.5rem", 
+                "2xl": "2rem",
+                "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .thin-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .thin-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .thin-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2bfb9;
+            border-radius: 10px;
+        }
+        .message-gradient-ai {
+            background: linear-gradient(135deg, #ffffff 0%, #fefcfb 100%);
+        }
+        .message-gradient-user {
+            background: linear-gradient(135deg, #570000 0%, #4a0000 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-[#1f1b1b]/80 backdrop-blur-md border-b border-outline-variant/10">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-bold text-primary tracking-tighter font-headline">Crimson Scholar</span>
+<nav class="hidden md:flex gap-8">
+<a class="text-on-surface-variant font-medium font-headline tracking-tight hover:text-primary transition-colors duration-200" href="#">Dashboard</a>
+<a class="text-primary border-b-2 border-primary pb-1 font-bold font-headline tracking-tight transition-colors duration-200" href="#">Problems</a>
+<a class="text-on-surface-variant font-medium font-headline tracking-tight hover:text-primary transition-colors duration-200" href="#">Profile</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-9 w-9 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant/20 shadow-sm">
+<img alt="User profile avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFOHWukMw88UJd6JwSp20uO0FCAlxRJr3nCgSEMdUsWjnW2YNf49odTvQ7x0s8GMGq7VQKuBcDyzR0FuBWNoccs0SzlYFUOBgwVTk7VXFBDbMQ_-pUiJqVJd6fIodqiFe4zPYcL9nMAvDHFjd-YtBnT1hHTpgCv5sgFIJZDxerDc4pVP3QqpXrNpE8yCdEPRNq_LZuu7eOV1IfNErEO8UnpOUKtKfuvu-L16vPXxqg7QFjIr95MRf3IWnfm5fgGIgwLOdOHjS02g"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex flex-1 pt-20 h-screen overflow-hidden">
+<!-- Two Column Structure: Removed Left Sidebar -->
+<!-- Left Column: Problem Statement -->
+<section class="w-[48%] flex flex-col bg-surface overflow-y-auto thin-scrollbar p-10 border-r border-outline-variant/10">
+<div class="mb-8 flex items-center justify-between">
+<h1 class="text-4xl font-bold font-headline text-primary tracking-tight">FizzBuzz</h1>
+<span class="bg-secondary-container text-on-secondary-container px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase">Easy</span>
+</div>
+<div class="prose prose-sm text-on-surface-variant max-w-none space-y-6 leading-relaxed text-lg">
+<p>Given an integer <code class="bg-surface-container-high px-1.5 py-0.5 rounded font-mono text-primary">n</code>, return a string array <code class="bg-surface-container-high px-1.5 py-0.5 rounded font-mono text-primary">answer</code> (1-indexed) where:</p>
+<ul class="list-disc pl-6 space-y-3 marker:text-primary">
+<li><code class="font-mono italic">answer[i] == "FizzBuzz"</code> if <code class="font-mono">i</code> is divisible by 3 and 5.</li>
+<li><code class="font-mono italic">answer[i] == "Fizz"</code> if <code class="font-mono">i</code> is divisible by 3.</li>
+<li><code class="font-mono italic">answer[i] == "Buzz"</code> if <code class="font-mono">i</code> is divisible by 5.</li>
+<li><code class="font-mono italic">answer[i] == i</code> (as a string) if none of the above conditions are true.</li>
+</ul>
+<div class="bg-surface-container-low p-6 rounded-xl border-l-4 border-primary mt-8 shadow-sm">
+<h4 class="font-headline font-bold text-primary mb-3">Example 1:</h4>
+<div class="font-mono text-sm space-y-1.5 bg-surface-container-highest/30 p-4 rounded-lg">
+<p><span class="opacity-40">Input:</span> n = 3</p>
+<p><span class="opacity-40">Output:</span> ["1","2","Fizz"]</p>
+</div>
+</div>
+</div>
+<div class="mt-12">
+<h3 class="font-headline text-2xl font-bold text-primary mb-6">Test Cases</h3>
+<div class="space-y-4">
+<div class="bg-white p-6 rounded-xl border border-outline-variant/20 shadow-sm">
+<div class="flex justify-between items-center mb-4">
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60">Case 1</span>
+<span class="text-xs font-mono text-primary bg-primary/5 px-3 py-1 rounded-full border border-primary/10">n = 15</span>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div>
+<label class="block text-[10px] font-bold text-on-surface-variant uppercase mb-2">Input</label>
+<div class="bg-surface-container-high p-3 font-mono text-sm rounded-lg">15</div>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-on-surface-variant uppercase mb-2">Expected</label>
+<div class="bg-surface-container-high p-3 font-mono text-sm rounded-lg text-on-surface-variant/70">["1","2","Fizz",...]</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-12 flex gap-4">
+<button class="bg-primary text-on-primary px-8 py-4 rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-primary/10 flex-1">
+                Go to editor
+            </button>
+<button class="bg-secondary-container text-on-secondary-container px-8 py-4 rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-95 flex-1 border border-outline-variant/10">
+                Try with sample input
+            </button>
+</div>
+</section>
+<!-- Right Column: The Workspace (Editor/Chat) -->
+<section class="w-[52%] flex flex-col bg-surface-container-low">
+<!-- Session Header -->
+<div class="px-8 py-4 flex items-center justify-between bg-white border-b border-outline-variant/10">
+<div class="flex items-center gap-6">
+<div class="relative">
+<select class="appearance-none bg-surface-container-high border-none pl-5 pr-12 py-2.5 rounded-full text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/10">
+<option>Session #1</option>
+<option>Session #2</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-2.5 text-on-surface-variant pointer-events-none text-xl" data-icon="expand_more">expand_more</span>
+</div>
+<button class="flex items-center gap-2 text-primary text-sm font-bold hover:opacity-70 transition-opacity">
+<span class="material-symbols-outlined text-lg" data-icon="add">add</span>
+                    New Session
+                </button>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex bg-white px-8 border-b border-outline-variant/10">
+<button class="px-8 py-4 text-on-surface-variant font-bold text-sm border-b-2 border-transparent hover:text-primary transition-colors">
+                Code Editor
+            </button>
+<button class="px-8 py-4 text-primary font-bold text-sm border-b-2 border-primary">
+                AI Chat
+            </button>
+</div>
+<!-- AI Chat Area: Modern & Lively Redesign -->
+<div class="flex-1 overflow-y-auto thin-scrollbar p-10 space-y-8 flex flex-col">
+<!-- AI Bubble -->
+<div class="flex gap-5 max-w-[90%] group">
+<div class="h-10 w-10 rounded-xl bg-primary flex-shrink-0 flex items-center justify-center text-on-primary shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-base" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="message-gradient-ai p-6 rounded-2xl rounded-tl-none border border-outline-variant/10 shadow-sm leading-relaxed text-on-surface-variant text-[15px]">
+                    Hello! I'm your AI Scholar Tutor. I've analyzed the <span class="text-primary font-bold">FizzBuzz</span> problem. It's a classic logic exercise that tests your understanding of modulo operations and conditional branching. Would you like to start with a pseudocode plan?
+                </div>
+</div>
+<!-- User Bubble -->
+<div class="flex gap-5 max-w-[90%] self-end flex-row-reverse">
+<div class="h-10 w-10 rounded-full bg-surface-container-highest flex-shrink-0 overflow-hidden border border-outline-variant/20 shadow-md">
+<img alt="User avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0hHDm0VqML571OrDIfLtYiWVYYaL9ltwaHFWvnTN4YDaIMmBHb-XQAcmWxY-r0uMxv19hsVTmYYrgehpV7L95lBhYuo4JV9vImhOHI2nJISGa4lgesKZvhwvGCYFuJeuSZq1SLMm5du2P4cZemhIn-TBXB9MJCalTc6p6r_FjvUQZe7mbSM4J5tTfW5bNO0Wvmfo_Mpp7ZeUrBGPKQKPHr8DFwIaCc9UUKaSMp8AXVu2BGBAZv5ODrGAoTLx5H_Sdrs5ZSOm01g"/>
+</div>
+<div class="message-gradient-user text-on-primary p-6 rounded-2xl rounded-tr-none shadow-xl leading-relaxed text-[15px]">
+                    How should I handle the case where a number is divisible by both 3 and 5? Does the order of my if-statements matter?
+                </div>
+</div>
+<!-- AI Bubble -->
+<div class="flex gap-5 max-w-[90%]">
+<div class="h-10 w-10 rounded-xl bg-primary flex-shrink-0 flex items-center justify-center text-on-primary shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-base" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="message-gradient-ai p-6 rounded-2xl rounded-tl-none border border-outline-variant/10 shadow-sm leading-relaxed text-on-surface-variant text-[15px]">
+                    Great question! The order is <span class="italic underline decoration-primary/30">crucial</span>. Since "FizzBuzz" occurs when both conditions are met, you should check for <code class="font-mono text-primary font-bold bg-primary/5 px-1 rounded">i % 15 == 0</code> first. <br/><br/>If you check for 3 or 5 first, those conditions will trigger and the program won't even reach the combined check.
+                </div>
+</div>
+</div>
+<!-- Chat Footer: Cleaner Input Area -->
+<div class="p-8 bg-white border-t border-outline-variant/10">
+<div class="relative max-w-4xl mx-auto flex gap-3">
+<div class="relative flex-1">
+<input class="w-full bg-surface-container-high border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-on-surface-variant/40" placeholder="Ask about your code..." type="text"/>
+</div>
+<button class="bg-primary text-on-primary px-8 py-4 rounded-xl font-bold text-sm transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-primary/20">
+                    Send
+                </button>
+</div>
+</div>
+</section>
+</main>
+</body></html>

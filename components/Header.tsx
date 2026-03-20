@@ -9,8 +9,8 @@ export function Header() {
   const { isAdmin } = useAdmin();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+    <header className="sticky top-0 z-50 border-b border-outline-variant/10 bg-surface/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-8 py-4">
         {/* Logo */}
         <Link
           href="/dashboard"
@@ -19,19 +19,19 @@ export function Header() {
           <span className="material-symbols-outlined text-primary text-2xl">
             terminal
           </span>
-          <h1 className="text-lg font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tighter text-primary font-headline">
             Google Hackathon
           </h1>
         </Link>
 
         {/* Right side navigation and profile */}
-        <div className="flex items-center gap-4">
-          <nav className="flex items-center gap-3 pr-4 border-r border-slate-200">
+        <div className="flex items-center gap-6">
+          <nav className="flex items-center gap-8 pr-6 border-r border-outline-variant/10">
             <Link
               href="/analytics"
-              className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-200 transition-colors"
+              className="flex items-center gap-2 text-sm font-medium font-headline tracking-tight text-on-surface-variant hover:text-primary transition-colors duration-200"
             >
-              <span className="material-symbols-outlined text-sm">
+              <span className="material-symbols-outlined text-lg">
                 analytics
               </span>
               Analytics
@@ -39,9 +39,9 @@ export function Header() {
 
             <Link
               href="/dashboard"
-              className="flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors"
+              className="flex items-center gap-2 text-sm font-medium font-headline tracking-tight text-on-surface-variant hover:text-primary transition-colors duration-200"
             >
-              <span className="material-symbols-outlined text-sm">
+              <span className="material-symbols-outlined text-lg">
                 dashboard
               </span>
               Dashboard
@@ -50,9 +50,9 @@ export function Header() {
             {isAdmin && (
               <Link
                 href="/admin"
-                className="flex items-center gap-1.5 rounded-lg bg-red-50 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-100 transition-colors"
+                className="flex items-center gap-2 text-sm font-medium font-headline tracking-tight text-on-surface-variant hover:text-primary transition-colors duration-200"
               >
-                <span className="material-symbols-outlined text-sm">
+                <span className="material-symbols-outlined text-lg">
                   admin_panel_settings
                 </span>
                 Admin
@@ -61,18 +61,18 @@ export function Header() {
           </nav>
 
           {/* User Profile */}
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary text-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-9 h-9 rounded-full bg-surface-container-highest flex items-center justify-center border border-outline-variant/20 shadow-sm">
+              <span className="material-symbols-outlined text-primary text-base">
                 person
               </span>
             </div>
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium font-headline text-on-surface-variant">
               {user?.displayName}
             </span>
             <button
               onClick={signOut}
-              className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
+              className="text-sm font-medium text-outline hover:text-primary transition-colors duration-200"
             >
               Sign out
             </button>
