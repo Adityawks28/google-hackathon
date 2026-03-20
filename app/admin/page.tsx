@@ -1,14 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  collection,
-  getDocs,
-  doc,
-  deleteDoc,
-  setDoc,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { problemModel, userModel } from "@/lib/db";
 import { useAuth } from "@/hooks/useAuth";
 import { AdminRoute } from "@/components/AdminRoute";
 import { seedProblems } from "@/lib/lessons";
@@ -30,16 +23,12 @@ function AdminContent() {
   async function fetchData() {
     setLoading(true);
     try {
-      const [problemsSnap, usersSnap] = await Promise.all([
-        getDocs(collection(db, "problems")),
-        getDocs(collection(db, "users")),
+      const [problemsList, usersList] = await Promise.all([
+        problemModel.getAll(),
+        userModel.getAll(),
       ]);
-      setProblems(
-        problemsSnap.docs.map((d) => ({ id: d.id, ...d.data() }) as Problem),
-      );
-      setUsers(
-        usersSnap.docs.map((d) => ({ uid: d.id, ...d.data() }) as AppUser),
-      );
+      setProblems(problemsList);
+      setUsers(usersList);
     } catch (error) {
       console.error("Error fetching admin data:", error);
     } finally {
@@ -52,11 +41,14 @@ function AdminContent() {
     setSeeding(true);
     try {
       for (const problem of seedProblems) {
-        await setDoc(doc(db, "problems", problem.id), {
-          ...problem,
-          createdBy: user.uid,
-          createdAt: Date.now(),
-        });
+        await problemModel.create(
+          {
+            ...problem,
+            createdBy: user.uid,
+            createdAt: Date.now(),
+          },
+          problem.id,
+        );
       }
       await fetchData();
     } catch (error) {
@@ -68,7 +60,7 @@ function AdminContent() {
 
   async function handleDeleteProblem(id: string) {
     try {
-      await deleteDoc(doc(db, "problems", id));
+      await problemModel.delete(id);
       setProblems((prev) => prev.filter((p) => p.id !== id));
     } catch (error) {
       console.error("Error deleting problem:", error);
@@ -76,9 +68,11 @@ function AdminContent() {
   }
 
   async function handleToggleAdmin(uid: string, currentRole: string) {
-    const newRole = currentRole === "admin" ? "user" : "admin";
+    const newRole = (currentRole === "admin" ? "user" : "admin") as
+      | "user"
+      | "admin";
     try {
-      await setDoc(doc(db, "users", uid), { role: newRole }, { merge: true });
+      await userModel.updateRole(uid, newRole);
       setUsers((prev) =>
         prev.map((u) => (u.uid === uid ? { ...u, role: newRole } : u)),
       );

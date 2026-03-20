@@ -3,6 +3,7 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithCredential,
   signOut as firebaseSignOut,
   Auth,
   connectAuthEmulator,
@@ -53,7 +54,8 @@ function getFirebaseAuth(): Auth {
     _auth = getAuth(getFirebaseApp());
   }
 
-  if (process.env.NODE_ENV === "development" && !_authEmulatorConnected) {
+  // Use emulators if not production; handles undefined NODE_ENV in CI/local.
+  if (process.env.NODE_ENV !== "production" && !_authEmulatorConnected) {
     connectAuthEmulator(_auth, "http://127.0.0.1:9099");
     _authEmulatorConnected = true;
   }
@@ -66,7 +68,8 @@ function getFirebaseDb(): Firestore {
     _db = getFirestore(getFirebaseApp());
   }
 
-  if (process.env.NODE_ENV === "development" && !_dbEmulatorConnected) {
+  // Use emulators if not production; handles undefined NODE_ENV in CI/local.
+  if (process.env.NODE_ENV !== "production" && !_dbEmulatorConnected) {
     connectFirestoreEmulator(_db, "127.0.0.1", 8080);
     _dbEmulatorConnected = true;
   }
@@ -75,11 +78,16 @@ function getFirebaseDb(): Firestore {
 }
 
 export function getFirebaseStorage() {
+  if (typeof window === "undefined") {
+    return undefined as unknown as FirebaseStorage;
+  }
+
   if (!_storage) {
     _storage = getStorage(getFirebaseApp());
   }
 
-  if (process.env.NODE_ENV === "development" && !_storageEmulatorConnected) {
+  // Use emulators if not production; handles undefined NODE_ENV in CI/local.
+  if (process.env.NODE_ENV !== "production" && !_storageEmulatorConnected) {
     connectStorageEmulator(_storage, "127.0.0.1", 9199);
     _storageEmulatorConnected = true;
   }
@@ -87,24 +95,31 @@ export function getFirebaseStorage() {
   return _storage;
 }
 
-// Use getter properties so Firebase only initializes when accessed client-side
-export const app =
-  typeof window !== "undefined"
-    ? getFirebaseApp()
-    : (undefined as unknown as FirebaseApp);
+// Use getters to ensure Firebase is initialized only when needed
+// TODO: Tech Debt - API routes and server scripts currently use the Firebase client SDK (app, db).
+// Ideally, server-side data access should be migrated to use `firebase-admin` for proper server auth and pooling.
+export const app = getFirebaseApp();
 export const auth =
   typeof window !== "undefined"
     ? getFirebaseAuth()
     : (undefined as unknown as Auth);
-export const db =
-  typeof window !== "undefined"
-    ? getFirebaseDb()
-    : (undefined as unknown as Firestore);
+export const db = getFirebaseDb();
 
 export async function signInWithGoogle() {
-  const googleProvider = new GoogleAuthProvider();
-  const result = await signInWithPopup(getFirebaseAuth(), googleProvider);
+  const authInstance = getFirebaseAuth();
 
+  // In development, signInWithPopup is broken in the Firebase Auth emulator.
+  // Use signInWithCredential with a fake Google credential instead.
+  if (process.env.NODE_ENV === "development") {
+    const credential = GoogleAuthProvider.credential(
+      '{"sub": "dev-user-123", "email": "dev@example.com", "name": "Dev User", "picture": "https://via.placeholder.com/96", "email_verified": true}',
+    );
+    const result = await signInWithCredential(authInstance, credential);
+    return result.user;
+  }
+
+  const googleProvider = new GoogleAuthProvider();
+  const result = await signInWithPopup(authInstance, googleProvider);
   return result.user;
 }
 

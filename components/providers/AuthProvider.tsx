@@ -2,8 +2,8 @@
 
 import { createContext, useEffect, useState, ReactNode } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { auth, db, signInWithGoogle, signOutUser } from "@/lib/firebase";
+import { auth, signInWithGoogle, signOutUser } from "@/lib/firebase";
+import { userModel } from "@/lib/db";
 
 interface AuthContextValue {
   user: User | null;
@@ -27,13 +27,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (firebaseUser) {
             // Ensure user doc exists in Firestore
             try {
-              const userRef = doc(db, "users", firebaseUser.uid);
-              const userSnap = await getDoc(userRef);
-              if (!userSnap.exists()) {
-                await setDoc(userRef, {
+              const existingUser = await userModel.getById(firebaseUser.uid);
+              if (!existingUser) {
+                await userModel.create(firebaseUser.uid, {
                   email: firebaseUser.email ?? "",
                   displayName: firebaseUser.displayName ?? "",
-                  role: "user",
+                  role:
+                    process.env.NODE_ENV === "development" ? "admin" : "user",
                   createdAt: Date.now(),
                 });
               }

@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { collection, doc, setDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { problemModel } from "@/lib/db";
 import { useAuth } from "@/hooks/useAuth";
 import { AdminRoute } from "@/components/AdminRoute";
 import type { TestCase } from "@/types";
@@ -44,8 +43,7 @@ function UploadContent() {
 
     setSaving(true);
     try {
-      const problemRef = doc(collection(db, "problems"));
-      await setDoc(problemRef, {
+      await problemModel.create({
         title,
         description,
         starterCode,
