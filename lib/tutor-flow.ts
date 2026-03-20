@@ -165,12 +165,8 @@ export class LLMProcessNodeClass extends Node<
     };
     store.messages.push(aiMessage);
 
-    try {
-      const { userId, problemId, mode } = store.requestBody;
-      await sessionModel.addMessage(userId, problemId, mode, aiMessage);
-    } catch (err) {
-      console.error("Error saving AI message:", err);
-    }
+    const { userId, problemId, mode } = store.requestBody;
+    await sessionModel.addMessage(userId, problemId, mode, aiMessage);
 
     return "continue";
   }
