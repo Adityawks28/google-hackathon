@@ -1,6 +1,11 @@
 ---
 name: commit_agent
 description: A specialized agent for generating and executing conventional commits.
+kind: local
+tools:
+  - run_shell_command
+  - read_file
+  - grep_search
 ---
 
 # Commit Agent

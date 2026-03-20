@@ -38,6 +38,41 @@ Each Node strictly separates data management from computation through three dist
    - **Purpose:** State Update & Routing.
    - **Action:** Writes the results back to the `SharedStore` and returns an "action" string (e.g., `"success"`, `"default"`) to determine the next node in the Flow.
 
+## TypeScript Annotations
+
+Follow these patterns for type safety:
+
+```typescript
+export interface MyStore {
+  input: string;
+  result?: string;
+}
+
+type MyNodePrepRes = {
+  processedInput: string;
+};
+
+type MyNodeExecRes = {
+  output: string;
+};
+
+export class MyNode extends Node<MyStore, MyNodePrepRes> {
+  async prep(store: MyStore): Promise<MyNodePrepRes> {
+    return { processedInput: store.input.trim() };
+  }
+
+  async exec(prepRes: MyNodePrepRes): Promise<MyNodeExecRes> {
+    // Perform computation
+    return { output: `Processed: ${prepRes.processedInput}` };
+  }
+
+  async post(store: MyStore, prepRes: MyNodePrepRes, execRes: MyNodeExecRes) {
+    store.result = execRes.output;
+    return "success";
+  }
+}
+```
+
 ## Advanced Patterns
 
 For detailed implementation examples of specific architectures (like Chatbots or Agentic workflows), see [references/patterns.md](references/patterns.md).
