@@ -48,6 +48,7 @@ export interface ChatMessage {
   code: string | null;
   error: string | null;
   hintLevel: number | null;
+  isCorrect?: boolean | null;
 }
 
 export interface UserSession {
