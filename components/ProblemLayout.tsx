@@ -7,7 +7,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { useTutor, type UseTutorReturn } from "@/hooks/useTutor";
 import type { Problem, MiniLessonConcept } from "@/types";
-import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { Header } from "@/components/Header";
 
@@ -210,13 +209,6 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
           {/* Left Panel: Problem Description / Mini Lesson */}
           <section className="w-1/2 flex flex-col pl-4 pr-2 py-4 bg-background-light overflow-hidden">
             <div className="flex flex-1 flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-0 relative">
-              <Link
-                href="/dashboard"
-                className="absolute top-4 left-4 z-10 flex items-center justify-center rounded-lg h-9 w-9 bg-white/80 backdrop-blur-sm border border-slate-200 text-slate-500 hover:bg-slate-100 transition-colors shadow-sm"
-              >
-                <span className="material-symbols-outlined">arrow_back</span>
-              </Link>
-
               {/* Tab Switcher (only shown when mini lesson exists) */}
               {hasMiniLesson && (
                 <div className="flex border-b border-slate-200 bg-white shrink-0">
