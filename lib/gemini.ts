@@ -68,13 +68,23 @@ export async function askHelp(
   brainstormHistory: ChatMessage[],
   problemDescription: string,
   systemPrompt: string,
+  referenceSolution: string | null,
+  hints: string[] | null,
 ): Promise<string> {
   const brainstormPlan =
     brainstormHistory.length > 0
       ? `\n\nBRAINSTORM PLAN (What the learner planned):\n${formatHistory(brainstormHistory)}`
       : "";
 
-  const systemInstruction = `${systemPrompt}\n\nPROBLEM CONTEXT:\n${problemDescription}${brainstormPlan}`;
+  const refSolutionContext = referenceSolution
+    ? `\n\nREFERENCE SOLUTION:\n${referenceSolution}`
+    : "";
+  const hintsContext =
+    hints && hints.length > 0
+      ? `\n\nAVAILABLE HINTS:\n${hints.map((h, i) => `${i + 1}. ${h}`).join("\n")}`
+      : "";
+
+  const systemInstruction = `${systemPrompt}\n\nPROBLEM CONTEXT:\n${problemDescription}${refSolutionContext}${hintsContext}${brainstormPlan}`;
 
   const currentTurnContent = `
 Learner's current code:
