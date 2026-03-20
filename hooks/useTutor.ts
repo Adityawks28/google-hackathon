@@ -20,6 +20,9 @@ export function useTutor(problemId: string, userId?: string) {
         if (session) {
           setBrainstormHistory(session.brainstormMessages || []);
           setHelpHistory(session.helpMessages || []);
+          if (session.hintLevel != null) {
+            setHintLevel(session.hintLevel);
+          }
           if (session.phase) {
             setPhase(session.phase);
           } else {
@@ -106,7 +109,6 @@ export function useTutor(problemId: string, userId?: string) {
   const requestHelp = useCallback(
     async (code: string, error: string, message?: string) => {
       const nextLevel = Math.min(hintLevel + 1, 3);
-      setHintLevel(nextLevel);
       setPhase("help");
       setLoading(true);
 
@@ -156,6 +158,10 @@ export function useTutor(problemId: string, userId?: string) {
         };
 
         setHelpHistory((prev) => [...prev, assistantMessage]);
+        setHintLevel(nextLevel);
+        if (userId && problemId) {
+          await sessionModel.upsert(userId, problemId, { hintLevel: nextLevel });
+        }
         return data.guidance;
       } catch (error) {
         console.error("Help error:", error);
@@ -233,6 +239,7 @@ export function useTutor(problemId: string, userId?: string) {
         phase: "brainstorm",
         brainstormMessages: [],
         helpMessages: [],
+        hintLevel: 0,
       });
     }
   }, [userId, problemId]);

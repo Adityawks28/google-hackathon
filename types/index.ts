@@ -41,6 +41,7 @@ export interface UserSession {
   brainstormMessages: ChatMessage[];
   helpMessages: ChatMessage[];
   phase: TutorPhase;
+  hintLevel?: number;
   updatedAt: number;
 }
 
