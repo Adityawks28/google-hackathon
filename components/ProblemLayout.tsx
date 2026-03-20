@@ -107,7 +107,11 @@ function MiniLessonCard({
 }
 
 interface ProblemLayoutProps {
-  children: (tutor: UseTutorReturn, problem: Problem) => ReactNode;
+  children: (
+    tutor: UseTutorReturn,
+    problem: Problem,
+    onTabChange: (tab: "problem" | "lesson") => void,
+  ) => ReactNode;
 }
 
 export function ProblemLayout({ children }: ProblemLayoutProps) {
@@ -378,7 +382,7 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
 
           {/* Right Panel */}
           <section className="w-1/2 flex flex-col pl-2 pr-4 py-4 bg-[#FFFCFB] overflow-hidden">
-            {children(tutor, problem)}
+            {children(tutor, problem, setLeftTab)}
           </section>
         </main>
       </div>

@@ -13,9 +13,11 @@ import { UseTutorReturn } from "@/hooks/useTutor";
 function ProblemContent({
   tutor,
   problem,
+  onTabChange,
 }: {
   tutor: UseTutorReturn;
   problem: Problem;
+  onTabChange: (tab: "problem" | "lesson") => void;
 }) {
   const { user } = useAuth();
   const params = useParams<{ id: string }>();
@@ -454,9 +456,26 @@ function ProblemContent({
                     </div>
                     <div className="text-white bg-[#FFFBF9]-container-high px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%]">
                       <p className="text-sm text-[#671818] leading-relaxed">
-                        Ask questions about your code or approach. You can also
-                        use &quot;Get Help&quot; on the Code tab for progressive
-                        hints.
+                        {problem.miniLesson && problem.miniLesson.length > 0 ? (
+                          <>
+                            New to coding? You might want to check the{" "}
+                            <button
+                              onClick={() => onTabChange("lesson")}
+                              className="font-bold underline decoration-[#630000] decoration-2 underline-offset-2 hover:text-[#630000] transition-colors"
+                            >
+                              Mini Lesson
+                            </button>{" "}
+                            section first! Otherwise, feel free to ask
+                            questions about your approach or use &quot;Get
+                            Help&quot; for progressive hints.
+                          </>
+                        ) : (
+                          <>
+                            Ask questions about your code or approach. You can
+                            also use &quot;Get Help&quot; on the Code tab for
+                            progressive hints.
+                          </>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -512,7 +531,13 @@ function ProblemContent({
 export default function ProblemPage() {
   return (
     <ProblemLayout>
-      {(tutor, problem) => <ProblemContent tutor={tutor} problem={problem} />}
+      {(tutor, problem, onTabChange) => (
+        <ProblemContent
+          tutor={tutor}
+          problem={problem}
+          onTabChange={onTabChange}
+        />
+      )}
     </ProblemLayout>
   );
 }
