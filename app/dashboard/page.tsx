@@ -3,18 +3,15 @@
 import { useEffect, useState } from "react";
 import { problemModel, progressModel } from "@/lib/db";
 import { useAuth } from "@/hooks/useAuth";
-import { useAdmin } from "@/hooks/useAdmin";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ProblemCard } from "@/components/ProblemCard";
 import { ProgressTracker } from "@/components/ProgressTracker";
-import Link from "next/link";
 import type { Problem, UserProgress } from "@/types";
 
 import { Header } from "@/components/Header";
 
 function DashboardContent() {
   const { user } = useAuth();
-  const { isAdmin } = useAdmin();
   const [problems, setProblems] = useState<Problem[]>([]);
   const [progress, setProgress] = useState<UserProgress[]>([]);
   const [loading, setLoading] = useState(true);
