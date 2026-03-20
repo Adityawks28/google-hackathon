@@ -13,15 +13,15 @@ export function useTutor(problemId: string) {
   const sendBrainstormMessage = useCallback(
     async (message: string) => {
       setLoading(true);
+      const userMessage: ChatMessage = {
+        role: "user",
+        content: message,
+        timestamp: Date.now(),
+      };
+
+      setBrainstormHistory((prev) => [...prev, userMessage]);
+
       try {
-        const userMessage: ChatMessage = {
-          role: "user",
-          content: message,
-          timestamp: Date.now(),
-        };
-
-        const updatedHistory = [...brainstormHistory, userMessage];
-
         const res = await fetch("/api/tutor", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -29,7 +29,7 @@ export function useTutor(problemId: string) {
             code: message,
             error: "",
             hintLevel: 0,
-            history: updatedHistory,
+            history: [...brainstormHistory, userMessage],
             problemId,
             mode: "brainstorm",
           }),
@@ -45,7 +45,7 @@ export function useTutor(problemId: string) {
           timestamp: Date.now(),
         };
 
-        setBrainstormHistory([...updatedHistory, assistantMessage]);
+        setBrainstormHistory((prev) => [...prev, assistantMessage]);
         return data.guidance;
       } catch (error) {
         console.error("Brainstorm error:", error);
@@ -108,16 +108,15 @@ export function useTutor(problemId: string) {
   const sendHelpMessage = useCallback(
     async (message: string, code: string) => {
       setLoading(true);
+      const userMessage: ChatMessage = {
+        role: "user",
+        content: message,
+        timestamp: Date.now(),
+      };
+
+      setHelpHistory((prev) => [...prev, userMessage]);
+
       try {
-        const userMessage: ChatMessage = {
-          role: "user",
-          content: message,
-          timestamp: Date.now(),
-        };
-
-        const updatedHistory = [...helpHistory, userMessage];
-        setHelpHistory(updatedHistory);
-
         const res = await fetch("/api/tutor", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -125,7 +124,7 @@ export function useTutor(problemId: string) {
             code,
             error: "",
             hintLevel,
-            history: updatedHistory,
+            history: [...helpHistory, userMessage],
             problemId,
             mode: "help",
             brainstormHistory,
