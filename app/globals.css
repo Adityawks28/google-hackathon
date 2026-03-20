@@ -26,3 +26,13 @@ body {
   background: #d1d5db;
   border-radius: 10px;
 }
+
+/* Firebase Emulator Warning Banner Override */
+/* Fix described in https://noh.ink/articles/P64wnQAgpKv6QNeaQ8iv */
+.firebase-emulator-warning {
+  opacity: 0.5;
+  pointer-events: none !important; /* Allows you to click buttons underneath the banner */
+  font-size: 0.6rem; /* Makes the text smaller */
+  padding: 2px 0; /* Reduces the height */
+  bottom: 0 !important; /* Ensures it stays at the very bottom */
+}
