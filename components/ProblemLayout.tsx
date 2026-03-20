@@ -113,7 +113,7 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
         {/* Main Split View */}
         <main className="flex flex-1 overflow-hidden">
           {/* Left Panel: Problem Description */}
-          <section className="w-1/2 flex flex-col p-4 bg-background-light overflow-hidden">
+          <section className="w-1/2 flex flex-col pl-4 pr-2 py-4 bg-background-light overflow-hidden">
             <div className="flex flex-1 flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-0">
               {/* Problem Section */}
               <div className={`${hintLevel > 0 ? "h-3/5" : "h-full"} overflow-y-auto custom-scrollbar`}>
@@ -204,7 +204,7 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
           </section>
 
           {/* Right Panel */}
-          <section className="w-1/2 flex flex-col p-4 bg-background-light overflow-hidden">
+          <section className="w-1/2 flex flex-col pl-2 pr-4 py-4 bg-background-light overflow-hidden">
             {children(tutor, problem)}
           </section>
         </main>
