@@ -337,6 +337,9 @@ function ProblemContent() {
                 >
                   <span className="material-symbols-outlined text-base">code</span>
                   Code Editor
+                  <span className="ml-1.5 text-sm font-semibold opacity-50">
+                    ( {problem.language} )
+                  </span>
                 </button>
                 <button
                   onClick={() => setCodingView("chat")}

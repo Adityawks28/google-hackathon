@@ -77,7 +77,7 @@ ${helpConversation ? `Help conversation so far:\n${helpConversation}` : ""}
 Provide level ${hintLevel} help based on their specific code and mistakes.`;
 
   const response = await getAI().models.generateContent({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-flash",
     contents: userMessage,
     config: { systemInstruction: systemPrompt },
   });
@@ -108,7 +108,7 @@ ${code}
 Evaluate this solution and respond with a JSON object containing "correct" (boolean) and "feedback" (string).`;
 
   const response = await getAI().models.generateContent({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-flash",
     contents: userMessage,
     config: {
       systemInstruction: systemPrompt,
