@@ -11,6 +11,15 @@ export interface TutorSystemPromptInput {
 }
 
 /**
+ * Inputs for building the Assessment System Prompt.
+ */
+export interface AssessmentSystemPromptInput extends TutorSystemPromptInput {
+  is_correct: boolean;
+  reasoning: string;
+  mistakes: string[];
+}
+
+/**
  * Inputs for building the Tutor User Message.
  */
 export interface TutorUserMessageInput {
@@ -75,6 +84,13 @@ export interface AskHelpParams {
   referenceSolution: string | null;
   hints: string[] | null;
   message?: string | null;
+}
+
+/**
+ * Inputs for the askAssessment LLM function.
+ */
+export interface AskAssessmentParams extends AskHelpParams {
+  verificationResult: VerifySolutionOutput;
 }
 
 /**

@@ -3,6 +3,7 @@ import type { ChatMessage } from "@/types";
 import {
   AskBrainstormParams,
   AskHelpParams,
+  AskAssessmentParams,
   GenerateSolutionParams,
   VerifySolutionOutput,
   VerifySolutionInput,
@@ -10,6 +11,7 @@ import {
 import {
   buildTutorSystemPrompt,
   buildTutorUserMessage,
+  buildAssessmentSystemPrompt,
   buildBrainstormSystemPrompt,
   buildBrainstormUserMessage,
   buildVerifySolutionPrompt,
@@ -125,6 +127,59 @@ export async function askHelp({
   return (
     response.text ??
     "I'm having trouble generating help right now. Please try again."
+  );
+}
+
+export async function askAssessment({
+  code,
+  error,
+  hintLevel,
+  history,
+  brainstormHistory,
+  problemDescription,
+  referenceSolution,
+  hints,
+  message,
+  verificationResult,
+}: AskAssessmentParams): Promise<string> {
+  const brainstormPlan =
+    brainstormHistory.length > 0
+      ? `\n\n# Brainstorm Plan\n${formatHistory(brainstormHistory)}`
+      : "";
+
+  let systemInstruction = buildAssessmentSystemPrompt({
+    problemDescription,
+    referenceSolution,
+    hints,
+    hintLevel,
+    is_correct: verificationResult.is_correct,
+    reasoning: verificationResult.reasoning,
+    mistakes: verificationResult.mistakes,
+  });
+
+  if (brainstormPlan) {
+    systemInstruction += brainstormPlan;
+  }
+
+  const currentTurnContent = buildTutorUserMessage({ message, code, error });
+
+  const contents = [
+    ...history.map(mapToGeminiContent),
+    {
+      role: "user",
+      parts: [{ text: currentTurnContent }],
+    },
+  ];
+
+  const response = await getAI().models.generateContent({
+    model: GEMINI_MODEL,
+    contents,
+    config: { systemInstruction },
+  });
+
+  return (
+    response.text ??
+    "I'm having trouble generating the evaluation right now. Please try again."
   );
 }
 

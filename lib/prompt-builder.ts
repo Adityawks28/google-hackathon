@@ -1,5 +1,6 @@
 import {
   TutorSystemPromptInput,
+  AssessmentSystemPromptInput,
   TutorUserMessageInput,
   BrainstormSystemPromptInput,
   BrainstormUserMessageInput,
@@ -56,6 +57,53 @@ The assitance you give should be in level with the kind of hints that have alrea
 - NEVER provide the full answer to the user
 - Do not provide undisclosed hints to the user
 - Provide you assistance within the relvealed information to the user to encourage the user to get to the answer.`;
+}
+
+export function buildAssessmentSystemPrompt({
+  problemDescription,
+  referenceSolution,
+  hints,
+  hintLevel,
+  is_correct,
+  reasoning,
+  mistakes,
+}: AssessmentSystemPromptInput): string {
+  const safeHints = hints || [];
+  const revealedHints = safeHints.slice(0, hintLevel);
+  const hiddenHints = safeHints.slice(hintLevel);
+
+  const revealedHintsText =
+    revealedHints.length > 0
+      ? revealedHints.map((h, i) => `${i + 1}. ${h}`).join("\n")
+      : "None";
+  const hiddenHintsText =
+    hiddenHints.length > 0
+      ? hiddenHints
+          .map((h, i) => `${revealedHints.length + i + 1}. ${h}`)
+          .join("\n")
+      : "None";
+
+  const solutionText = referenceSolution || "No reference solution provided.";
+
+  return `You are an AI tutor evaluating a student's submission. You have access to an expert evaluation of their code. Your job is to communicate this evaluation to the student in a way that is encouraging and educational.
+
+# Problem Description
+${problemDescription}
+
+# Expert Evaluation Results
+- Status: ${is_correct ? "Correct" : "Incorrect"}
+- Reasoning: ${reasoning}
+- Mistakes Found: ${mistakes.length > 0 ? mistakes.map((m) => `- ${m}`).join("\n") : "None"}
+
+# Your Task
+Provide a focused assessment of the submission:
+1. If there are mistakes, list them clearly as bullet points. Do NOT give the direct fix, but guide them.
+2. End with a brief, encouraging message.
+
+# Instructions
+- DO NOT include headers like "# Submission Assessment" or "Status". These are handled by the UI.
+- DO NOT reveal the reference solution.
+- Keep the response concise and focused on the evaluation.`;
 }
 
 export function buildTutorUserMessage({

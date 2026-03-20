@@ -30,7 +30,11 @@ function ProblemContent({
   const [helpInput, setHelpInput] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const pendingSaveRef = useRef<{ code: string; language: string; sessionId: string } | null>(null);
+  const pendingSaveRef = useRef<{
+    code: string;
+    language: string;
+    sessionId: string;
+  } | null>(null);
 
   const {
     brainstormHistory,
@@ -85,7 +89,11 @@ function ProblemContent({
   // Persist code changes (debounced, flush on session switch)
   useEffect(() => {
     if (currentSessionId && code && selectedLanguage) {
-      pendingSaveRef.current = { code, language: selectedLanguage, sessionId: currentSessionId };
+      pendingSaveRef.current = {
+        code,
+        language: selectedLanguage,
+        sessionId: currentSessionId,
+      };
       const timer = setTimeout(() => {
         updateSessionCode(code, selectedLanguage);
         pendingSaveRef.current = null;
@@ -250,7 +258,10 @@ function ProblemContent({
           </span>
           <select
             value={currentSessionId || ""}
-            onChange={(e) => { flushPendingSave(); switchSession(e.target.value); }}
+            onChange={(e) => {
+              flushPendingSave();
+              switchSession(e.target.value);
+            }}
             className="rounded-md border-slate-200 bg-white py-1 pl-2 pr-8 text-sm font-medium focus:border-primary focus:ring-primary"
           >
             {sessions.map((s) => (
@@ -286,7 +297,10 @@ function ProblemContent({
             </button>
           )}
           <button
-            onClick={() => { flushPendingSave(); createNewSession(); }}
+            onClick={() => {
+              flushPendingSave();
+              createNewSession();
+            }}
             className="flex items-center gap-1 text-xs font-bold text-primary transition-colors hover:text-primary/80"
           >
             <span className="material-symbols-outlined text-sm">add</span> NEW
@@ -314,7 +328,12 @@ function ProblemContent({
               </div>
             )}
             {brainstormHistory.map((msg, i) => (
-              <ChatMessage key={i} role={msg.role} content={msg.content} />
+              <ChatMessage
+                key={i}
+                role={msg.role}
+                content={msg.content}
+                isCorrect={msg.isCorrect}
+              />
             ))}
             {loading && <ChatMessage role="assistant" content="Thinking..." />}
             <div ref={chatEndRef} />
@@ -447,7 +466,12 @@ function ProblemContent({
                   </div>
                 )}
                 {helpHistory.map((msg, i) => (
-                  <ChatMessage key={i} role={msg.role} content={msg.content} />
+                  <ChatMessage
+                    key={i}
+                    role={msg.role}
+                    content={msg.content}
+                    isCorrect={msg.isCorrect}
+                  />
                 ))}
                 {loading && (
                   <ChatMessage role="assistant" content="Thinking..." />

@@ -4,10 +4,12 @@ import remarkGfm from "remark-gfm";
 interface ChatMessageProps {
   role: "user" | "assistant";
   content: string;
+  isCorrect?: boolean | null;
 }
 
-export function ChatMessage({ role, content }: ChatMessageProps) {
+export function ChatMessage({ role, content, isCorrect }: ChatMessageProps) {
   const isUser = role === "user";
+  const isAssessment = isCorrect !== undefined && isCorrect !== null;
 
   return (
     <div className={`flex gap-3 mb-4 ${isUser ? "flex-row-reverse" : ""}`}>
@@ -21,16 +23,31 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
             isUser ? "text-primary" : "text-slate-500"
           }`}
         >
-          {isUser ? "person" : "smart_toy"}
+          {isUser ? "person" : isAssessment ? "verified" : "smart_toy"}
         </span>
       </div>
       <div
         className={`max-w-[80%] px-4 py-3 text-sm leading-relaxed ${
           isUser
             ? "bg-primary text-white rounded-2xl rounded-tr-none"
-            : "bg-slate-100 text-slate-800 rounded-2xl rounded-tl-none"
+            : isAssessment
+              ? "bg-white border-2 border-slate-200 shadow-sm text-slate-800 rounded-2xl rounded-tl-none"
+              : "bg-slate-100 text-slate-800 rounded-2xl rounded-tl-none"
         }`}
       >
+        {isAssessment && (
+          <div className="mb-4 pb-3 border-b border-slate-100">
+            <h1 className="text-xl font-bold text-slate-900 mb-1">
+              # Submission Assessment
+            </h1>
+            <p className="text-sm">
+              The submission is{" "}
+              <strong className={isCorrect ? "text-green-600" : "text-red-600"}>
+                {isCorrect ? "correct" : "incorrect"}
+              </strong>
+            </p>
+          </div>
+        )}
         <div className="prose prose-sm max-w-none">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
