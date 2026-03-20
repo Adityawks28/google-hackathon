@@ -243,7 +243,7 @@ function ProblemContent({
             </p>
           </div>
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "code" ? "bg-[#630000] shadow-[#630000]/20" : "bg-[#FFFBF9]-container-highest"}`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "code" ? "bg-[#630000]" : "bg-slate-400"}`}
           >
             <span className="material-symbols-outlined text-xl">code</span>
           </div>
