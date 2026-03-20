@@ -285,7 +285,7 @@ function ProblemContent() {
                       <span className="font-bold text-slate-700">Input:</span>{" "}
                       <span className="text-slate-600">{tc.input}</span>
                     </p>
-                    <p className="text-sm font-mono mt-1">
+                    <p className="text-sm font-mono mt-1 break-all">
                       <span className="font-bold text-slate-700">
                         Expected:
                       </span>{" "}
@@ -301,10 +301,10 @@ function ProblemContent() {
         </section>
 
         {/* Right Panel */}
-        <section className="w-1/2 flex flex-col">
+        <section className="w-1/2 flex flex-col p-4 bg-background-light">
           {/* ===== PHASE 1: BRAINSTORM ===== */}
           {phase === "brainstorm" && (
-            <div className="flex flex-1 flex-col bg-background-light min-h-0">
+            <div className="flex flex-1 flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-0">
               {/* Chat Header */}
               <div className="px-6 py-4 flex items-center gap-3 border-b border-slate-200 bg-white shrink-0">
                 <div className="w-10 h-10 rounded-full bg-accent-purple flex items-center justify-center text-white">
@@ -322,8 +322,7 @@ function ProblemContent() {
               </div>
 
               {/* Messages */}
-
-              <div className="flex-1 overflow-y-auto p-6 custom-scrollbar min-h-0">
+              <div className="flex-1 overflow-y-auto p-6 custom-scrollbar min-h-0 bg-slate-50/30">
                 {brainstormHistory.length === 0 && (
                   <div className="flex gap-3 mb-4">
                     <div className="shrink-0 w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center">
@@ -352,7 +351,6 @@ function ProblemContent() {
               </div>
 
               {/* Input Area */}
-
               <div className="p-6 bg-white border-t border-slate-200 shrink-0">
                 <div className="relative mb-4">
                   <textarea
@@ -394,7 +392,7 @@ function ProblemContent() {
 
           {/* ===== PHASE 2 & 3: CODE + HELP ===== */}
           {(phase === "code" || phase === "help") && (
-            <div className="flex flex-1 flex-col min-h-0">
+            <div className="flex flex-1 flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-0">
               {/* Tab Toggle: Code / Chat */}
               <div className="flex border-b border-slate-200 bg-white shrink-0">
                 <button
@@ -548,7 +546,7 @@ function ProblemContent() {
                     </div>
                   </div>
 
-                  <div className="flex-1 overflow-y-auto p-6 bg-background-light custom-scrollbar min-h-0">
+                  <div className="flex-1 overflow-y-auto p-6 bg-slate-50/30 custom-scrollbar min-h-0">
                     {helpHistory.length === 0 && (
                       <div className="flex gap-3 mb-4">
                         <div className="shrink-0 w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center">
