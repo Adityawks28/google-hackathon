@@ -59,6 +59,7 @@ function AdminContent() {
   }
 
   async function handleDeleteProblem(id: string) {
+    if (!window.confirm("Are you sure you want to delete this problem? This cannot be undone.")) return;
     try {
       await problemModel.delete(id);
       setProblems((prev) => prev.filter((p) => p.id !== id));
