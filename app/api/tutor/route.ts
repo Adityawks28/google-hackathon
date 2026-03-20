@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
         : "I'm having trouble responding right now.";
 
     return NextResponse.json(
-      { guidance, is_correct: store.isCorrect ?? false },
+      { guidance, isCorrect: store.isCorrect },
       { headers: { "X-RateLimit-Remaining": String(remaining) } },
     );
   } catch (err) {
