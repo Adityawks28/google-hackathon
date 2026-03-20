@@ -60,16 +60,8 @@ export class FetchContextNodeClass extends Node<
   FetchContextNodePrepRes
 > {
   async prep(store: TutorStore): Promise<FetchContextNodePrepRes> {
-    const {
-      problemId,
-      mode,
-      code,
-      error,
-      hintLevel,
-      sessionId,
-      userId,
-      message,
-    } = store.requestBody;
+    const { problemId, mode, code, error, hintLevel, sessionId, message } =
+      store.requestBody;
     const userMessage: ChatMessage = {
       role: "user",
       content: message || code,
