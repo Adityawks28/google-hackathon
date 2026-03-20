@@ -2,6 +2,11 @@
 
 UriCode is a modern AI-powered platform for learning to code, where students solve programming problems with real-time feedback from an intelligent tutor.
 
+The development repo is [here](https://github.com/Adityawks28/google-hackathon).
+
+- All development was done
+- The CI/CD pipeline is completely setup together with secrets
+
 # External dependencies
 
 To get started with UriCode, you'll need:
