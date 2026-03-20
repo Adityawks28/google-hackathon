@@ -188,6 +188,7 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
           code: null,
           error: null,
           hintLevel: null,
+          isCorrect: data.isCorrect,
         };
 
         setBrainstormHistory((prev) => [...prev, assistantMessage]);
@@ -265,6 +266,7 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
           code: null,
           error: null,
           hintLevel: nextLevel,
+          isCorrect: data.isCorrect,
         };
 
         setHelpHistory((prev) => [...prev, assistantMessage]);
@@ -330,6 +332,7 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
           code: null,
           error: null,
           hintLevel,
+          isCorrect: data.isCorrect,
         };
 
         setHelpHistory((prev) => [...prev, assistantMessage]);

@@ -81,6 +81,7 @@ export interface TutorRequest {
 
 export interface TutorResponse {
   guidance: string;
+  isCorrect?: boolean | null;
 }
 
 export interface AppUser {
