@@ -25,6 +25,7 @@ function ProblemContent() {
   const [brainstormInput, setBrainstormInput] = useState("");
   const [codingView, setCodingView] = useState<"code" | "chat">("code");
   const [helpInput, setHelpInput] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -46,6 +47,7 @@ function ProblemContent() {
         if (data) {
           setProblem(data);
           setCode(data.starterCode);
+          setSelectedLanguage(data.language);
         }
       } catch (error) {
         console.error("Error fetching problem:", error);
@@ -62,6 +64,33 @@ function ProblemContent() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [brainstormHistory, helpHistory]);
 
+  const handleLanguageChange = (newLanguage: string) => {
+    if (!problem) return;
+    setSelectedLanguage(newLanguage);
+
+    // If switching back to the problem's default language, use its starter code
+    if (newLanguage === problem.language) {
+      setCode(problem.starterCode);
+      return;
+    }
+
+    // Generate a simple skeleton for other languages
+    const functionName = problem.id.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+    switch (newLanguage) {
+      case "python":
+        setCode(`def ${functionName}(n):\n    # Your code here\n    pass`);
+        break;
+      case "java":
+        setCode(`public class Solution {\n    public void ${functionName}(int n) {\n        // Your code here\n    }\n}`);
+        break;
+      case "cpp":
+        setCode(`class Solution {\npublic:\n    void ${functionName}(int n) {\n        // Your code here\n    }\n};`);
+        break;
+      default:
+        setCode("// Your code here");
+    }
+  };
+
   async function handleBrainstormSend() {
     if (!brainstormInput.trim() || loading) return;
     const message = brainstormInput;
@@ -76,7 +105,7 @@ function ProblemContent() {
       const res = await fetch("/api/evaluate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code, problemId }),
+        body: JSON.stringify({ code, problemId, language: selectedLanguage }),
       });
       const data: EvaluateResponse = await res.json();
       setCorrect(data.correct);
@@ -343,10 +372,19 @@ function ProblemContent() {
                 >
                   <span className="material-symbols-outlined text-base">code</span>
                   Code Editor
-                  <span className="ml-1.5 text-sm font-semibold opacity-50">
-                    ( {problem.language} )
-                  </span>
-
+                  <select
+                    value={selectedLanguage}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      handleLanguageChange(e.target.value);
+                    }}
+                    className="ml-1.5 text-sm font-semibold opacity-50 bg-transparent border-none focus:ring-0 cursor-pointer outline-none hover:opacity-100 transition-opacity"
+                  >
+                    <option value="javascript">javascript</option>
+                    <option value="python">python</option>
+                    <option value="java">java</option>
+                    <option value="cpp">cpp</option>
+                  </select>
                 </button>
                 <button
                   onClick={() => setCodingView("chat")}
@@ -373,7 +411,7 @@ function ProblemContent() {
                     <CodeEditor
                       value={code}
                       onChange={setCode}
-                      language={problem.language}
+                      language={selectedLanguage}
                     />
                   </div>
 

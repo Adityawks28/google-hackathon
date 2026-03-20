@@ -51,6 +51,7 @@ export interface TutorResponse {
 export interface EvaluateRequest {
   code: string;
   problemId: string;
+  language?: string;
 }
 
 export interface EvaluateResponse {
