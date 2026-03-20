@@ -23,7 +23,7 @@ Managing the infrastructure requires the **Google Cloud CLI (`gcloud`)**. The fu
 Follow these steps to get the project running locally:
 
 1. `git clone <repository-url>`
-2. `cd ./`
+2. `cd` into the cloned directory
 3. `cp .env.dist .env` (Make sure to add your `GOOGLE_GEMINI_API_KEY`)
 4. `npm install`
 5. `docker compose up -d`
@@ -73,3 +73,30 @@ To enable automatic deployment via GitHub Actions, add the following secrets to 
 # Deployment
 
 Deployment is handled automatically via GitHub Actions. The `deploy.yaml` workflow sets up the environment and deploys the Next.js application and Firebase Functions to production whenever changes are pushed to the `main` branch.
+
+# Admin Panel
+
+The UriCode platform includes a dedicated Admin panel located at `/admin` for managing the platform's content and users.
+
+## Adding Admins
+
+To grant admin access to a user, you must add their email address to the `admins` collection in Firestore. This is the recommended way to bootstrap the first admin in a new environment (like production).
+
+1.  Open the **Firebase Console** and navigate to your **Firestore Database**.
+2.  Create a collection named `admins` (if it doesn't already exist).
+3.  Add a new document for each admin email:
+    - **Document ID**: The user's exact email address (e.g., `admin@example.com`).
+    - **Fields**:
+      - `enabled`: `boolean` set to `true`.
+      - `addedAt`: `number` (current timestamp, optional but recommended).
+
+When a user with a registered admin email logs in for the next time, the system will automatically detect their status and promote their user document to have the `admin` role.
+
+## Admin Capabilities
+
+Once logged in as an admin, you can access the `/admin` dashboard to:
+
+- **Seed Problems**: Quickly populate the database with a set of starter programming problems (e.g., FizzBuzz, Two Sum) using the "Seed Starter Problems" button. This is especially useful for setting up a fresh production environment.
+- **Manage Problems**: View all existing problems, delete outdated ones, or navigate to the `/upload` page to create new challenges manually.
+- **Generate AI Solutions**: Use the "Generate Solution" feature to automatically create a reference solution for any problem using the Gemini AI.
+- **Manage Users**: View a list of all registered users and toggle their admin status directly from the UI.
