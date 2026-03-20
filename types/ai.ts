@@ -1,0 +1,87 @@
+import { ChatMessage } from "./index";
+
+/**
+ * Inputs for building the Tutor System Prompt.
+ */
+export interface TutorSystemPromptInput {
+  problemDescription: string;
+  referenceSolution: string | null;
+  hints: string[] | null;
+  hintLevel: number;
+}
+
+/**
+ * Inputs for building the Tutor User Message.
+ */
+export interface TutorUserMessageInput {
+  message?: string | null;
+  code: string;
+  error: string | null;
+}
+
+/**
+ * Inputs for building the Brainstorm System Prompt.
+ */
+export interface BrainstormSystemPromptInput {
+  problemDescription: string;
+  starterCode: string;
+}
+
+/**
+ * Inputs for building the Brainstorm User Message.
+ */
+export interface BrainstormUserMessageInput {
+  message?: string | null;
+}
+
+/**
+ * Inputs for building the Verify Solution Prompt.
+ */
+export interface VerifySolutionInput {
+  code: string;
+  problemDescription: string;
+  referenceSolution: string | null;
+}
+
+/**
+ * The structured output format for solution verification.
+ */
+export interface VerifySolutionOutput {
+  reasoning: string;
+  is_correct: boolean;
+  mistakes: string[];
+}
+
+/**
+ * Inputs for the askBrainstorm LLM function.
+ */
+export interface AskBrainstormParams {
+  message: string;
+  history: ChatMessage[];
+  problemDescription: string;
+  starterCode: string;
+}
+
+/**
+ * Inputs for the askHelp LLM function.
+ */
+export interface AskHelpParams {
+  code: string;
+  error: string;
+  hintLevel: number;
+  history: ChatMessage[];
+  brainstormHistory: ChatMessage[];
+  problemDescription: string;
+  referenceSolution: string | null;
+  hints: string[] | null;
+  message?: string | null;
+}
+
+/**
+ * Inputs for the generateSolution LLM function.
+ */
+export interface GenerateSolutionParams {
+  problemDescription: string;
+  language: string;
+  systemPrompt: string;
+}

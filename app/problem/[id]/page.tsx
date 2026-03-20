@@ -1,30 +1,36 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { progressModel } from "@/lib/db";
 import { useAuth } from "@/hooks/useAuth";
 import { CodeEditor } from "@/components/CodeEditor";
 import { ChatMessage } from "@/components/ChatMessage";
 import { ProblemLayout } from "@/components/ProblemLayout";
-import type { EvaluateResponse, Problem } from "@/types";
+import type { Problem } from "@/types";
 import { UseTutorReturn } from "@/hooks/useTutor";
 
-function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Problem }) {
+function ProblemContent({
+  tutor,
+  problem,
+}: {
+  tutor: UseTutorReturn;
+  problem: Problem;
+}) {
   const { user } = useAuth();
   const params = useParams<{ id: string }>();
   const problemId = params.id;
-  
-  const [activeTab, setActiveTab] = useState<"brainstorm" | "code">("brainstorm");
+
+  const [activeTab, setActiveTab] = useState<"brainstorm" | "code">(
+    "brainstorm",
+  );
   const [brainstormInput, setBrainstormInput] = useState("");
   const [code, setCode] = useState("");
-  const [feedback, setFeedback] = useState<string | null>(null);
-  const [correct, setCorrect] = useState<boolean | null>(null);
-  const [submitting, setSubmitting] = useState(false);
   const [codingView, setCodingView] = useState<"code" | "chat">("code");
   const [helpInput, setHelpInput] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const pendingSaveRef = useRef<{ code: string; language: string; sessionId: string } | null>(null);
 
   const {
     brainstormHistory,
@@ -42,8 +48,17 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
     deleteSession,
     updateSessionCode,
     setHintLevel,
-    phase
+    phase,
   } = tutor;
+
+  // Flush pending code save before switching sessions
+  const flushPendingSave = useCallback(() => {
+    const pending = pendingSaveRef.current;
+    if (pending) {
+      updateSessionCode(pending.code, pending.language);
+      pendingSaveRef.current = null;
+    }
+  }, [updateSessionCode]);
 
   // Set initial tab based on phase when session loads
   useEffect(() => {
@@ -52,27 +67,29 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
     } else {
       setActiveTab("brainstorm");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSessionId]);
 
-  // Sync initial code/language
+  // Sync code/language when session changes
   useEffect(() => {
-    if (currentSessionId && sessions.length > 0 && !code) {
+    if (currentSessionId && sessions.length > 0) {
       const session = sessions.find((s) => s.id === currentSessionId);
       if (session) {
-        if (session.code) setCode(session.code);
-        else if (problem) setCode(problem.starterCode);
-
-        if (session.language) setSelectedLanguage(session.language);
-        else if (problem) setSelectedLanguage(problem.language);
+        setCode(session.code || problem?.starterCode || "");
+        setSelectedLanguage(session.language || problem?.language || "");
       }
     }
-  }, [currentSessionId, sessions, problem, code]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSessionId]);
 
-  // Persist code changes
+  // Persist code changes (debounced, flush on session switch)
   useEffect(() => {
     if (currentSessionId && code && selectedLanguage) {
-      const timer = setTimeout(() => updateSessionCode(code, selectedLanguage), 1000);
+      pendingSaveRef.current = { code, language: selectedLanguage, sessionId: currentSessionId };
+      const timer = setTimeout(() => {
+        updateSessionCode(code, selectedLanguage);
+        pendingSaveRef.current = null;
+      }, 1000);
       return () => clearTimeout(timer);
     }
   }, [code, selectedLanguage, currentSessionId, updateSessionCode]);
@@ -88,12 +105,25 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
       setCode(problem.starterCode);
       return;
     }
-    const functionName = problem.id.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+    const functionName = problem.id.replace(/-([a-z])/g, (g) =>
+      g[1].toUpperCase(),
+    );
     switch (newLanguage) {
-      case "python": setCode(`def ${functionName}(n):\n    # Your code here\n    pass`); break;
-      case "java": setCode(`public class Solution {\n    public void ${functionName}(int n) {\n        // Your code here\n    }\n}`); break;
-      case "cpp": setCode(`class Solution {\npublic:\n    void ${functionName}(int n) {\n        // Your code here\n    }\n};`); break;
-      default: setCode("// Your code here");
+      case "python":
+        setCode(`def ${functionName}(n):\n    # Your code here\n    pass`);
+        break;
+      case "java":
+        setCode(
+          `public class Solution {\n    public void ${functionName}(int n) {\n        // Your code here\n    }\n}`,
+        );
+        break;
+      case "cpp":
+        setCode(
+          `class Solution {\npublic:\n    void ${functionName}(int n) {\n        // Your code here\n    }\n};`,
+        );
+        break;
+      default:
+        setCode("// Your code here");
     }
   };
 
@@ -110,28 +140,8 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
   }
 
   async function handleSubmit() {
-    setSubmitting(true);
-    setFeedback(null);
-    try {
-      const res = await fetch("/api/evaluate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code, problemId, language: selectedLanguage }),
-      });
-      const data: EvaluateResponse = await res.json();
-      setCorrect(data.correct);
-      setFeedback(data.feedback);
-
-      if (user) {
-        if (data.correct) await progressModel.markSolved(user.uid, problemId);
-        else await progressModel.upsert(`${user.uid}_${problemId}`, { userId: user.uid, problemId, attempted: true, lastAttemptAt: Date.now() });
-      }
-    } catch (error) {
-      console.error("Submit error:", error);
-      setFeedback("Failed to evaluate. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
+    setCodingView("chat");
+    await requestHelp(code, "", "Submission");
   }
 
   async function handleHelpSend() {
@@ -144,8 +154,11 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
   async function handleGetHelp() {
     if (hintLevel >= 3) {
       setCodingView("chat");
-      const errorMsg = correct === false ? feedback || "" : "";
-      await requestHelp(code, errorMsg, "I give up. Please explain the solution to me.");
+      await requestHelp(
+        code,
+        "",
+        "I give up. Please explain the solution to me.",
+      );
       return;
     }
     const hintsFromProblem = problem?.hints || [];
@@ -155,10 +168,10 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
       if (user) await progressModel.addHint(user.uid, problemId, nextLevel);
       return;
     }
-    const errorMsg = correct === false ? feedback || "" : "";
-    const guidance = await requestHelp(code, errorMsg);
+    const guidance = await requestHelp(code, "");
     if (guidance) setCodingView("chat");
-    if (guidance && user) await progressModel.addHint(user.uid, problemId, hintLevel + 1);
+    if (guidance && user)
+      await progressModel.addHint(user.uid, problemId, hintLevel + 1);
   }
 
   return (
@@ -174,15 +187,24 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
               : "opacity-40 grayscale-[0.5] hover:opacity-80 hover:grayscale-0"
           }`}
         >
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "brainstorm" ? "bg-[#630000] shadow-[#630000]/20" : "bg-[#FFFBF9]-container-highest"}`}>
-            <span className="material-symbols-outlined text-xl">psychology</span>
+          <div
+            className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm ${activeTab === "brainstorm" ? "bg-accent-purple" : "bg-slate-400"}`}
+          >
+            <span className="material-symbols-outlined text-xl">
+              psychology
+            </span>
           </div>
           <div className="text-left">
             <p className="font-bold text-[#630000]">Brainstorm</p>
             <p className="text-xs text-[#671818] flex items-center gap-1">
               {activeTab === "brainstorm" ? (
-                <><span className="w-2 h-2 rounded-full bg-[#FFFCFB]" /> AI Assistant Online</>
-              ) : "View History"}
+                <>
+                  <span className="w-2 h-2 rounded-full bg-[#FFFCFB]" /> AI
+                  Assistant Online
+                </>
+              ) : (
+                "View History"
+              )}
             </p>
           </div>
         </button>
@@ -224,7 +246,13 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
           >
             {sessions.map((s) => (
               <option key={s.id || s.createdAt} value={s.id || ""}>
-                {new Date(s.createdAt).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                {new Date(s.createdAt).toLocaleString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
                 {s.id === currentSessionId ? " (current)" : ""}
               </option>
             ))}
@@ -234,17 +262,26 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
           {currentSessionId && sessions.length > 1 && (
             <button
               onClick={() => {
-                if (window.confirm("Are you sure you want to delete this session?")) {
+                if (
+                  window.confirm(
+                    "Are you sure you want to delete this session?",
+                  )
+                ) {
                   deleteSession(currentSessionId);
                 }
               }}
               className="flex items-center gap-1 text-xs font-bold text-[#9c0512] transition-colors hover:opacity-80"
             >
-              <span className="material-symbols-outlined text-sm">delete</span> DELETE
+              <span className="material-symbols-outlined text-sm">delete</span>{" "}
+              DELETE
             </button>
           )}
-          <button onClick={() => createNewSession()} className="flex items-center gap-1 text-xs font-bold text-[#630000] transition-colors hover:text-[#630000]/80">
-            <span className="material-symbols-outlined text-sm">add</span> NEW SESSION
+          <button
+            onClick={() => { flushPendingSave(); createNewSession(); }}
+            className="flex items-center gap-1 text-xs font-bold text-[#630000] transition-colors hover:text-[#630000]/80"
+          >
+            <span className="material-symbols-outlined text-sm">add</span> NEW
+            SESSION
           </button>
         </div>
       </div>
@@ -262,7 +299,9 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
                 </div>
               </div>
             )}
-            {brainstormHistory.map((msg, i) => <ChatMessage key={i} role={msg.role} content={msg.content} />)}
+            {brainstormHistory.map((msg, i) => (
+              <ChatMessage key={i} role={msg.role} content={msg.content} />
+            ))}
             {loading && <ChatMessage role="assistant" content="Thinking..." />}
             <div ref={chatEndRef} />
           </div>
@@ -271,7 +310,12 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
               <textarea
                 value={brainstormInput}
                 onChange={(e) => setBrainstormInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleBrainstormSend(); } }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleBrainstormSend();
+                  }
+                }}
                 placeholder="Type your approach here..."
                 rows={3}
                 className="w-full bg-[#FFFBF9]-container-high border border-[#FFFCFB]/10 rounded-xl py-4 pl-4 pr-24 focus:ring-2 focus:ring-[#630000]/20 focus:border-transparent resize-none text-sm text-[#1B1717]"
@@ -281,7 +325,8 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
                 disabled={loading || !brainstormInput.trim()}
                 className=" absolute right-3 bottom-3 bg-[#630000] text-[#FFFCFB] px-5 py-2 rounded-lg font-bold hover:bg-[#630000]/90 transition-all flex items-center gap-2 text-sm shadow-lg shadow-[#630000]/20 disabled:opacity-50"
               >
-                Send <span className=" bg-[#630000] material-symbols-outlined text-sm">send</span>
+                Send{" "}
+                <span className="bg-[#630000] material-symbols-outlined text-sm">send</span>
               </button>
             </div>
             {phase === "brainstorm" && (
@@ -289,7 +334,8 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
                 onClick={handleStartCoding}
                 className="w-full bg-[#630000] text-[#FFFCFB] font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all hover:-translate-y-0.5 shadow-lg shadow-[#630000]/20"
               >
-                Start Coding <span className="material-symbols-outlined">arrow_forward</span>
+                Start Coding{" "}
+                <span className="material-symbols-outlined">arrow_forward</span>
               </button>
             )}
           </div>
@@ -301,8 +347,16 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
               onClick={() => setCodingView("code")}
               className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold transition-colors ${codingView === "code" ? "border-b-2 border-[#630000] text-[#630000]" : "text-[#671818] hover:text-[#630000]"}`}
             >
-              <span className="material-symbols-outlined text-base">code</span> Code Editor
-              <select value={selectedLanguage} onChange={(e) => { e.stopPropagation(); handleLanguageChange(e.target.value); }} className="ml-1.5 text-sm font-semibold opacity-50 bg-transparent border-none focus:ring-0 cursor-pointer outline-none hover:opacity-100 transition-opacity">
+              <span className="material-symbols-outlined text-base">code</span>{" "}
+              Code Editor
+              <select
+                value={selectedLanguage}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  handleLanguageChange(e.target.value);
+                }}
+                className="ml-1.5 text-sm font-semibold opacity-50 bg-transparent border-none focus:ring-0 cursor-pointer outline-none hover:opacity-100 transition-opacity"
+              >
                 <option value="javascript">javascript</option>
                 <option value="python">python</option>
                 <option value="java">java</option>
@@ -350,8 +404,12 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
                     <div className="text-white bg-[#FFFBF9]-container-high px-4 py-3 rounded-2xl rounded-tl-none max-w-[80%]"><p className="text-sm text-[#671818] leading-relaxed">Ask questions about your code or approach. You can also use &quot;Get Help&quot; on the Code tab for progressive hints.</p></div>
                   </div>
                 )}
-                {helpHistory.map((msg, i) => <ChatMessage key={i} role={msg.role} content={msg.content} />)}
-                {loading && <ChatMessage role="assistant" content="Thinking..." />}
+                {helpHistory.map((msg, i) => (
+                  <ChatMessage key={i} role={msg.role} content={msg.content} />
+                ))}
+                {loading && (
+                  <ChatMessage role="assistant" content="Thinking..." />
+                )}
                 <div ref={chatEndRef} />
               </div>
               <div className="p-4 bg-[#FFFBF9] border-t border-[#FFFCFB]/10 shrink-0">

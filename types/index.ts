@@ -3,6 +3,18 @@ export interface TestCase {
   expectedOutput: string;
 }
 
+export interface SymbolBreakdown {
+  symbol: string;
+  meaning: string;
+}
+
+export interface MiniLessonConcept {
+  title: string;
+  explanation: string;
+  codeExample: string;
+  symbolBreakdown?: SymbolBreakdown[];
+}
+
 export interface Problem {
   id: string;
   title: string;
@@ -15,6 +27,8 @@ export interface Problem {
   createdAt: number;
   referenceSolution: string | null;
   hints: string[] | null;
+  beginnerStarterCode: string | null;
+  miniLesson: MiniLessonConcept[] | null;
 }
 
 export interface UserProgress {
@@ -66,17 +80,6 @@ export interface TutorRequest {
 
 export interface TutorResponse {
   guidance: string;
-}
-
-export interface EvaluateRequest {
-  code: string;
-  problemId: string;
-  language?: string;
-}
-
-export interface EvaluateResponse {
-  correct: boolean;
-  feedback: string;
 }
 
 export interface AppUser {

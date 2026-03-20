@@ -17,18 +17,6 @@ HINT LEVELS:
 
 Always respond in a warm, encouraging tone. The learner should feel supported, not judged.`;
 
-export const EVALUATOR_PROMPT = `You are a code evaluator. Given a coding problem and a user's solution, determine if the solution is correct.
-
-Evaluate the code against the provided test cases. For each test case, reason through whether the code would produce the expected output for the given input.
-
-Respond with a JSON object:
-{
-  "correct": true/false,
-  "feedback": "Brief explanation of what's correct or what needs fixing. Do NOT give the solution — just point to where the issue is."
-}
-
-Be strict about correctness but encouraging in feedback. If the solution is close, acknowledge what's working well.`;
-
 export const SOLUTION_GENERATOR_PROMPT = `You are a coding expert. Given a problem description and test cases, generate a clean, well-commented reference solution.
 
 The solution should:

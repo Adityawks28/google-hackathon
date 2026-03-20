@@ -28,16 +28,6 @@ export function Header() {
         <div className="flex items-center gap-6">
           <nav className="flex items-center gap-8 pr-6 border-r border-[#FFFCFB]/10">
             <Link
-              href="/analytics"
-              className="flex items-center gap-2 text-sm font-medium font-newsreader tracking-tight text-[#671818] hover:text-[#630000] transition-colors duration-200"
-            >
-              <span className="material-symbols-outlined text-lg">
-                analytics
-              </span>
-              Analytics
-            </Link>
-
-            <Link
               href="/dashboard"
               className="flex items-center gap-2 text-sm font-medium font-newsreader tracking-tight text-[#671818] hover:text-[#630000] transition-colors duration-200"
             >

@@ -39,11 +39,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const solution = await generateSolution(
-      problem.description,
-      problem.language,
-      SOLUTION_GENERATOR_PROMPT,
-    );
+    const solution = await generateSolution({
+      problemDescription: problem.description,
+      language: problem.language,
+      systemPrompt: SOLUTION_GENERATOR_PROMPT,
+    });
 
     await problemModel.update(problemId, {
       referenceSolution: solution,

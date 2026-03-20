@@ -1,14 +1,17 @@
+import {
+  TutorSystemPromptInput,
+  TutorUserMessageInput,
+  BrainstormSystemPromptInput,
+  BrainstormUserMessageInput,
+  VerifySolutionInput,
+} from "@/types/ai";
+
 export function buildTutorSystemPrompt({
   problemDescription,
   referenceSolution,
   hints,
   hintLevel,
-}: {
-  problemDescription: string;
-  referenceSolution: string | null;
-  hints: string[] | null;
-  hintLevel: number;
-}): string {
+}: TutorSystemPromptInput): string {
   const safeHints = hints || [];
   const revealedHints = safeHints.slice(0, hintLevel);
   const hiddenHints = safeHints.slice(hintLevel);
@@ -59,11 +62,7 @@ export function buildTutorUserMessage({
   message,
   code,
   error,
-}: {
-  message?: string;
-  code: string;
-  error: string;
-}): string {
+}: TutorUserMessageInput): string {
   const userMsgText = message || "I need help with my code.";
   const codeText = code || "No code provided.";
   const errorText = error || "No errors reported.";
@@ -81,10 +80,7 @@ ${errorText}`;
 export function buildBrainstormSystemPrompt({
   problemDescription,
   starterCode,
-}: {
-  problemDescription: string;
-  starterCode: string;
-}): string {
+}: BrainstormSystemPromptInput): string {
   return `You are CodeSensei, an AI coding tutor. Right now you are in the BRAINSTORM phase — the learner has not started coding yet.
 
 YOUR ROLE:
@@ -116,11 +112,27 @@ The starter code above is provided as part of the problem and is not written by 
 
 export function buildBrainstormUserMessage({
   message,
-}: {
-  message?: string;
-}): string {
+}: BrainstormUserMessageInput): string {
   const userMsgText = message || "I need help brainstorming.";
 
   return `# User message
 ${userMsgText}`;
+}
+
+export function buildVerifySolutionPrompt({
+  code,
+  problemDescription,
+  referenceSolution,
+}: VerifySolutionInput): string {
+  return `You are an expert AI tutor evaluating a student's code.
+Verify the provided user attempt against the problem description and reference solution, and consider edge cases.
+
+User Code:
+${code}
+
+Problem Description:
+${problemDescription}
+
+Reference Solution:
+${referenceSolution || "None provided"}`;
 }

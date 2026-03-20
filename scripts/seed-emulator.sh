@@ -21,6 +21,116 @@ done
 
 echo "Seeding problems..."
 
+# Odd or Even
+curl -s -X PATCH "$BASE_URL/problems/odd-or-even" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fields": {
+      "title": {"stringValue": "Odd or Even"},
+      "description": {"stringValue": "Write a function `oddOrEven(n)` that takes a number and returns the string `\"even\"` if the number is even, or `\"odd\"` if the number is odd."},
+      "starterCode": {"stringValue": "function oddOrEven(n) {\n  // Your code here\n}"},
+      "difficulty": {"stringValue": "easy"},
+      "language": {"stringValue": "javascript"},
+      "createdBy": {"stringValue": "seed"},
+      "createdAt": {"integerValue": "1700000000000"},
+      "testCases": {"arrayValue": {"values": [
+        {"mapValue": {"fields": {"input": {"stringValue": "4"}, "expectedOutput": {"stringValue": "\"even\""}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "7"}, "expectedOutput": {"stringValue": "\"odd\""}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "0"}, "expectedOutput": {"stringValue": "\"even\""}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "-3"}, "expectedOutput": {"stringValue": "\"odd\""}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "1"}, "expectedOutput": {"stringValue": "\"odd\""}}}}
+      ]}}
+    }
+  }' > /dev/null && echo "  - Odd or Even"
+
+# Sum of Array
+curl -s -X PATCH "$BASE_URL/problems/sum-array" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fields": {
+      "title": {"stringValue": "Sum of Array"},
+      "description": {"stringValue": "Write a function `sumArray(nums)` that takes an array of numbers and returns their total sum.\n\nIf the array is empty, return `0`."},
+      "starterCode": {"stringValue": "function sumArray(nums) {\n  // Your code here\n}"},
+      "difficulty": {"stringValue": "easy"},
+      "language": {"stringValue": "javascript"},
+      "createdBy": {"stringValue": "seed"},
+      "createdAt": {"integerValue": "1700000000000"},
+      "testCases": {"arrayValue": {"values": [
+        {"mapValue": {"fields": {"input": {"stringValue": "[1, 2, 3]"}, "expectedOutput": {"stringValue": "6"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "[]"}, "expectedOutput": {"stringValue": "0"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "[10]"}, "expectedOutput": {"stringValue": "10"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "[-1, -2, -3]"}, "expectedOutput": {"stringValue": "-6"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "[0, 0, 0]"}, "expectedOutput": {"stringValue": "0"}}}}
+      ]}}
+    }
+  }' > /dev/null && echo "  - Sum of Array"
+
+# Find the Maximum
+curl -s -X PATCH "$BASE_URL/problems/find-max" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fields": {
+      "title": {"stringValue": "Find the Maximum"},
+      "description": {"stringValue": "Write a function `findMax(nums)` that takes an array of numbers and returns the largest number.\n\nYou may assume the array always has at least one number."},
+      "starterCode": {"stringValue": "function findMax(nums) {\n  // Your code here\n}"},
+      "difficulty": {"stringValue": "easy"},
+      "language": {"stringValue": "javascript"},
+      "createdBy": {"stringValue": "seed"},
+      "createdAt": {"integerValue": "1700000000000"},
+      "testCases": {"arrayValue": {"values": [
+        {"mapValue": {"fields": {"input": {"stringValue": "[3, 7, 2, 9, 1]"}, "expectedOutput": {"stringValue": "9"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "[5]"}, "expectedOutput": {"stringValue": "5"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "[-1, -5, -2]"}, "expectedOutput": {"stringValue": "-1"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "[4, 4, 4]"}, "expectedOutput": {"stringValue": "4"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "[1, 2, 3, 4, 100]"}, "expectedOutput": {"stringValue": "100"}}}}
+      ]}}
+    }
+  }' > /dev/null && echo "  - Find the Maximum"
+
+# Count Vowels
+curl -s -X PATCH "$BASE_URL/problems/count-vowels" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fields": {
+      "title": {"stringValue": "Count Vowels"},
+      "description": {"stringValue": "Write a function `countVowels(str)` that takes a string and returns the number of vowels (a, e, i, o, u) in it.\n\nThe function should be case-insensitive — both `\"A\"` and `\"a\"` count as vowels."},
+      "starterCode": {"stringValue": "function countVowels(str) {\n  // Your code here\n}"},
+      "difficulty": {"stringValue": "easy"},
+      "language": {"stringValue": "javascript"},
+      "createdBy": {"stringValue": "seed"},
+      "createdAt": {"integerValue": "1700000000000"},
+      "testCases": {"arrayValue": {"values": [
+        {"mapValue": {"fields": {"input": {"stringValue": "\"hello\""}, "expectedOutput": {"stringValue": "2"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "\"\""}, "expectedOutput": {"stringValue": "0"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "\"bcdfg\""}, "expectedOutput": {"stringValue": "0"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "\"aeiou\""}, "expectedOutput": {"stringValue": "5"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "\"HeLLo WoRLd\""}, "expectedOutput": {"stringValue": "3"}}}}
+      ]}}
+    }
+  }' > /dev/null && echo "  - Count Vowels"
+
+# Double Each
+curl -s -X PATCH "$BASE_URL/problems/double-each" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fields": {
+      "title": {"stringValue": "Double Each"},
+      "description": {"stringValue": "Write a function `doubleEach(nums)` that takes an array of numbers and returns a new array where every number is doubled.\n\nIf the array is empty, return an empty array `[]`."},
+      "starterCode": {"stringValue": "function doubleEach(nums) {\n  // Your code here\n}"},
+      "difficulty": {"stringValue": "easy"},
+      "language": {"stringValue": "javascript"},
+      "createdBy": {"stringValue": "seed"},
+      "createdAt": {"integerValue": "1700000000000"},
+      "testCases": {"arrayValue": {"values": [
+        {"mapValue": {"fields": {"input": {"stringValue": "[1, 2, 3]"}, "expectedOutput": {"stringValue": "[2,4,6]"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "[]"}, "expectedOutput": {"stringValue": "[]"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "[5]"}, "expectedOutput": {"stringValue": "[10]"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "[0, -1, 4]"}, "expectedOutput": {"stringValue": "[0,-2,8]"}}}},
+        {"mapValue": {"fields": {"input": {"stringValue": "[-3, -5]"}, "expectedOutput": {"stringValue": "[-6,-10]"}}}}
+      ]}}
+    }
+  }' > /dev/null && echo "  - Double Each"
+
 # FizzBuzz
 curl -s -X PATCH "$BASE_URL/problems/fizzbuzz" \
   -H "Content-Type: application/json" \
