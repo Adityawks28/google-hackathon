@@ -1,7 +1,6 @@
 import { Node, Flow } from "pocketflow";
 import { ChatMessage, TutorRequest } from "@/types";
 import { askBrainstorm, askHelp } from "@/lib/gemini";
-import { BRAINSTORM_SYSTEM_PROMPT, HELP_SYSTEM_PROMPT } from "@/lib/prompts";
 import { sessionModel, problemModel } from "@/lib/db";
 
 export interface TutorStore {
@@ -11,6 +10,7 @@ export interface TutorStore {
     problemDescription: string;
     referenceSolution: string | null;
     hints: string[] | null;
+    starterCode: string;
   };
 }
 
@@ -52,6 +52,7 @@ type FetchContextNodeExecRes = {
   problemDescription: string;
   referenceSolution: string | null;
   hints: string[] | null;
+  starterCode: string;
   userMessage: ChatMessage;
 };
 
@@ -82,12 +83,14 @@ export class FetchContextNodeClass extends Node<
     let problemDescription = "";
     let referenceSolution: string | null = null;
     let hints: string[] | null = null;
+    let starterCode = "";
     try {
       const problem = await problemModel.getById(problemId);
       if (problem) {
         problemDescription = problem.description ?? "";
         referenceSolution = problem.referenceSolution ?? null;
         hints = problem.hints ?? null;
+        starterCode = problem.starterCode ?? "";
       }
 
       await sessionModel.addMessage(sessionId, mode, userMessage);
@@ -95,7 +98,13 @@ export class FetchContextNodeClass extends Node<
     } catch (err) {
       console.error("Error fetching context or saving user message:", err);
     }
-    return { problemDescription, referenceSolution, hints, userMessage };
+    return {
+      problemDescription,
+      referenceSolution,
+      hints,
+      starterCode,
+      userMessage,
+    };
   }
 
   async post(
@@ -108,6 +117,7 @@ export class FetchContextNodeClass extends Node<
       problemDescription: execRes.problemDescription,
       referenceSolution: execRes.referenceSolution,
       hints: execRes.hints,
+      starterCode: execRes.starterCode,
     };
     return "continue";
   }
@@ -137,18 +147,27 @@ export class LLMProcessNodeClass extends Node<
     body,
     ragContext,
   }: LLMProcessNodePrepRes): Promise<LLMProcessNodeExecRes> {
-    const { mode, code, error, hintLevel, history, brainstormHistory } = body;
+    const {
+      mode,
+      code,
+      error,
+      hintLevel,
+      history,
+      brainstormHistory,
+      message,
+    } = body;
     const problemDescription = ragContext?.problemDescription || "";
     const referenceSolution = ragContext?.referenceSolution || null;
     const hints = ragContext?.hints || null;
+    const starterCode = ragContext?.starterCode || "";
     let guidance: string;
 
     if (mode === "brainstorm") {
       guidance = await askBrainstorm(
-        code,
+        message || code,
         history,
         problemDescription,
-        BRAINSTORM_SYSTEM_PROMPT,
+        starterCode,
       );
     } else {
       guidance = await askHelp(
@@ -158,11 +177,12 @@ export class LLMProcessNodeClass extends Node<
         history,
         brainstormHistory ?? [],
         problemDescription,
-        HELP_SYSTEM_PROMPT,
         referenceSolution,
         hints,
+        message,
       );
     }
+
     return { guidance };
   }
 
