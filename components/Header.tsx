@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
+import { Logo } from "@/components/Logo";
 
 export function Header() {
   const { user, signOut } = useAuth();
@@ -16,11 +17,9 @@ export function Header() {
           href="/dashboard"
           className="flex items-center gap-3 hover:opacity-80 transition-opacity"
         >
-          <span className="material-symbols-outlined text-[#630000] text-2xl">
-            terminal
-          </span>
-          <h1 className="text-2xl font-bold tracking-tighter text-[#630000] font-newsreader">
-            Google Hackathon
+          <Logo size={28} />
+          <h1 className="text-lg font-bold tracking-tight text-slate-900">
+            UriCode
           </h1>
         </Link>
 

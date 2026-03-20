@@ -258,11 +258,8 @@ function ProblemContent({
           </span>
           <select
             value={currentSessionId || ""}
-            onChange={(e) => {
-              flushPendingSave();
-              switchSession(e.target.value);
-            }}
-            className="rounded-md border-[#FFFCFB]/10 bg-[#FFFBF9] py-1 pl-2 pr-8 text-sm font-medium focus:border-[#630000] focus:ring-[#630000]"
+            onChange={(e) => { flushPendingSave(); switchSession(e.target.value); }}
+            className="rounded-md border-slate-200 bg-white py-1 pl-2 pr-8 text-sm font-medium focus:border-primary focus:ring-primary"
           >
             {sessions.map((s) => (
               <option key={s.id || s.createdAt} value={s.id || ""}>
@@ -297,11 +294,8 @@ function ProblemContent({
             </button>
           )}
           <button
-            onClick={() => {
-              flushPendingSave();
-              createNewSession();
-            }}
-            className="flex items-center gap-1 text-xs font-bold text-[#630000] transition-colors hover:text-[#630000]/80"
+            onClick={() => { flushPendingSave(); createNewSession(); }}
+            className="flex items-center gap-1 text-xs font-bold text-primary transition-colors hover:text-primary/80"
           >
             <span className="material-symbols-outlined text-sm">add</span> NEW
             SESSION

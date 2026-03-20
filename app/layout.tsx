@@ -22,9 +22,9 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: "Crimson Scholar — AI Coding Tutor",
+  title: "UriCode — AI Coding Tutor",
   description:
-    "Learn to code through guided practice. Crimson Scholar is an AI tutor that helps you discover solutions through progressive hints and guiding questions — never just gives you the answer.",
+    "Learn to code through guided practice. UriCode is an AI tutor that helps you discover solutions through progressive hints and guiding questions — never just gives you the answer.",
 };
 
 export default function RootLayout({

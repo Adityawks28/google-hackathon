@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "@/components/Logo";
 
 export default function Home() {
   return (
@@ -6,11 +7,9 @@ export default function Home() {
       {/* Header */}
       <header className="flex items-center justify-between border-b border-slate-200 px-6 py-4 md:px-20 lg:px-40 bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-3xl text-[#630000]">
-            school
-          </span>
+          <Logo size={36} />
           <h2 className="text-slate-900 text-xl font-bold tracking-tight">
-            Google Hackathon
+            UriCode
           </h2>
         </div>
         <div className="flex items-center gap-6">
@@ -37,7 +36,7 @@ export default function Home() {
               AI Coding Tutor
             </div>
             <h1 className="text-slate-900 text-5xl md:text-7xl font-black tracking-tight leading-none">
-              Google Hackathon
+              UriCode
             </h1>
             <p className="text-slate-600 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">
               Learn to code through guided practice. Our Socratic AI tutor helps
@@ -61,7 +60,7 @@ export default function Home() {
         <section className="px-6 py-20 lg:px-40">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900">
-              Why Google Hackathon?
+              Why UriCode?
             </h2>
             <p className="text-slate-600 max-w-xl mx-auto">
               Experience a new way of learning that emphasizes understanding
@@ -135,13 +134,11 @@ export default function Home() {
       <footer className="bg-white border-t border-slate-200 px-6 py-12 md:px-20 lg:px-40">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#630000]">
-              school
-            </span>
-            <span className="font-bold text-slate-900">Google Hackathon</span>
+            <Logo size={24} />
+            <span className="font-bold text-slate-900">UriCode</span>
           </div>
           <p className="text-slate-400 text-sm">
-            &copy; 2024 Google Hackathon. All rights reserved.
+            &copy; 2024 UriCode. All rights reserved.
           </p>
         </div>
       </footer>

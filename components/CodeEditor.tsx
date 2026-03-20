@@ -15,7 +15,7 @@ export function CodeEditor({
   language = "javascript",
   readOnly = false,
 }: CodeEditorProps) {
-  const themeName = "crimson-scholar";
+  const themeName = "UriCode";
 
   return (
     <Editor
