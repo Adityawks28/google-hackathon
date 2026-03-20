@@ -10,8 +10,10 @@ import { ProgressTracker } from "@/components/ProgressTracker";
 import Link from "next/link";
 import type { Problem, UserProgress } from "@/types";
 
+import { Header } from "@/components/Header";
+
 function DashboardContent() {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { isAdmin } = useAdmin();
   const [problems, setProblems] = useState<Problem[]>([]);
   const [progress, setProgress] = useState<UserProgress[]>([]);
@@ -69,57 +71,7 @@ function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-background-light">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-primary text-2xl">
-              terminal
-            </span>
-            <h1 className="text-lg font-bold tracking-tight text-slate-900">
-              Google Hackathon
-            </h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/analytics"
-              className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-200 transition-colors"
-            >
-              <span className="material-symbols-outlined text-sm">
-                analytics
-              </span>
-              Analytics
-            </Link>
-            {isAdmin && (
-              <Link
-                href="/admin"
-                className="flex items-center gap-1.5 rounded-lg bg-red-50 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-100 transition-colors"
-              >
-                <span className="material-symbols-outlined text-sm">
-                  admin_panel_settings
-                </span>
-                Admin
-              </Link>
-            )}
-            <div className="flex items-center gap-3 pl-3 border-l border-slate-200">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary text-sm">
-                  person
-                </span>
-              </div>
-              <span className="text-sm font-medium text-slate-700">
-                {user?.displayName}
-              </span>
-              <button
-                onClick={signOut}
-                className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
-              >
-                Sign out
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="mx-auto max-w-5xl px-6 py-8 space-y-8">
         <div>
