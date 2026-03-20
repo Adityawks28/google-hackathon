@@ -1,184 +1,75 @@
-# Google Hackathon — AI Coding Tutor
+# UriCode - The GOAT of AI tutors
 
-An AI coding tutor that guides learners through programming problems using progressive hints and guiding questions — never giving direct answers.
+UriCode is a modern AI-powered platform for learning to code, where students solve programming problems with real-time feedback from an intelligent tutor.
 
-## Tech Stack
+# External dependencies
 
-- **Frontend:** Next.js 16 (App Router), TypeScript, Tailwind CSS
-- **AI:** Google Gemini API (`gemini-2.5-flash-lite`)
-- **Auth:** Firebase Authentication (Google Sign-In)
-- **Database:** Cloud Firestore
-- **Containerization:** Docker, Docker Compose
-- **Code Editor:** Monaco Editor (`@monaco-editor/react`)
-- **State:** Zustand, React Context
-- **Deployment:** Vercel
+To get started with UriCode, you'll need:
 
-## External Dependencies
+- **Docker**: For running the Firebase emulator environment.
+- **Lefthook**: For managing pre-commit hooks and ensuring code quality.
+- **Node.js & npm**: To run the Next.js frontend.
+- **Firebase CLI (Optional)**: Only needed for manual tasks like rule management or generating CI tokens. The project includes a Dockerized emulator suite that handles this for local development.
+- **Python 3.11+**: Required for Firebase Functions.
 
-- **Node.js 18+**
-- **Docker & Docker Compose**
-- **Google Gemini API Key**
-- [Lefthook](https://github.com/evilmartians/lefthook) (installed globally: `brew install lefthook` or similar)
-- A Firebase project with Authentication and Firestore enabled
+# Terraform
 
-## Getting Started
+The infrastructure is managed using Terraform: [https://github.com/kevinher7/terraform-hack](https://github.com/kevinher7/terraform-hack)
 
-### 1. Clone and install
+Managing the infrastructure requires the **Google Cloud CLI (`gcloud`)**. The full setup instructions, including IAM permissions and Firebase configuration details, are located in the [Terraform repository](https://github.com/kevinher7/terraform-hack).
 
-```bash
-git clone https://github.com/your-org/google-hackathon.git
-cd google-hackathon
-npm install
-```
+# Local Development
 
-### 2. Set up environment variables
+Follow these steps to get the project running locally:
 
-```bash
-cp .env.dist .env
-```
+1. `git clone <repository-url>`
+2. `cd ./`
+3. `cp .env.dist .env` (Make sure to add your `GOOGLE_GEMINI_API_KEY`)
+4. `npm install`
+5. `docker compose up -d`
+6. `npm run seed` (Seed the local emulator with initial problems)
+7. `npm run dev`
 
-| Variable                                   | Where to get it                                                  |
-| ------------------------------------------ | ---------------------------------------------------------------- |
-| `GOOGLE_GEMINI_API_KEY`                    | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
-| `NEXT_PUBLIC_FIREBASE_API_KEY`             | Firebase Console → Project Settings → Your apps                  |
-| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`         | Same as above                                                    |
-| `NEXT_PUBLIC_FIREBASE_PROJECT_ID`          | Same as above                                                    |
-| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`      | Same as above                                                    |
-| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Same as above                                                    |
-| `NEXT_PUBLIC_FIREBASE_APP_ID`              | Same as above                                                    |
+The website should be running on [http://localhost:3000](http://localhost:3000).
 
-### 3. Start Firebase Emulators with Docker
+> **Note**: The default `.env.dist` variables work by default with the local firebase emulator setup. No need to use production credentials for local development.
 
-```bash
-docker-compose up -d
-```
+## Docker Compose
 
-**Available Services:**
+The project uses Docker Compose to spin up a full Firebase Emulator suite, allowing you to develop without touching production data. The following emulators are used:
 
-- **Firebase Emulator UI:** [http://localhost:4000](http://localhost:4000)
-- **Firestore Emulator:** `localhost:8080`
-- **Auth Emulator:** `localhost:9099`
+- **Emulator UI**: [http://localhost:4000](http://localhost:4000)
+- **Firestore**: [http://localhost:8080](http://localhost:8080)
+- **Auth**: [http://localhost:9099](http://localhost:9099)
+- **Storage**: [http://localhost:9199](http://localhost:9199)
+- **Functions**: [http://localhost:5001](http://localhost:5001)
 
-### 4. Run the dev server
+# Firebase Project Setup (Production)
 
-```bash
-npm run dev
-```
+For full production deployment, you'll need a Firebase project.
 
-Open [http://localhost:3000](http://localhost:3000) and login to the locally hosted app.
+1.  **Create a Project**: Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project.
+2.  **Enable Features**: You have two options to enable the required features (Firestore, Authentication, Storage, and Functions):
+    - **Option A (Terraform - Recommended)**: Use the [Terraform repository](https://github.com/kevinher7/terraform-hack) to automate the setup. This is recommended as SSR is handled via Cloud Functions and requires specific IAM permissions.
+    - **Option B (Manual)**: In the Firebase Console, manually enable:
+      - **Firestore Database** (Start in Test Mode or Production with proper rules).
+      - **Authentication** (Enable Google Sign-In).
+      - **Storage** (Enable default bucket).
+      - **Functions** (Ensure Python support is available).
 
-### 5. Set up admin access (Local)
+# GitHub Secrets
 
-1. Sign in to the app at [http://localhost:3000](http://localhost:3000)
-2. Find your UID in the **Firebase Emulator UI** (Auth section) at [http://localhost:4000](http://localhost:4000)
-3. Promote yourself to admin:
+To enable automatic deployment via GitHub Actions, add the following secrets to your GitHub repository (**Settings > Secrets and variables > Actions**):
 
-```bash
-# For local setup, the script uses the default 'google-hackathon' project id
-npx tsx scripts/seed-admin.ts YOUR_UID
-```
+- `FIREBASE_TOKEN`: Obtain by running `firebase login:ci` (requires local Firebase CLI).
+- `GOOGLE_GEMINI_API_KEY`: Your Google Gemini API key.
+- `NEXT_PUBLIC_FIREBASE_API_KEY`: Your Firebase project's API key.
+- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`: Your Firebase project's auth domain.
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`: Your Firebase project ID.
+- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`: Your Firebase storage bucket.
+- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`: Your Firebase messaging sender ID.
+- `NEXT_PUBLIC_FIREBASE_APP_ID`: Your Firebase app ID.
 
-4. Refresh the app — you'll see an **Admin** button in the dashboard header
+# Deployment
 
-### 6. Set up admin access (Production)
-
-1. Sign in to the app in production (this creates your user doc in Firestore)
-2. Find your UID in the **Firebase Console** → Authentication → Users
-3. Set your production environment variables in `.env` (temporarily or via a dedicated production file)
-4. Promote yourself to admin:
-
-```bash
-# Ensure your .env contains the production Firebase credentials
-npx tsx scripts/seed-admin.ts YOUR_UID
-```
-
-5. Refresh the app — you'll see an **Admin** button in the dashboard header
-
-### 7. Seed starter problems
-
-1. Go to `/admin` (requires admin access)
-2. Click **"Seed Starter Problems"** to add FizzBuzz, Reverse String, and Two Sum
-
-## Project Structure
-
-```
-app/
-  page.tsx                  # Landing page
-  layout.tsx                # Root layout with AuthProvider
-  login/page.tsx            # Google sign-in
-  dashboard/page.tsx        # Problem list + progress
-  problem/[id]/page.tsx     # Problem solver (editor + hints)
-  chat/[problemId]/page.tsx # AI tutor chat
-  code/[problemId]/page.tsx # Standalone code editor
-  upload/page.tsx           # Create problem (admin only)
-  admin/page.tsx            # Admin panel
-  api/
-    tutor/route.ts          # Hint generation
-    evaluate/route.ts       # Code evaluation
-    generate-sol/route.ts   # Reference solution gen (admin)
-
-components/
-  CodeEditor.tsx            # Monaco editor wrapper
-  HintPanel.tsx             # Progressive hint display
-  ChatMessage.tsx           # Chat message bubble
-  ProblemCard.tsx           # Problem list card
-  ProgressTracker.tsx       # User stats + progress bar
-  ProtectedRoute.tsx        # Auth guard
-  AdminRoute.tsx            # Admin guard
-  providers/
-    AuthProvider.tsx         # Firebase auth context
-
-lib/
-  firebase.ts               # Firebase client init
-  gemini.ts                 # Gemini API client
-  prompts.ts                # AI prompt templates
-  rate-limit.ts             # In-memory rate limiter
-  lessons.ts                # Seed problems + Firestore helpers
-  admin.ts                  # Admin check utility
-
-hooks/
-  useAuth.ts                # Auth context consumer
-  useAdmin.ts               # Admin role check
-  useTutor.ts               # Tutor interaction flow
-
-types/
-  index.ts                  # Shared TypeScript types
-
-scripts/
-  seed-admin.ts             # Promote user to admin
-```
-
-## Key Features
-
-- **AI Tutoring:** Never gives direct answers — uses 3 levels of progressive hints
-- **Code Editor:** Full Monaco editor with syntax highlighting and dark theme
-- **Code Evaluation:** AI evaluates submissions against test cases
-- **Chat Interface:** Conversational AI tutor for deeper discussions
-- **Admin Panel:** Seed problems, manage users, generate reference solutions
-- **Role-Based Access:** Admin vs regular user permissions
-
-## Available Scripts
-
-| Command                               | Description             |
-| ------------------------------------- | ----------------------- |
-| `npm run dev`                         | Start dev server        |
-| `npm run build`                       | Production build        |
-| `npm run start`                       | Start production server |
-| `npm run lint`                        | Run ESLint              |
-| `npx tsx scripts/seed-admin.ts <uid>` | Promote a user to admin |
-
-## Firestore Collections
-
-| Collection | Description                            |
-| ---------- | -------------------------------------- |
-| `problems` | Coding problems with test cases        |
-| `users`    | User profiles with role (user/admin)   |
-| `progress` | Per-user per-problem progress tracking |
-
-## Team Notes
-
-- `NEXT_PUBLIC_FIREBASE_*` env vars are safe to expose client-side — they're identifiers, not secrets
-- `GOOGLE_GEMINI_API_KEY` is server-only — must NOT be prefixed with `NEXT_PUBLIC_`
-- Firestore security rules are what protect your data — keep them locked down
-- First user to sign in needs to be manually promoted to admin via the seed script
-- Rate limiting is in-memory (resets on server restart) — fine for hackathon, not for production
+Deployment is handled automatically via GitHub Actions. The `deploy.yaml` workflow sets up the environment and deploys the Next.js application and Firebase Functions to production whenever changes are pushed to the `main` branch.
