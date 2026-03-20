@@ -90,6 +90,7 @@ export async function askHelp({
   problemDescription,
   referenceSolution,
   hints,
+  starterCode,
   message,
 }: AskHelpParams): Promise<string> {
   const brainstormPlan =
@@ -102,6 +103,7 @@ export async function askHelp({
     referenceSolution,
     hints,
     hintLevel,
+    starterCode,
   });
 
   if (brainstormPlan) {
@@ -139,6 +141,7 @@ export async function askAssessment({
   problemDescription,
   referenceSolution,
   hints,
+  starterCode,
   message,
   verificationResult,
 }: AskAssessmentParams): Promise<string> {
@@ -155,6 +158,7 @@ export async function askAssessment({
     is_correct: verificationResult.is_correct,
     reasoning: verificationResult.reasoning,
     mistakes: verificationResult.mistakes,
+    starterCode,
   });
 
   if (brainstormPlan) {
@@ -187,11 +191,13 @@ export async function verifySolution({
   code,
   problemDescription,
   referenceSolution,
+  starterCode,
 }: VerifySolutionInput): Promise<VerifySolutionOutput> {
   const prompt = buildVerifySolutionPrompt({
     code,
     problemDescription,
     referenceSolution,
+    starterCode,
   });
 
   const response = await getAI().models.generateContent({

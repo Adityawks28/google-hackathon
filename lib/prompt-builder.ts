@@ -12,6 +12,7 @@ export function buildTutorSystemPrompt({
   referenceSolution,
   hints,
   hintLevel,
+  starterCode,
 }: TutorSystemPromptInput): string {
   const safeHints = hints || [];
   const revealedHints = safeHints.slice(0, hintLevel);
@@ -34,6 +35,14 @@ export function buildTutorSystemPrompt({
 
 # Problem Description
 ${problemDescription}
+
+# Starter Code
+${starterCode}
+
+IMPORTANT REGARDING STARTER CODE:
+The starter code above is provided as part of the problem and is not written by the user. 
+- If the user-provided code changes this starter code, add a comment telling them that they should not change this part of the code and to return it to the original starter code.
+- Do not criticize or critique the starter code otherwise.
 
 # Problem Solution
 DO NOT GIVE THE SOLUTION TO THE USER. The following is the verified solution that solves the problem
@@ -67,6 +76,7 @@ export function buildAssessmentSystemPrompt({
   is_correct,
   reasoning,
   mistakes,
+  starterCode,
 }: AssessmentSystemPromptInput): string {
   const safeHints = hints || [];
   const revealedHints = safeHints.slice(0, hintLevel);
@@ -90,18 +100,42 @@ export function buildAssessmentSystemPrompt({
 # Problem Description
 ${problemDescription}
 
+# Starter Code
+${starterCode}
+
+IMPORTANT REGARDING STARTER CODE:
+The starter code above is provided as part of the problem and is not written by the user. 
+- If the user-provided code changes this starter code, add a comment telling them that they should not change this part of the code and to return it to the original starter code.
+- Do not criticize or critique the starter code otherwise.
+
 # Expert Evaluation Results
 - Status: ${is_correct ? "Correct" : "Incorrect"}
 - Reasoning: ${reasoning}
 - Mistakes Found: ${mistakes.length > 0 ? mistakes.map((m) => `- ${m}`).join("\n") : "None"}
 
+# Problem Solution
+DO NOT GIVE THE SOLUTION TO THE USER. The following is the verified solution that solves the problem
+${solutionText}
+
+# Hints
+These is a list of hints that you are allowed to tell the user
+
+## Hints already provided by the user
+${revealedHintsText}
+
+## Hints still not provided
+${hiddenHintsText}
+
 # Your Task
 Provide a focused assessment of the submission:
 1. If there are mistakes, list them clearly as bullet points. Do NOT give the direct fix, but guide them.
-2. End with a brief, encouraging message.
+2. If it's correct, provide positive reinforcement and briefly mention why it's a good solution.
+3. Suggest the next logical hint from the \"Hints still not provided\" list if they seem stuck.
+4. Keep your tone encouraging and professional.
+5. If the user-provided code changes the starter code, add a comment telling them that they should not change this part of the code and to return it to the original starter code.
 
 # Instructions
-- DO NOT include headers like "# Submission Assessment" or "Status". These are handled by the UI.
+- DO NOT include headers like \"# Submission Assessment\" or \"Status\". These are handled by the UI.
 - DO NOT reveal the reference solution.
 - Keep the response concise and focused on the evaluation.`;
 }
@@ -142,8 +176,8 @@ YOUR ROLE:
 
 IMPORTANT:
 - Never write code or pseudocode. This is a thinking exercise.
-- If the learner tries to jump to code, gently redirect: "Let's think about the approach first before we code."
-- When the learner has a solid plan, encourage them to start coding: "That sounds like a solid plan! Go ahead and start implementing it."
+- If the learner tries to jump to code, gently redirect: \"Let's think about the approach first before we code.\"
+- When the learner has a solid plan, encourage them to start coding: \"That sounds like a solid plan! Go ahead and start implementing it.\"
 - Keep responses concise — 2-4 sentences max.
 
 # Problem Description
@@ -171,6 +205,7 @@ export function buildVerifySolutionPrompt({
   code,
   problemDescription,
   referenceSolution,
+  starterCode,
 }: VerifySolutionInput): string {
   return `You are an expert AI tutor evaluating a student's code.
 Verify the provided user attempt against the problem description and reference solution, and consider edge cases.
@@ -182,5 +217,13 @@ Problem Description:
 ${problemDescription}
 
 Reference Solution:
-${referenceSolution || "None provided"}`;
+${referenceSolution || "None provided"}
+
+# Starter Code
+${starterCode}
+
+IMPORTANT REGARDING STARTER CODE:
+The starter code above is provided as part of the problem and is not written by the user. 
+- If the user-provided code changes this starter code, add a comment telling them that they should not change this part of the code and to return it to the original starter code.
+- Do not criticize or critique the starter code otherwise.`;
 }

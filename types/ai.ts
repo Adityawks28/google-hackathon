@@ -8,6 +8,7 @@ export interface TutorSystemPromptInput {
   referenceSolution: string | null;
   hints: string[] | null;
   hintLevel: number;
+  starterCode: string;
 }
 
 /**
@@ -50,6 +51,7 @@ export interface VerifySolutionInput {
   code: string;
   problemDescription: string;
   referenceSolution: string | null;
+  starterCode: string;
 }
 
 /**
@@ -83,6 +85,7 @@ export interface AskHelpParams {
   problemDescription: string;
   referenceSolution: string | null;
   hints: string[] | null;
+  starterCode: string;
   message?: string | null;
 }
 

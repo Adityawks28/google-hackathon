@@ -198,6 +198,7 @@ export class LLMProcessNodeClass extends Node<
         problemDescription,
         referenceSolution,
         hints,
+        starterCode,
         message,
       });
     }
@@ -235,6 +236,7 @@ type VerifyNodePrepRes = {
   code: string;
   problemDescription: string;
   referenceSolution: string | null;
+  starterCode: string;
 };
 
 type VerifyNodeExecRes = {
@@ -247,6 +249,7 @@ export class VerifyNodeClass extends Node<TutorStore, VerifyNodePrepRes> {
       code: store.requestBody.code,
       problemDescription: store.ragContext?.problemDescription || "",
       referenceSolution: store.ragContext?.referenceSolution || null,
+      starterCode: store.ragContext?.starterCode || "",
     };
   }
 
@@ -254,11 +257,13 @@ export class VerifyNodeClass extends Node<TutorStore, VerifyNodePrepRes> {
     code,
     problemDescription,
     referenceSolution,
+    starterCode,
   }: VerifyNodePrepRes): Promise<VerifyNodeExecRes> {
     const verificationResult = await verifySolution({
       code,
       problemDescription,
       referenceSolution,
+      starterCode,
     });
 
     return { verificationResult };
@@ -314,6 +319,7 @@ export class AssessmentNodeClass extends Node<
     const problemDescription = ragContext?.problemDescription || "";
     const referenceSolution = ragContext?.referenceSolution || null;
     const hints = ragContext?.hints || null;
+    const starterCode = ragContext?.starterCode || "";
 
     const guidance = await askAssessment({
       code,
@@ -324,6 +330,7 @@ export class AssessmentNodeClass extends Node<
       problemDescription,
       referenceSolution,
       hints,
+      starterCode,
       message,
       verificationResult,
     });
