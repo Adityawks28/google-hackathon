@@ -4,12 +4,29 @@ interface RateLimitEntry {
 }
 
 const store = new Map<string, RateLimitEntry>();
+let callsSinceCleanup = 0;
+const CLEANUP_INTERVAL = 100;
+
+function pruneExpired() {
+  const now = Date.now();
+  for (const [key, entry] of store) {
+    if (now >= entry.resetAt) {
+      store.delete(key);
+    }
+  }
+}
 
 export function rateLimit(
   key: string,
   maxRequests: number = 30,
   windowMs: number = 60_000,
 ): { allowed: boolean; remaining: number } {
+  callsSinceCleanup++;
+  if (callsSinceCleanup >= CLEANUP_INTERVAL) {
+    callsSinceCleanup = 0;
+    pruneExpired();
+  }
+
   const now = Date.now();
   const entry = store.get(key);
 
