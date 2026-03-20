@@ -16,9 +16,9 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: "Google Hackathon — AI Coding Tutor",
+  title: "UriCode — AI Coding Tutor",
   description:
-    "Learn to code through guided practice. Google Hackathon is an AI tutor that helps you discover solutions through progressive hints and guiding questions — never just gives you the answer.",
+    "Learn to code through guided practice. UriCode is an AI tutor that helps you discover solutions through progressive hints and guiding questions — never just gives you the answer.",
 };
 
 export default function RootLayout({

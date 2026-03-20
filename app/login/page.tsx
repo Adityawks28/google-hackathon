@@ -39,7 +39,7 @@ export default function LoginPage() {
           <Logo size={64} />
         </div>
         <h1 className="mb-2 text-center text-2xl font-bold text-slate-900">
-          Welcome to Google Hackathon
+          Welcome to UriCode
         </h1>
         <p className="mb-8 text-center text-sm text-slate-500">
           Sign in to start your coding journey

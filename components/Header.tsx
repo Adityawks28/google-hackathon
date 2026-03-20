@@ -19,7 +19,7 @@ export function Header() {
         >
           <Logo size={28} />
           <h1 className="text-lg font-bold tracking-tight text-slate-900">
-            Google Hackathon
+            UriCode
           </h1>
         </Link>
 
