@@ -3,6 +3,8 @@ import type { ChatMessage } from "@/types";
 import {
   buildTutorSystemPrompt,
   buildTutorUserMessage,
+  buildBrainstormSystemPrompt,
+  buildBrainstormUserMessage,
 } from "@/lib/prompt-builder";
 
 let _ai: GoogleGenAI | undefined;
@@ -40,17 +42,20 @@ export async function askBrainstorm(
   message: string,
   history: ChatMessage[],
   problemDescription: string,
-  systemPrompt: string,
 ): Promise<string> {
+  const currentTurnContent = buildBrainstormUserMessage({ message });
+
   const contents = [
     ...history.map(mapToGeminiContent),
     {
       role: "user",
-      parts: [{ text: message }],
+      parts: [{ text: currentTurnContent }],
     },
   ];
 
-  const systemInstruction = `${systemPrompt}\n\nPROBLEM CONTEXT:\n${problemDescription}`;
+  const systemInstruction = buildBrainstormSystemPrompt({
+    problemDescription,
+  });
 
   const response = await getAI().models.generateContent({
     model: GEMINI_MODEL,

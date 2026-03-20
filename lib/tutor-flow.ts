@@ -1,7 +1,6 @@
 import { Node, Flow } from "pocketflow";
 import { ChatMessage, TutorRequest } from "@/types";
 import { askBrainstorm, askHelp } from "@/lib/gemini";
-import { BRAINSTORM_SYSTEM_PROMPT, HELP_SYSTEM_PROMPT } from "@/lib/prompts";
 import { sessionModel, problemModel } from "@/lib/db";
 
 export interface TutorStore {
@@ -161,10 +160,9 @@ export class LLMProcessNodeClass extends Node<
 
     if (mode === "brainstorm") {
       guidance = await askBrainstorm(
-        code,
+        message || code,
         history,
         problemDescription,
-        BRAINSTORM_SYSTEM_PROMPT,
       );
     } else {
       guidance = await askHelp(
