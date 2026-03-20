@@ -60,19 +60,17 @@ function ProblemContent({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSessionId]);
 
-  // Sync initial code/language
+  // Sync code/language when session changes
   useEffect(() => {
-    if (currentSessionId && sessions.length > 0 && !code) {
+    if (currentSessionId && sessions.length > 0) {
       const session = sessions.find((s) => s.id === currentSessionId);
       if (session) {
-        if (session.code) setCode(session.code);
-        else if (problem) setCode(problem.starterCode);
-
-        if (session.language) setSelectedLanguage(session.language);
-        else if (problem) setSelectedLanguage(problem.language);
+        setCode(session.code || problem?.starterCode || "");
+        setSelectedLanguage(session.language || problem?.language || "");
       }
     }
-  }, [currentSessionId, sessions, problem, code]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSessionId]);
 
   // Persist code changes
   useEffect(() => {
