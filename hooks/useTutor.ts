@@ -51,10 +51,7 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
       setSessions(userSessions);
 
       if (userSessions.length > 0) {
-        // Select the most recent session if none selected
-        if (!currentSessionId) {
-          setCurrentSessionId(userSessions[0].id!);
-        }
+        setCurrentSessionId((prev) => prev ?? userSessions[0].id!);
       } else {
         // Create first session
         const newSession = await sessionModel.create(userId, problemId);
@@ -66,7 +63,7 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
     } finally {
       setIsLoaded(true);
     }
-  }, [userId, problemId, currentSessionId]);
+  }, [userId, problemId]);
 
   useEffect(() => {
     loadSessions();
@@ -101,6 +98,10 @@ export function useTutor(problemId: string, userId?: string): UseTutorReturn {
       try {
         const newSession = await sessionModel.create(userId, problemId);
         setSessions((prev) => [newSession, ...prev]);
+        setBrainstormHistory([]);
+        setHelpHistory([]);
+        setPhase("brainstorm");
+        setHintLevel(0);
         setCurrentSessionId(newSession.id!);
         return newSession;
       } catch (error) {

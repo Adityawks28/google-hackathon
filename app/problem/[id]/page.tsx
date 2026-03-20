@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { progressModel } from "@/lib/db";
 import { useAuth } from "@/hooks/useAuth";
@@ -30,6 +30,7 @@ function ProblemContent({
   const [helpInput, setHelpInput] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const pendingSaveRef = useRef<{ code: string; language: string; sessionId: string } | null>(null);
 
   const {
     brainstormHistory,
@@ -50,6 +51,15 @@ function ProblemContent({
     phase,
   } = tutor;
 
+  // Flush pending code save before switching sessions
+  const flushPendingSave = useCallback(() => {
+    const pending = pendingSaveRef.current;
+    if (pending) {
+      updateSessionCode(pending.code, pending.language);
+      pendingSaveRef.current = null;
+    }
+  }, [updateSessionCode]);
+
   // Set initial tab based on phase when session loads
   useEffect(() => {
     if (phase === "code" || phase === "help") {
@@ -60,27 +70,26 @@ function ProblemContent({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSessionId]);
 
-  // Sync initial code/language
+  // Sync code/language when session changes
   useEffect(() => {
-    if (currentSessionId && sessions.length > 0 && !code) {
+    if (currentSessionId && sessions.length > 0) {
       const session = sessions.find((s) => s.id === currentSessionId);
       if (session) {
-        if (session.code) setCode(session.code);
-        else if (problem) setCode(problem.starterCode);
-
-        if (session.language) setSelectedLanguage(session.language);
-        else if (problem) setSelectedLanguage(problem.language);
+        setCode(session.code || problem?.starterCode || "");
+        setSelectedLanguage(session.language || problem?.language || "");
       }
     }
-  }, [currentSessionId, sessions, problem, code]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSessionId]);
 
-  // Persist code changes
+  // Persist code changes (debounced, flush on session switch)
   useEffect(() => {
     if (currentSessionId && code && selectedLanguage) {
-      const timer = setTimeout(
-        () => updateSessionCode(code, selectedLanguage),
-        1000,
-      );
+      pendingSaveRef.current = { code, language: selectedLanguage, sessionId: currentSessionId };
+      const timer = setTimeout(() => {
+        updateSessionCode(code, selectedLanguage);
+        pendingSaveRef.current = null;
+      }, 1000);
       return () => clearTimeout(timer);
     }
   }, [code, selectedLanguage, currentSessionId, updateSessionCode]);
@@ -241,7 +250,7 @@ function ProblemContent({
           </span>
           <select
             value={currentSessionId || ""}
-            onChange={(e) => switchSession(e.target.value)}
+            onChange={(e) => { flushPendingSave(); switchSession(e.target.value); }}
             className="rounded-md border-slate-200 bg-white py-1 pl-2 pr-8 text-sm font-medium focus:border-primary focus:ring-primary"
           >
             {sessions.map((s) => (
@@ -277,7 +286,7 @@ function ProblemContent({
             </button>
           )}
           <button
-            onClick={() => createNewSession()}
+            onClick={() => { flushPendingSave(); createNewSession(); }}
             className="flex items-center gap-1 text-xs font-bold text-primary transition-colors hover:text-primary/80"
           >
             <span className="material-symbols-outlined text-sm">add</span> NEW
