@@ -9,6 +9,19 @@ function getAI(): GoogleGenAI {
   return _ai;
 }
 
+/**
+ * Maps our internal ChatMessage structure to the Gemini SDK's Content format.
+ */
+function mapToGeminiContent(msg: ChatMessage) {
+  return {
+    role: msg.role === "assistant" ? "model" : "user",
+    parts: [{ text: msg.content }],
+  };
+}
+
+/**
+ * Format history for plain-text display in system context.
+ */
 function formatHistory(history: ChatMessage[]): string {
   return history
     .map(
@@ -25,20 +38,20 @@ export async function askBrainstorm(
   problemDescription: string,
   systemPrompt: string,
 ): Promise<string> {
-  const conversationHistory = formatHistory(history);
+  const contents = [
+    ...history.map(mapToGeminiContent),
+    {
+      role: "user",
+      parts: [{ text: message }],
+    },
+  ];
 
-  const userMessage = `
-Problem: ${problemDescription}
-
-${conversationHistory ? `Conversation so far:\n${conversationHistory}\n` : ""}
-Learner: ${message}
-
-Respond as the tutor. Help them think through the approach — no code.`;
+  const systemInstruction = `${systemPrompt}\n\nPROBLEM CONTEXT:\n${problemDescription}`;
 
   const response = await getAI().models.generateContent({
     model: GEMINI_MODEL,
-    contents: userMessage,
-    config: { systemInstruction: systemPrompt },
+    contents,
+    config: { systemInstruction },
   });
 
   return (
@@ -55,33 +68,48 @@ export async function askHelp(
   brainstormHistory: ChatMessage[],
   problemDescription: string,
   systemPrompt: string,
+  referenceSolution: string | null,
+  hints: string[] | null,
 ): Promise<string> {
-  const brainstormContext = formatHistory(brainstormHistory);
-  const helpConversation = formatHistory(history);
+  const brainstormPlan =
+    brainstormHistory.length > 0
+      ? `\n\nBRAINSTORM PLAN (What the learner planned):\n${formatHistory(brainstormHistory)}`
+      : "";
 
-  const userMessage = `
-Problem: ${problemDescription}
+  const refSolutionContext = referenceSolution
+    ? `\n\nREFERENCE SOLUTION:\n${referenceSolution}`
+    : "";
+  const hintsContext =
+    hints && hints.length > 0
+      ? `\n\nAVAILABLE HINTS:\n${hints.map((h, i) => `${i + 1}. ${h}`).join("\n")}`
+      : "";
 
-Brainstorm conversation (what the learner planned):
-${brainstormContext || "(No brainstorm conversation)"}
+  const systemInstruction = `${systemPrompt}\n\nPROBLEM CONTEXT:\n${problemDescription}${refSolutionContext}${hintsContext}${brainstormPlan}`;
 
+  const currentTurnContent = `
 Learner's current code:
 \`\`\`
 ${code}
 \`\`\`
 
-${error ? `Error message: ${error}` : ""}
+${error ? `Error message: ${error}` : "No specific error reported."}
 
 Current help level: ${hintLevel} (1=hint, 2=more specific, 3=teach/give up)
 
-${helpConversation ? `Help conversation so far:\n${helpConversation}` : ""}
-
 Provide level ${hintLevel} help based on their specific code and mistakes.`;
+
+  const contents = [
+    ...history.map(mapToGeminiContent),
+    {
+      role: "user",
+      parts: [{ text: currentTurnContent }],
+    },
+  ];
 
   const response = await getAI().models.generateContent({
     model: GEMINI_MODEL,
-    contents: userMessage,
-    config: { systemInstruction: systemPrompt },
+    contents,
+    config: { systemInstruction },
   });
 
   return (

@@ -9,6 +9,8 @@ export interface TutorStore {
   messages: ChatMessage[];
   ragContext?: {
     problemDescription: string;
+    referenceSolution: string | null;
+    hints: string[] | null;
   };
 }
 
@@ -48,6 +50,8 @@ type FetchContextNodePrepRes = {
 
 type FetchContextNodeExecRes = {
   problemDescription: string;
+  referenceSolution: string | null;
+  hints: string[] | null;
   userMessage: ChatMessage;
 };
 
@@ -84,10 +88,14 @@ export class FetchContextNodeClass extends Node<
     mode,
   }: FetchContextNodePrepRes): Promise<FetchContextNodeExecRes> {
     let problemDescription = "";
+    let referenceSolution: string | null = null;
+    let hints: string[] | null = null;
     try {
       const problem = await problemModel.getById(problemId);
       if (problem) {
         problemDescription = problem.description ?? "";
+        referenceSolution = problem.referenceSolution ?? null;
+        hints = problem.hints ?? null;
       }
 
       await sessionModel.addMessage(sessionId, mode, userMessage);
@@ -95,7 +103,7 @@ export class FetchContextNodeClass extends Node<
     } catch (err) {
       console.error("Error fetching context or saving user message:", err);
     }
-    return { problemDescription, userMessage };
+    return { problemDescription, referenceSolution, hints, userMessage };
   }
 
   async post(
@@ -104,7 +112,11 @@ export class FetchContextNodeClass extends Node<
     execRes: FetchContextNodeExecRes,
   ) {
     store.messages.push(execRes.userMessage);
-    store.ragContext = { problemDescription: execRes.problemDescription };
+    store.ragContext = {
+      problemDescription: execRes.problemDescription,
+      referenceSolution: execRes.referenceSolution,
+      hints: execRes.hints,
+    };
     return "continue";
   }
 }
@@ -135,6 +147,8 @@ export class LLMProcessNodeClass extends Node<
   }: LLMProcessNodePrepRes): Promise<LLMProcessNodeExecRes> {
     const { mode, code, error, hintLevel, history, brainstormHistory } = body;
     const problemDescription = ragContext?.problemDescription || "";
+    const referenceSolution = ragContext?.referenceSolution || null;
+    const hints = ragContext?.hints || null;
     let guidance: string;
 
     if (mode === "brainstorm") {
@@ -153,6 +167,8 @@ export class LLMProcessNodeClass extends Node<
         brainstormHistory ?? [],
         problemDescription,
         HELP_SYSTEM_PROMPT,
+        referenceSolution,
+        hints,
       );
     }
     return { guidance };
