@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { Logo } from "@/components/Logo";
 
 export default function LoginPage() {
   const { user, loading, signInWithGoogle } = useAuth();
@@ -35,9 +36,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-background-light px-4">
       <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-lg">
         <div className="flex justify-center mb-6">
-          <span className="material-symbols-outlined text-primary text-5xl">
-            school
-          </span>
+          <Logo size={64} />
         </div>
         <h1 className="mb-2 text-center text-2xl font-bold text-slate-900">
           Welcome to Google Hackathon

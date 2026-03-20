@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "@/components/Logo";
 
 export default function Home() {
   return (
@@ -6,9 +7,7 @@ export default function Home() {
       {/* Header */}
       <header className="flex items-center justify-between border-b border-slate-200 px-6 py-4 md:px-20 lg:px-40 bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-3xl text-primary">
-            school
-          </span>
+          <Logo size={36} />
           <h2 className="text-slate-900 text-xl font-bold tracking-tight">
             Google Hackathon
           </h2>
@@ -135,9 +134,7 @@ export default function Home() {
       <footer className="bg-white border-t border-slate-200 px-6 py-12 md:px-20 lg:px-40">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary">
-              school
-            </span>
+            <Logo size={24} />
             <span className="font-bold text-slate-900">Google Hackathon</span>
           </div>
           <p className="text-slate-400 text-sm">
