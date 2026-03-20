@@ -61,9 +61,9 @@ export class FetchContextNodeClass extends Node<
     const userMessage: ChatMessage = {
       role: "user",
       content: message || code,
-      code,
-      error,
-      hintLevel,
+      code: mode === "help" ? code : null,
+      error: mode === "help" ? error || null : null,
+      hintLevel: mode === "help" ? hintLevel : null,
       timestamp: Date.now(),
     };
     return { problemId, userMessage, userId, mode };
@@ -159,6 +159,9 @@ export class LLMProcessNodeClass extends Node<
       role: "assistant",
       content: execRes.guidance,
       timestamp: Date.now(),
+      code: null,
+      error: null,
+      hintLevel: null,
     };
     store.messages.push(aiMessage);
 

@@ -49,6 +49,9 @@ export function useTutor(problemId: string, userId?: string) {
           role: "user",
           content: message,
           timestamp: Date.now(),
+          code: null,
+          error: null,
+          hintLevel: null,
         };
 
         setBrainstormHistory((prev) => [...prev, userMessage]);
@@ -76,6 +79,9 @@ export function useTutor(problemId: string, userId?: string) {
           role: "assistant",
           content: data.guidance,
           timestamp: Date.now(),
+          code: null,
+          error: null,
+          hintLevel: null,
         };
 
         setBrainstormHistory((prev) => [...prev, assistantMessage]);
@@ -109,6 +115,9 @@ export function useTutor(problemId: string, userId?: string) {
         role: "user",
         content: userMessageText,
         timestamp: Date.now(),
+        code,
+        error: error || null,
+        hintLevel: nextLevel,
       };
       setHelpHistory((prev) => [...prev, userMessage]);
 
@@ -141,6 +150,9 @@ export function useTutor(problemId: string, userId?: string) {
           role: "assistant",
           content: data.guidance,
           timestamp: Date.now(),
+          code: null,
+          error: null,
+          hintLevel: null,
         };
 
         setHelpHistory((prev) => [...prev, assistantMessage]);
@@ -163,6 +175,9 @@ export function useTutor(problemId: string, userId?: string) {
           role: "user",
           content: message,
           timestamp: Date.now(),
+          code,
+          error: null,
+          hintLevel,
         };
 
         setHelpHistory((prev) => [...prev, userMessage]);
@@ -175,7 +190,7 @@ export function useTutor(problemId: string, userId?: string) {
             error: "",
             hintLevel,
             message,
-            history: helpHistory,
+            history: helpHistory, // Previous history
             problemId,
             mode: "help",
             brainstormHistory,
@@ -191,6 +206,9 @@ export function useTutor(problemId: string, userId?: string) {
           role: "assistant",
           content: data.guidance,
           timestamp: Date.now(),
+          code: null,
+          error: null,
+          hintLevel: null,
         };
 
         setHelpHistory((prev) => [...prev, assistantMessage]);
