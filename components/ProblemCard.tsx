@@ -24,7 +24,7 @@ export function ProblemCard({
   return (
     <Link
       href={`/problem/${id}`}
-      className="group flex items-center justify-between rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-primary/30"
+      className="group flex items-center justify-between rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-[#630000]/30"
     >
       <div className="flex items-center gap-4">
         <div
@@ -40,7 +40,7 @@ export function ProblemCard({
             {solved ? "check_circle" : "code"}
           </span>
         </div>
-        <h3 className="text-base font-semibold text-slate-900 group-hover:text-primary transition-colors">
+        <h3 className="text-base font-semibold text-slate-900 group-hover:text-[#630000] transition-colors">
           {title}
         </h3>
       </div>

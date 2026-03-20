@@ -16,12 +16,14 @@ export function ProgressTracker({
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-bold text-slate-900">Your Progress</h3>
-        <span className="text-2xl font-black text-primary">{percentage}%</span>
+        <span className="text-2xl font-black text-[#630000]">
+          {percentage}%
+        </span>
       </div>
 
       <div className="mb-4 h-3 w-full overflow-hidden rounded-full bg-slate-100">
         <div
-          className="h-full rounded-full bg-primary transition-all duration-500"
+          className="h-full rounded-full bg-[#630000] transition-all duration-500"
           style={{ width: `${percentage}%` }}
         />
       </div>

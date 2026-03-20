@@ -67,7 +67,7 @@ function DashboardContent() {
   const attemptedCount = progress.filter((p) => p.attempted).length;
 
   return (
-    <div className="min-h-screen bg-background-light">
+    <div className="min-h-screen bg-[#FFFCFB]-light">
       <Header />
 
       <main className="mx-auto max-w-5xl px-6 py-8 space-y-8">
@@ -88,7 +88,7 @@ function DashboardContent() {
 
         <div>
           <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary">
+            <span className="material-symbols-outlined text-[#630000]">
               assignment
             </span>
             Problems
@@ -96,7 +96,7 @@ function DashboardContent() {
 
           {loading ? (
             <div className="flex items-center justify-center py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#630000] border-t-transparent" />
             </div>
           ) : problems.length === 0 ? (
             <div className="text-center py-16 rounded-2xl border border-slate-200 bg-white">

@@ -61,7 +61,12 @@ function AdminContent() {
   }
 
   async function handleDeleteProblem(id: string) {
-    if (!window.confirm("Are you sure you want to delete this problem? This cannot be undone.")) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this problem? This cannot be undone.",
+      )
+    )
+      return;
     try {
       await problemModel.delete(id);
       setProblems((prev) => prev.filter((p) => p.id !== id));
@@ -106,7 +111,7 @@ function AdminContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background-light">
+    <div className="min-h-screen bg-[#FFFCFB]-light">
       <Header />
 
       <main className="mx-auto max-w-5xl px-4 py-8">
