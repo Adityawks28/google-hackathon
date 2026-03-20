@@ -192,7 +192,7 @@ function UploadContent() {
               value={starterCode}
               onChange={(e) => setStarterCode(e.target.value)}
               rows={4}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 font-fira-code text-sm focus:border-blue-500 focus:outline-none"
             />
           </div>
 

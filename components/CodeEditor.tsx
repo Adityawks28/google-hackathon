@@ -15,13 +15,25 @@ export function CodeEditor({
   language = "javascript",
   readOnly = false,
 }: CodeEditorProps) {
+  const themeName = "crimson-scholar";
+
   return (
     <Editor
       height="100%"
       language={language}
       value={value}
       onChange={(val) => onChange(val ?? "")}
-      theme="vs-dark"
+      theme={themeName}
+      beforeMount={(monaco) => {
+        monaco.editor.defineTheme(themeName, {
+          base: "vs",
+          inherit: true,
+          rules: [],
+          colors: {
+            "editor.background": "#f5efee",
+          },
+        });
+      }}
       options={{
         minimap: { enabled: false },
         fontSize: 14,

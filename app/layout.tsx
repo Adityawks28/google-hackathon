@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
-import { Inter, Fira_Code } from "next/font/google";
+import { Newsreader, Manrope, Fira_Code } from "next/font/google";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import "./globals.css";
 
-const inter = Inter({
+const newsreader = Newsreader({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-newsreader",
+  display: "swap",
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
   display: "swap",
 });
 
@@ -16,9 +22,9 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: "Google Hackathon — AI Coding Tutor",
+  title: "Crimson Scholar — AI Coding Tutor",
   description:
-    "Learn to code through guided practice. Google Hackathon is an AI tutor that helps you discover solutions through progressive hints and guiding questions — never just gives you the answer.",
+    "Learn to code through guided practice. Crimson Scholar is an AI tutor that helps you discover solutions through progressive hints and guiding questions — never just gives you the answer.",
 };
 
 export default function RootLayout({
@@ -27,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${firaCode.variable}`}>
+    <html lang="en" className={`${newsreader.variable} ${manrope.variable} ${firaCode.variable}`}>
       <head>
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
@@ -35,7 +41,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased">
+      <body className="font-manrope bg-[#FFFCFB] text-[#1B1717] antialiased">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

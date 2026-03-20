@@ -2,11 +2,11 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-background-light">
+    <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-[#FFFCFB]-light">
       {/* Header */}
       <header className="flex items-center justify-between border-b border-slate-200 px-6 py-4 md:px-20 lg:px-40 bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-3xl text-primary">
+          <span className="material-symbols-outlined text-3xl text-[#630000]">
             school
           </span>
           <h2 className="text-slate-900 text-xl font-bold tracking-tight">
@@ -16,13 +16,13 @@ export default function Home() {
         <div className="flex items-center gap-6">
           <Link
             href="/login"
-            className="text-slate-600 text-sm font-medium hover:text-primary transition-colors"
+            className="text-slate-600 text-sm font-medium hover:text-[#630000] transition-colors"
           >
             Login
           </Link>
           <Link
             href="/login"
-            className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg text-sm font-bold transition-all shadow-sm"
+            className="bg-[#630000] hover:bg-[#630000]/90 text-white px-6 py-2 rounded-lg text-sm font-bold transition-all shadow-sm"
           >
             Get Started
           </Link>
@@ -31,7 +31,7 @@ export default function Home() {
 
       <main className="flex-grow">
         {/* Hero */}
-        <section className="flex flex-col items-center justify-center text-center px-6 py-20 lg:py-32 bg-gradient-to-b from-white to-background-light">
+        <section className="flex flex-col items-center justify-center text-center px-6 py-20 lg:py-32 bg-gradient-to-b from-white to-[#FFFCFB]-light">
           <div className="max-w-3xl space-y-6">
             <div className="inline-flex items-center rounded-full bg-blue-50 px-4 py-1.5 text-sm font-semibold text-blue-600 ring-1 ring-inset ring-blue-600/20">
               AI Coding Tutor
@@ -49,7 +49,7 @@ export default function Home() {
             <div className="pt-4">
               <Link
                 href="/login"
-                className="inline-block bg-primary hover:bg-primary/90 text-white px-10 py-4 rounded-xl text-lg font-bold shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95"
+                className="inline-block bg-[#630000] hover:bg-[#630000]/90 text-white px-10 py-4 rounded-xl text-lg font-bold shadow-xl shadow-[#630000]/20 transition-all hover:scale-105 active:scale-95"
               >
                 Get Started
               </Link>
@@ -70,7 +70,7 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-8 rounded-2xl border border-slate-200 bg-white hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6">
+              <div className="w-12 h-12 bg-[#630000]/10 rounded-xl flex items-center justify-center text-[#630000] mb-6">
                 <span className="material-symbols-outlined">
                   psychology_alt
                 </span>
@@ -84,7 +84,7 @@ export default function Home() {
               </p>
             </div>
             <div className="p-8 rounded-2xl border border-slate-200 bg-white hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6">
+              <div className="w-12 h-12 bg-[#630000]/10 rounded-xl flex items-center justify-center text-[#630000] mb-6">
                 <span className="material-symbols-outlined">terminal</span>
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-3">
@@ -96,7 +96,7 @@ export default function Home() {
               </p>
             </div>
             <div className="p-8 rounded-2xl border border-slate-200 bg-white hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6">
+              <div className="w-12 h-12 bg-[#630000]/10 rounded-xl flex items-center justify-center text-[#630000] mb-6">
                 <span className="material-symbols-outlined">bolt</span>
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-3">
@@ -111,7 +111,7 @@ export default function Home() {
         </section>
 
         {/* CTA */}
-        <section className="px-6 py-20 bg-primary/5">
+        <section className="px-6 py-20 bg-[#630000]/5">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <h2 className="text-3xl md:text-5xl font-black text-slate-900">
               Ready to master coding?
@@ -123,7 +123,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Link
                 href="/login"
-                className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-lg font-bold transition-all shadow-md"
+                className="bg-[#630000] hover:bg-[#630000]/90 text-white px-8 py-3 rounded-lg font-bold transition-all shadow-md"
               >
                 Start Learning Now
               </Link>
@@ -135,7 +135,7 @@ export default function Home() {
       <footer className="bg-white border-t border-slate-200 px-6 py-12 md:px-20 lg:px-40">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary">
+            <span className="material-symbols-outlined text-[#630000]">
               school
             </span>
             <span className="font-bold text-slate-900">Google Hackathon</span>
