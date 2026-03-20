@@ -190,6 +190,22 @@ function CodeContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Probl
 
   return (
     <div className="flex flex-1 flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-0">
+      {/* Chat Header */}
+      <div className="px-6 py-4 flex items-center gap-3 border-b border-slate-200 bg-white shrink-0">
+        <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white">
+          <span className="material-symbols-outlined text-xl">
+            code
+          </span>
+        </div>
+        <div>
+          <p className="font-bold text-slate-900">&lt;&gt; Coding</p>
+          <p className="text-xs text-slate-500 flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-green-500" />
+            AI Assistant Online
+          </p>
+        </div>
+      </div>
+
       {/* Session Selector */}
       <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2 shrink-0">
         <div className="flex items-center gap-3">
@@ -354,24 +370,6 @@ function CodeContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Probl
       {/* Chat View */}
       {codingView === "chat" && (
         <div className="flex flex-1 flex-col min-h-0">
-          {/* Chat Header */}
-          <div className="px-6 py-3 flex items-center gap-3 border-b border-slate-200 bg-white shrink-0">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary text-sm">
-                smart_toy
-              </span>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-slate-900">
-                AI Tutor
-              </p>
-              <p className="text-[10px] text-slate-500 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                Online
-              </p>
-            </div>
-          </div>
-
           <div className="flex-1 overflow-y-auto p-6 bg-slate-50/30 custom-scrollbar min-h-0">
             {helpHistory.length === 0 && (
               <div className="flex gap-3 mb-4">
