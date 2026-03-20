@@ -1,3 +1,6 @@
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 interface ChatMessageProps {
   role: "user" | "assistant";
   content: string;
@@ -28,7 +31,46 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
             : "bg-slate-100 text-slate-800 rounded-2xl rounded-tl-none"
         }`}
       >
-        <p className="whitespace-pre-wrap">{content}</p>
+        <div className="prose prose-sm max-w-none">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+              code: ({ className, children, ...props }) => {
+                const match = /language-(\w+)/.exec(className || "");
+                return !match ? (
+                  <code
+                    className={`${isUser ? "bg-primary-dark/20 text-white" : "bg-slate-200 text-slate-900"} px-1 py-0.5 rounded font-mono text-xs`}
+                    {...props}
+                  >
+                    {children}
+                  </code>
+                ) : (
+                  <pre
+                    className={`${isUser ? "bg-primary-dark/30 text-white" : "bg-slate-800 text-slate-100"} p-3 rounded-lg overflow-x-auto my-2 font-mono text-xs`}
+                  >
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  </pre>
+                );
+              },
+              ul: ({ children }) => (
+                <ul className="list-disc ml-4 mb-2">{children}</ul>
+              ),
+              ol: ({ children }) => (
+                <ul className="list-decimal ml-4 mb-2">{children}</ul>
+              ),
+              li: ({ children }) => <li className="mb-1">{children}</li>,
+              strong: ({ children }) => (
+                <strong className="font-bold">{children}</strong>
+              ),
+              em: ({ children }) => <em className="italic">{children}</em>,
+            }}
+          >
+            {content}
+          </ReactMarkdown>
+        </div>
       </div>
     </div>
   );

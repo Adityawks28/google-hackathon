@@ -56,15 +56,22 @@ export class FetchContextNodeClass extends Node<
   FetchContextNodePrepRes
 > {
   async prep(store: TutorStore): Promise<FetchContextNodePrepRes> {
-    const { problemId, mode, code, error, hintLevel, sessionId } =
-      store.requestBody;
-    let content = code;
-    if (mode === "help") {
-      content = `Code:\n${code}\nError:\n${error}\nHint Level: ${hintLevel}`;
-    }
+    const {
+      problemId,
+      mode,
+      code,
+      error,
+      hintLevel,
+      sessionId,
+      userId,
+      message,
+    } = store.requestBody;
     const userMessage: ChatMessage = {
       role: "user",
-      content,
+      content: message || code,
+      code: mode === "help" ? code : null,
+      error: mode === "help" ? error || null : null,
+      hintLevel: mode === "help" ? hintLevel : null,
       timestamp: Date.now(),
     };
     return { problemId, userMessage, sessionId, mode };
@@ -160,6 +167,9 @@ export class LLMProcessNodeClass extends Node<
       role: "assistant",
       content: execRes.guidance,
       timestamp: Date.now(),
+      code: null,
+      error: null,
+      hintLevel: null,
     };
     store.messages.push(aiMessage);
 
