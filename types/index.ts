@@ -47,6 +47,7 @@ export interface TutorRequest {
   code: string;
   error: string;
   hintLevel: number;
+  message?: string;
   history: ChatMessage[];
   problemId: string;
   mode: "brainstorm" | "help";

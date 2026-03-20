@@ -51,7 +51,6 @@ export function useTutor(problemId: string, userId?: string) {
           timestamp: Date.now(),
         };
 
-        // UI update immediately
         setBrainstormHistory((prev) => [...prev, userMessage]);
 
         const res = await fetch("/api/tutor", {
@@ -61,7 +60,8 @@ export function useTutor(problemId: string, userId?: string) {
             code: message,
             error: "",
             hintLevel: 0,
-            history: brainstormHistory, // Previous history only
+            message,
+            history: brainstormHistory,
             problemId,
             mode: "brainstorm",
             userId,
@@ -98,11 +98,19 @@ export function useTutor(problemId: string, userId?: string) {
   }, [userId, problemId]);
 
   const requestHelp = useCallback(
-    async (code: string, error: string) => {
+    async (code: string, error: string, message?: string) => {
       const nextLevel = Math.min(hintLevel + 1, 3);
       setHintLevel(nextLevel);
       setPhase("help");
       setLoading(true);
+
+      const userMessageText = message || "I need help with my code.";
+      const userMessage: ChatMessage = {
+        role: "user",
+        content: userMessageText,
+        timestamp: Date.now(),
+      };
+      setHelpHistory((prev) => [...prev, userMessage]);
 
       if (userId && problemId) {
         await sessionModel.setPhase(userId, problemId, "help");
@@ -116,6 +124,7 @@ export function useTutor(problemId: string, userId?: string) {
             code,
             error,
             hintLevel: nextLevel,
+            message: userMessageText,
             history: helpHistory,
             problemId,
             mode: "help",
@@ -165,7 +174,8 @@ export function useTutor(problemId: string, userId?: string) {
             code,
             error: "",
             hintLevel,
-            history: helpHistory, // Previous history
+            message,
+            history: helpHistory,
             problemId,
             mode: "help",
             brainstormHistory,
