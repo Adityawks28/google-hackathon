@@ -48,22 +48,14 @@ export function useTutor(problemId: string, userId?: string) {
         role: "user",
         content: message,
         timestamp: Date.now(),
+        code: null,
+        error: null,
+        hintLevel: null,
       };
 
       setBrainstormHistory((prev) => [...prev, userMessage]);
 
       try {
-        const userMessage: ChatMessage = {
-          role: "user",
-          content: message,
-          timestamp: Date.now(),
-          code: null,
-          error: null,
-          hintLevel: null,
-        };
-
-        setBrainstormHistory((prev) => [...prev, userMessage]);
-
         const res = await fetch("/api/tutor", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -182,22 +174,14 @@ export function useTutor(problemId: string, userId?: string) {
         role: "user",
         content: message,
         timestamp: Date.now(),
+        code,
+        error: null,
+        hintLevel,
       };
 
       setHelpHistory((prev) => [...prev, userMessage]);
 
       try {
-        const userMessage: ChatMessage = {
-          role: "user",
-          content: message,
-          timestamp: Date.now(),
-          code,
-          error: null,
-          hintLevel,
-        };
-
-        setHelpHistory((prev) => [...prev, userMessage]);
-
         const res = await fetch("/api/tutor", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
