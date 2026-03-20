@@ -30,6 +30,9 @@ export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   timestamp: number;
+  code?: string;
+  error?: string;
+  hintLevel?: number;
 }
 
 export interface UserSession {
