@@ -27,15 +27,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (firebaseUser) {
             // Ensure user doc exists in Firestore
             try {
-              const existingUser = await userModel.getById(firebaseUser.uid);
-              if (!existingUser) {
+              let currentUser = await userModel.getById(firebaseUser.uid);
+              if (!currentUser) {
                 await userModel.create(firebaseUser.uid, {
                   email: firebaseUser.email ?? "",
                   displayName: firebaseUser.displayName ?? "",
-                  role:
-                    process.env.NODE_ENV === "development" ? "admin" : "user",
+                  role: "user",
                   createdAt: Date.now(),
                 });
+                currentUser = await userModel.getById(firebaseUser.uid);
+              }
+
+              // Auto-promotion logic: if email is in 'admins' collection, make them admin
+              if (firebaseUser.email) {
+                const isAuthorizedAdmin = await userModel.isAdminEmail(
+                  firebaseUser.email,
+                );
+                if (isAuthorizedAdmin && currentUser?.role !== "admin") {
+                  await userModel.updateRole(firebaseUser.uid, "admin");
+                  console.log(`User ${firebaseUser.email} promoted to admin.`);
+                }
               }
             } catch (error) {
               console.error("Error saving user doc:", error);

@@ -10,5 +10,5 @@ To create a new PR on GitHub, follow these steps:
     `bash .gemini/scripts/create-pr.sh "[generated-title]" "[generated-body]"`
     Replace `[generated-title]` and `[generated-body]` with your formulated content.
 
-Make sure your changes are pushed to a remote branch before executing.
+The script will automatically push your branch with upstream tracking before creating the PR.
 """

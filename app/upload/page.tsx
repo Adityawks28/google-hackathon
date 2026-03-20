@@ -52,6 +52,8 @@ function UploadContent() {
         language,
         createdBy: user.uid,
         createdAt: Date.now(),
+        referenceSolution: null,
+        hints: null,
       });
       setSaved(true);
       setTitle("");
