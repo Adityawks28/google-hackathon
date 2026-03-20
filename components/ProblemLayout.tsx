@@ -9,6 +9,7 @@ import { useTutor, type UseTutorReturn } from "@/hooks/useTutor";
 import type { Problem } from "@/types";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import { Header } from "@/components/Header";
 
 interface ProblemLayoutProps {
   children: (tutor: UseTutorReturn, problem: Problem) => ReactNode;
@@ -91,30 +92,21 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
   return (
     <ProtectedRoute>
       <div className="flex flex-col h-screen overflow-hidden bg-background-light">
-        {/* Header */}
-        <header className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 shrink-0">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/dashboard"
-              className="flex items-center justify-center rounded-lg h-9 w-9 hover:bg-slate-100 transition-colors"
-            >
-              <span className="material-symbols-outlined text-slate-500">
-                arrow_back
-              </span>
-            </Link>
-            <div className="flex items-center gap-3">
-              <h2 className="text-base font-bold tracking-tight text-slate-900">
-                {problem.title}
-              </h2>
-            </div>
-          </div>
-        </header>
+        <Header />
 
         {/* Main Split View */}
         <main className="flex flex-1 overflow-hidden">
           {/* Left Panel: Problem Description */}
           <section className="w-1/2 flex flex-col pl-4 pr-2 py-4 bg-background-light overflow-hidden">
-            <div className="flex flex-1 flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-0">
+            <div className="flex flex-1 flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-0 relative">
+              <Link
+                href="/dashboard"
+                className="absolute top-4 left-4 z-10 flex items-center justify-center rounded-lg h-9 w-9 bg-white/80 backdrop-blur-sm border border-slate-200 text-slate-500 hover:bg-slate-100 transition-colors shadow-sm"
+              >
+                <span className="material-symbols-outlined">
+                  arrow_back
+                </span>
+              </Link>
               {/* Problem Section */}
               <div className={`${hintLevel > 0 ? "h-3/5" : "h-full"} overflow-y-auto custom-scrollbar`}>
                 <div className="p-8 max-w-2xl mx-auto w-full">

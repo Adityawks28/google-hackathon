@@ -45,12 +45,15 @@ function ProblemContent({ tutor, problem }: { tutor: UseTutorReturn; problem: Pr
     phase
   } = tutor;
 
-  // Set initial tab based on phase
+  // Set initial tab based on phase when session loads
   useEffect(() => {
-    if (phase === "code" && activeTab === "brainstorm") {
+    if (phase === "code" || phase === "help") {
       setActiveTab("code");
+    } else {
+      setActiveTab("brainstorm");
     }
-  }, [phase, activeTab]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSessionId]);
 
   // Sync initial code/language
   useEffect(() => {
