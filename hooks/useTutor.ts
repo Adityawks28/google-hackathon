@@ -1,10 +1,34 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import type { ChatMessage, TutorPhase, TutorResponse } from "@/types";
+import type {
+  ChatMessage,
+  TutorPhase,
+  TutorResponse,
+  UserSession,
+} from "@/types";
 import { sessionModel } from "@/lib/db";
 
-export function useTutor(problemId: string, userId?: string) {
+export interface UseTutorReturn {
+  phase: TutorPhase;
+  brainstormHistory: ChatMessage[];
+  helpHistory: ChatMessage[];
+  hintLevel: number;
+  loading: boolean;
+  isLoaded: boolean;
+  sessions: UserSession[];
+  currentSessionId: string | null;
+  sendBrainstormMessage: (message: string) => Promise<string | null>;
+  startCoding: () => Promise<void>;
+  requestHelp: (code: string, error: string) => Promise<string | null>;
+  sendHelpMessage: (message: string, code: string) => Promise<string | null>;
+  resetConversation: () => Promise<void>;
+  createNewSession: () => Promise<UserSession | null>;
+  switchSession: (sessionId: string) => void;
+  updateSessionCode: (code: string, language: string) => Promise<void>;
+}
+
+export function useTutor(problemId: string, userId?: string): UseTutorReturn {
   const [phase, setPhase] = useState<TutorPhase>("brainstorm");
   const [brainstormHistory, setBrainstormHistory] = useState<ChatMessage[]>([]);
   const [helpHistory, setHelpHistory] = useState<ChatMessage[]>([]);
@@ -12,37 +36,84 @@ export function useTutor(problemId: string, userId?: string) {
   const [loading, setLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
+  const [sessions, setSessions] = useState<UserSession[]>([]);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+
+  const loadSessions = useCallback(async () => {
+    if (!userId || !problemId) return;
+    try {
+      const userSessions = await sessionModel.listByUserIdAndProblemId(
+        userId,
+        problemId,
+      );
+      setSessions(userSessions);
+
+      if (userSessions.length > 0) {
+        // Select the most recent session if none selected
+        if (!currentSessionId) {
+          setCurrentSessionId(userSessions[0].id!);
+        }
+      } else {
+        // Create first session
+        const newSession = await sessionModel.create(userId, problemId);
+        setSessions([newSession]);
+        setCurrentSessionId(newSession.id!);
+      }
+    } catch (error) {
+      console.error("Error loading sessions:", error);
+    } finally {
+      setIsLoaded(true);
+    }
+  }, [userId, problemId, currentSessionId]);
+
   useEffect(() => {
-    async function loadSession() {
-      if (!userId || !problemId) return;
+    loadSessions();
+  }, [loadSessions]);
+
+  useEffect(() => {
+    async function loadCurrentSession() {
+      if (!currentSessionId) return;
       try {
-        const session = await sessionModel.getById(userId, problemId);
+        const session = await sessionModel.getById(currentSessionId);
         if (session) {
           setBrainstormHistory(session.brainstormMessages || []);
           setHelpHistory(session.helpMessages || []);
           if (session.phase) {
             setPhase(session.phase);
-          } else {
-            // Fallback for legacy sessions
-            if (session.helpMessages?.length > 0) {
-              setPhase("help");
-            } else if (session.brainstormMessages?.length > 0) {
-              setPhase("brainstorm");
-            }
           }
+          // Reset hint level based on help messages length?
+          // Or we could store it in UserSession too.
+          setHintLevel(Math.min(session.helpMessages?.length || 0, 3));
         }
       } catch (error) {
         console.error("Error loading session:", error);
-      } finally {
-        setIsLoaded(true);
       }
     }
 
-    loadSession();
-  }, [userId, problemId]);
+    loadCurrentSession();
+  }, [currentSessionId]);
+
+  const createNewSession =
+    useCallback(async (): Promise<UserSession | null> => {
+      if (!userId || !problemId) return null;
+      try {
+        const newSession = await sessionModel.create(userId, problemId);
+        setSessions((prev) => [newSession, ...prev]);
+        setCurrentSessionId(newSession.id!);
+        return newSession;
+      } catch (error) {
+        console.error("Error creating new session:", error);
+        return null;
+      }
+    }, [userId, problemId]);
+
+  const switchSession = useCallback((sessionId: string) => {
+    setCurrentSessionId(sessionId);
+  }, []);
 
   const sendBrainstormMessage = useCallback(
-    async (message: string) => {
+    async (message: string): Promise<string | null> => {
+      if (!currentSessionId) return null;
       setLoading(true);
       const userMessage: ChatMessage = {
         role: "user",
@@ -62,6 +133,7 @@ export function useTutor(problemId: string, userId?: string) {
             hintLevel: 0,
             history: [...brainstormHistory, userMessage],
             problemId,
+            sessionId: currentSessionId,
             mode: "brainstorm",
             userId,
           }),
@@ -86,25 +158,26 @@ export function useTutor(problemId: string, userId?: string) {
         setLoading(false);
       }
     },
-    [brainstormHistory, problemId, userId],
+    [brainstormHistory, problemId, userId, currentSessionId],
   );
 
-  const startCoding = useCallback(async () => {
+  const startCoding = useCallback(async (): Promise<void> => {
     setPhase("code");
-    if (userId && problemId) {
-      await sessionModel.setPhase(userId, problemId, "code");
+    if (currentSessionId) {
+      await sessionModel.setPhase(currentSessionId, "code");
     }
-  }, [userId, problemId]);
+  }, [currentSessionId]);
 
   const requestHelp = useCallback(
-    async (code: string, error: string) => {
+    async (code: string, error: string): Promise<string | null> => {
+      if (!currentSessionId) return null;
       const nextLevel = Math.min(hintLevel + 1, 3);
       setHintLevel(nextLevel);
       setPhase("help");
       setLoading(true);
 
-      if (userId && problemId) {
-        await sessionModel.setPhase(userId, problemId, "help");
+      if (currentSessionId) {
+        await sessionModel.setPhase(currentSessionId, "help");
       }
 
       try {
@@ -117,6 +190,7 @@ export function useTutor(problemId: string, userId?: string) {
             hintLevel: nextLevel,
             history: helpHistory,
             problemId,
+            sessionId: currentSessionId,
             mode: "help",
             brainstormHistory,
             userId,
@@ -142,11 +216,19 @@ export function useTutor(problemId: string, userId?: string) {
         setLoading(false);
       }
     },
-    [hintLevel, helpHistory, brainstormHistory, problemId, userId],
+    [
+      hintLevel,
+      helpHistory,
+      brainstormHistory,
+      problemId,
+      userId,
+      currentSessionId,
+    ],
   );
 
   const sendHelpMessage = useCallback(
-    async (message: string, code: string) => {
+    async (message: string, code: string): Promise<string | null> => {
+      if (!currentSessionId) return null;
       setLoading(true);
       const userMessage: ChatMessage = {
         role: "user",
@@ -166,6 +248,7 @@ export function useTutor(problemId: string, userId?: string) {
             hintLevel,
             history: [...helpHistory, userMessage],
             problemId,
+            sessionId: currentSessionId,
             mode: "help",
             brainstormHistory,
             userId,
@@ -191,22 +274,38 @@ export function useTutor(problemId: string, userId?: string) {
         setLoading(false);
       }
     },
-    [helpHistory, hintLevel, brainstormHistory, problemId, userId],
+    [
+      helpHistory,
+      hintLevel,
+      brainstormHistory,
+      problemId,
+      userId,
+      currentSessionId,
+    ],
   );
 
-  const resetConversation = useCallback(async () => {
+  const updateSessionCode = useCallback(
+    async (code: string, language: string): Promise<void> => {
+      if (currentSessionId) {
+        await sessionModel.upsert(currentSessionId, { code, language });
+      }
+    },
+    [currentSessionId],
+  );
+
+  const resetConversation = useCallback(async (): Promise<void> => {
     setPhase("brainstorm");
     setBrainstormHistory([]);
     setHelpHistory([]);
     setHintLevel(0);
-    if (userId && problemId) {
-      await sessionModel.upsert(userId, problemId, {
+    if (currentSessionId) {
+      await sessionModel.upsert(currentSessionId, {
         phase: "brainstorm",
         brainstormMessages: [],
         helpMessages: [],
       });
     }
-  }, [userId, problemId]);
+  }, [currentSessionId]);
 
   return {
     phase,
@@ -215,10 +314,15 @@ export function useTutor(problemId: string, userId?: string) {
     hintLevel,
     loading,
     isLoaded,
+    sessions,
+    currentSessionId,
     sendBrainstormMessage,
     startCoding,
     requestHelp,
     sendHelpMessage,
     resetConversation,
+    createNewSession,
+    switchSession,
+    updateSessionCode,
   };
 }
