@@ -119,6 +119,7 @@ export async function signInWithGoogle() {
   }
 
   const googleProvider = new GoogleAuthProvider();
+  googleProvider.setCustomParameters({ prompt: "select_account" });
   const result = await signInWithPopup(authInstance, googleProvider);
   return result.user;
 }
