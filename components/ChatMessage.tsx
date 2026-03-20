@@ -5,9 +5,15 @@ interface ChatMessageProps {
   role: "user" | "assistant";
   content: string;
   isCorrect?: boolean | null;
+  shouldAnimate?: boolean | null;
 }
 
-export function ChatMessage({ role, content, isCorrect }: ChatMessageProps) {
+export function ChatMessage({
+  role,
+  content,
+  isCorrect,
+  shouldAnimate,
+}: ChatMessageProps) {
   const isUser = role === "user";
   const isAssessment = isCorrect !== undefined && isCorrect !== null;
 
@@ -34,7 +40,7 @@ export function ChatMessage({ role, content, isCorrect }: ChatMessageProps) {
         className={`p-6 shadow-xl leading-relaxed text-[15px] ${
           isUser
             ? "bg-[#630000] text-white rounded-2xl rounded-tr-none border border-[#FFFCFB]/10 shadow-sm shadow-[#570000]/20"
-            : "bg-[#FFFEFD] text-[#570000] rounded-2xl rounded-tl-none border border-[#570000]/10 shadow-sm shadow-[#570000]/20"
+            : `bg-[#FFFEFD] text-[#570000] rounded-2xl rounded-tl-none border border-[#570000]/10 shadow-sm shadow-[#570000]/20 ${shouldAnimate ? "animate-hint-flash" : ""}`
         }`}
       >
         {isAssessment && (

@@ -204,7 +204,9 @@ function ProblemContent({
               psychology
             </span>
           </div>
-          <div className={`text-left transition-opacity ${activeTab === "brainstorm" ? "opacity-100" : "opacity-40"}`}>
+          <div
+            className={`text-left transition-opacity ${activeTab === "brainstorm" ? "opacity-100" : "opacity-40"}`}
+          >
             <p className="font-bold text-[#630000]">Brainstorm</p>
             <p className="text-xs text-[#671818] flex items-center gap-1">
               {activeTab === "brainstorm" ? (
@@ -231,7 +233,9 @@ function ProblemContent({
               : "opacity-40 grayscale-[0.5] hover:opacity-80 hover:grayscale-0"
           }`}
         >
-          <div className={`text-right transition-opacity ${activeTab === "code" ? "opacity-100" : "opacity-40"}`}>
+          <div
+            className={`text-right transition-opacity ${activeTab === "code" ? "opacity-100" : "opacity-40"}`}
+          >
             <p className="font-bold text-[#630000]">&lt;&gt; Coding</p>
             <p className="text-xs text-[#671818] flex items-center gap-1 justify-end">
               {activeTab === "code" ? (
@@ -260,7 +264,10 @@ function ProblemContent({
           </span>
           <select
             value={currentSessionId || ""}
-            onChange={(e) => { flushPendingSave(); switchSession(e.target.value); }}
+            onChange={(e) => {
+              flushPendingSave();
+              switchSession(e.target.value);
+            }}
             className="rounded-md border-slate-200 bg-white py-1 pl-2 pr-8 text-sm font-medium focus:border-primary focus:ring-primary"
           >
             {sessions.map((s) => (
@@ -296,7 +303,10 @@ function ProblemContent({
             </button>
           )}
           <button
-            onClick={() => { flushPendingSave(); createNewSession(); }}
+            onClick={() => {
+              flushPendingSave();
+              createNewSession();
+            }}
             className="flex items-center gap-1 text-xs font-bold text-primary transition-colors hover:text-primary/80"
           >
             <span className="material-symbols-outlined text-sm">add</span> NEW
@@ -329,6 +339,7 @@ function ProblemContent({
                 role={msg.role}
                 content={msg.content}
                 isCorrect={msg.isCorrect}
+                shouldAnimate={i === brainstormHistory.length - 1}
               />
             ))}
             {loading && <ChatMessage role="assistant" content="Thinking..." />}
@@ -465,9 +476,9 @@ function ProblemContent({
                             >
                               Mini Lesson
                             </button>{" "}
-                            section first! Otherwise, feel free to ask
-                            questions about your approach or use &quot;Get
-                            Help&quot; for progressive hints.
+                            section first! Otherwise, feel free to ask questions
+                            about your approach or use &quot;Get Help&quot; for
+                            progressive hints.
                           </>
                         ) : (
                           <>
@@ -486,6 +497,7 @@ function ProblemContent({
                     role={msg.role}
                     content={msg.content}
                     isCorrect={msg.isCorrect}
+                    shouldAnimate={i === helpHistory.length - 1}
                   />
                 ))}
                 {loading && (

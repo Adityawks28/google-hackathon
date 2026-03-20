@@ -84,7 +84,9 @@ function MiniLessonCard({
                       {concept.symbolBreakdown!.map((item, i) => (
                         <tr
                           key={i}
-                          className={i % 2 === 0 ? "bg-[#FFFBF9]" : "bg-[#FFFCFB]"}
+                          className={
+                            i % 2 === 0 ? "bg-[#FFFBF9]" : "bg-[#FFFCFB]"
+                          }
                         >
                           <td className="px-3 py-2 font-mono font-bold text-[#630000]">
                             {item.symbol}
@@ -362,7 +364,7 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                         .map(([level, content]) => (
                           <div
                             key={level}
-                            className="p-5 rounded-xl border border-[#630000]/20 bg-[#FFFBF9] shadow-sm"
+                            className={`p-5 rounded-xl border border-[#630000]/20 bg-[#FFFBF9] shadow-sm ${Number(level) === hintLevel ? "animate-hint-flash" : ""}`}
                           >
                             <h4 className="text-sm font-bold text-[#630000] mb-2 uppercase tracking-wider flex items-center gap-2">
                               <span className="h-2 w-2 rounded-full bg-[#630000]" />

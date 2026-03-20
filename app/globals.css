@@ -9,3 +9,30 @@
   padding: 2px 0; /* Reduces the height */
   bottom: 0 !important; /* Ensures it stays at the very bottom */
 }
+
+@keyframes hint-flash {
+  0% {
+    background-color: rgba(99, 0, 0, 0.4);
+    opacity: 1;
+  }
+  100% {
+    background-color: rgba(99, 0, 0, 0);
+    opacity: 0;
+  }
+}
+
+.animate-hint-flash {
+  position: relative;
+}
+
+.animate-hint-flash::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: hint-flash 1s ease-out;
+}
