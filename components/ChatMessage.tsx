@@ -4,17 +4,21 @@ import remarkGfm from "remark-gfm";
 interface ChatMessageProps {
   role: "user" | "assistant";
   content: string;
+  isCorrect?: boolean | null;
 }
 
-export function ChatMessage({ role, content }: ChatMessageProps) {
+export function ChatMessage({ role, content, isCorrect }: ChatMessageProps) {
   const isUser = role === "user";
+  const isAssessment = isCorrect !== undefined && isCorrect !== null;
 
   return (
-    <div className={`flex gap-5 mb-8 max-w-[90%] ${isUser ? "self-end flex-row-reverse" : "group"}`}>
+    <div
+      className={`flex gap-5 mb-8 max-w-[90%] ${isUser ? "self-end flex-row-reverse" : "group"}`}
+    >
       <div
         className={`h-10 w-10 flex-shrink-0 flex items-center justify-center ${
-          isUser 
-            ? "rounded-full bg-[#FFFBF9]-container-highest overflow-hidden border border-[#FFFCFB]/20 shadow-md" 
+          isUser
+            ? "rounded-full bg-[#FFFBF9]-container-highest overflow-hidden border border-[#FFFCFB]/20 shadow-md"
             : "rounded-xl bg-[#630000] text-[#FFFCFB] shadow-lg shadow-[#630000]/20"
         }`}
       >
@@ -23,7 +27,7 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
             isUser ? "text-[#630000]" : ""
           }`}
         >
-          {isUser ? "person" : "auto_awesome"}
+          {isUser ? "person" : isAssessment ? "verified" : "auto_awesome"}
         </span>
       </div>
       <div
@@ -33,7 +37,22 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
             : "bg-[#FFFEFD] text-[#570000] rounded-2xl rounded-tl-none border border-[#570000]/10 shadow-sm shadow-[#570000]/20"
         }`}
       >
-        <div className={`prose prose-sm max-w-none ${isUser ? "prose-invert" : ""}`}>
+        {isAssessment && (
+          <div className="mb-4 pb-3 border-b border-slate-100">
+            <h1 className="text-xl font-bold text-slate-900 mb-1">
+              # Submission Assessment
+            </h1>
+            <p className="text-sm">
+              The submission is{" "}
+              <strong className={isCorrect ? "text-green-600" : "text-red-600"}>
+                {isCorrect ? "correct" : "incorrect"}
+              </strong>
+            </p>
+          </div>
+        )}
+        <div
+          className={`prose prose-sm max-w-none ${isUser ? "prose-invert" : ""}`}
+        >
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
@@ -73,14 +92,22 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
                 );
               },
               ul: ({ children }) => (
-                <ul className={`list-disc ml-6 mb-4 ${isUser ? "marker:text-white/70" : "marker:text-[#570000]/70"}`}>{children}</ul>
+                <ul
+                  className={`list-disc ml-6 mb-4 ${isUser ? "marker:text-white/70" : "marker:text-[#570000]/70"}`}
+                >
+                  {children}
+                </ul>
               ),
               ol: ({ children }) => (
                 <ol className="list-decimal ml-4 mb-2">{children}</ol>
               ),
               li: ({ children }) => <li className="mb-2">{children}</li>,
               strong: ({ children }) => (
-                <strong className={`font-bold ${isUser ? "text-white" : "text-[#570000]"}`}>{children}</strong>
+                <strong
+                  className={`font-bold ${isUser ? "text-white" : "text-[#570000]"}`}
+                >
+                  {children}
+                </strong>
               ),
               em: ({ children }) => <em className="italic">{children}</em>,
             }}

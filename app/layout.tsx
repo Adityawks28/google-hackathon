@@ -33,7 +33,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${newsreader.variable} ${manrope.variable} ${firaCode.variable}`}>
+    <html
+      lang="en"
+      className={`${newsreader.variable} ${manrope.variable} ${firaCode.variable}`}
+    >
       <head>
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
