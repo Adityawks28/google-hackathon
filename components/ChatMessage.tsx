@@ -40,7 +40,7 @@ export function ChatMessage({
         className={`p-6 shadow-xl leading-relaxed text-[15px] ${
           isUser
             ? "bg-[#630000] text-white rounded-2xl rounded-tr-none border border-[#FFFCFB]/10 shadow-sm shadow-[#570000]/20"
-            : `bg-[#FFFEFD] text-[#570000] rounded-2xl rounded-tl-none border border-[#570000]/10 shadow-sm shadow-[#570000]/20 ${shouldAnimate ? "animate-hint-flash" : ""}`
+            : `bg-[#FFFEFD] text-[#570000] rounded-2xl rounded-tl-none border border-[#570000]/10 shadow-sm shadow-[#570000]/20 relative ${shouldAnimate ? "after:absolute after:inset-0 after:rounded-inherit after:pointer-events-none after:content-[''] after:animate-hint-flash" : ""}`
         }`}
       >
         {isAssessment && (

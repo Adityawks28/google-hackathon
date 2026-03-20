@@ -364,7 +364,7 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                         .map(([level, content]) => (
                           <div
                             key={level}
-                            className={`p-5 rounded-xl border border-[#630000]/20 bg-[#FFFBF9] shadow-sm ${Number(level) === hintLevel ? "animate-hint-flash" : ""}`}
+                            className={`p-5 rounded-xl border border-[#630000]/20 bg-[#FFFBF9] shadow-sm relative ${Number(level) === hintLevel ? "after:absolute after:inset-0 after:rounded-inherit after:pointer-events-none after:content-[''] after:animate-hint-flash" : ""}`}
                           >
                             <h4 className="text-sm font-bold text-[#630000] mb-2 uppercase tracking-wider flex items-center gap-2">
                               <span className="h-2 w-2 rounded-full bg-[#630000]" />
