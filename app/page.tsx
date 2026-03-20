@@ -137,9 +137,6 @@ export default function Home() {
             <Logo size={24} />
             <span className="font-bold text-slate-900">UriCode</span>
           </div>
-          <p className="text-slate-400 text-sm">
-            &copy; 2024 UriCode. All rights reserved.
-          </p>
         </div>
       </footer>
     </div>
