@@ -11,10 +11,17 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { Header } from "@/components/Header";
 
-function MiniLessonCard({ concept, index }: { concept: MiniLessonConcept; index: number }) {
+function MiniLessonCard({
+  concept,
+  index,
+}: {
+  concept: MiniLessonConcept;
+  index: number;
+}) {
   const [open, setOpen] = useState(index === 0);
   const [showSymbols, setShowSymbols] = useState(false);
-  const hasSymbols = concept.symbolBreakdown && concept.symbolBreakdown.length > 0;
+  const hasSymbols =
+    concept.symbolBreakdown && concept.symbolBreakdown.length > 0;
 
   return (
     <div className="border border-slate-200 rounded-xl overflow-hidden">
@@ -25,14 +32,20 @@ function MiniLessonCard({ concept, index }: { concept: MiniLessonConcept; index:
         <span className="flex items-center justify-center h-7 w-7 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0">
           {index + 1}
         </span>
-        <span className="text-sm font-bold text-slate-900 flex-1">{concept.title}</span>
-        <span className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${open ? "rotate-180" : ""}`}>
+        <span className="text-sm font-bold text-slate-900 flex-1">
+          {concept.title}
+        </span>
+        <span
+          className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${open ? "rotate-180" : ""}`}
+        >
           expand_more
         </span>
       </button>
       {open && (
         <div className="px-5 pb-5 space-y-3">
-          <p className="text-sm text-slate-600 leading-relaxed">{concept.explanation}</p>
+          <p className="text-sm text-slate-600 leading-relaxed">
+            {concept.explanation}
+          </p>
           <pre className="bg-slate-900 text-slate-100 rounded-lg p-4 text-xs leading-relaxed overflow-x-auto">
             <code>{concept.codeExample}</code>
           </pre>
@@ -51,22 +64,35 @@ function MiniLessonCard({ concept, index }: { concept: MiniLessonConcept; index:
                 <span className="material-symbols-outlined text-sm">
                   {showSymbols ? "visibility_off" : "visibility"}
                 </span>
-                {showSymbols ? "Hide symbol breakdown" : "Break down the symbols for me"}
+                {showSymbols
+                  ? "Hide symbol breakdown"
+                  : "Break down the symbols for me"}
               </button>
               {showSymbols && (
                 <div className="mt-2 rounded-lg border border-amber-200 bg-amber-50 overflow-hidden">
                   <table className="w-full text-xs">
                     <thead>
                       <tr className="border-b border-amber-200 bg-amber-100/50">
-                        <th className="px-3 py-2 text-left font-bold text-amber-800 w-1/3">Symbol</th>
-                        <th className="px-3 py-2 text-left font-bold text-amber-800">What it means</th>
+                        <th className="px-3 py-2 text-left font-bold text-amber-800 w-1/3">
+                          Symbol
+                        </th>
+                        <th className="px-3 py-2 text-left font-bold text-amber-800">
+                          What it means
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {concept.symbolBreakdown!.map((item, i) => (
-                        <tr key={i} className={i % 2 === 0 ? "bg-amber-50" : "bg-white"}>
-                          <td className="px-3 py-2 font-mono font-bold text-slate-800">{item.symbol}</td>
-                          <td className="px-3 py-2 text-slate-700">{item.meaning}</td>
+                        <tr
+                          key={i}
+                          className={i % 2 === 0 ? "bg-amber-50" : "bg-white"}
+                        >
+                          <td className="px-3 py-2 font-mono font-bold text-slate-800">
+                            {item.symbol}
+                          </td>
+                          <td className="px-3 py-2 text-slate-700">
+                            {item.meaning}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -130,7 +156,9 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
           <span className="material-symbols-outlined text-4xl text-red-400 mb-3">
             error
           </span>
-          <p className="text-red-500 font-medium">{!problem ? "Problem not found." : "Failed to load problem."}</p>
+          <p className="text-red-500 font-medium">
+            {!problem ? "Problem not found." : "Failed to load problem."}
+          </p>
           <button
             onClick={() => window.location.reload()}
             className="mt-4 rounded-lg bg-primary px-5 py-2 text-sm font-bold text-white hover:bg-primary/90 transition-colors"
@@ -145,20 +173,30 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
   const hintsFromProblem = problem?.hints || [];
 
   const hints = helpHistory
-    .filter((msg) => msg.role === "assistant" && msg.hintLevel !== null && msg.hintLevel > 0)
-    .reduce((acc, msg) => {
-      if (!acc[msg.hintLevel!]) {
-        acc[msg.hintLevel!] = msg.content;
-      }
-      return acc;
-    }, {} as Record<number, string>);
-
-  const displayHints = hintsFromProblem.length > 0
-    ? hintsFromProblem.slice(0, hintLevel).reduce((acc, hint, i) => {
-        acc[i + 1] = hint;
+    .filter(
+      (msg) =>
+        msg.role === "assistant" && msg.hintLevel !== null && msg.hintLevel > 0,
+    )
+    .reduce(
+      (acc, msg) => {
+        if (!acc[msg.hintLevel!]) {
+          acc[msg.hintLevel!] = msg.content;
+        }
         return acc;
-      }, {} as Record<number, string>)
-    : hints;
+      },
+      {} as Record<number, string>,
+    );
+
+  const displayHints =
+    hintsFromProblem.length > 0
+      ? hintsFromProblem.slice(0, hintLevel).reduce(
+          (acc, hint, i) => {
+            acc[i + 1] = hint;
+            return acc;
+          },
+          {} as Record<number, string>,
+        )
+      : hints;
 
   const hasMiniLesson = problem.miniLesson && problem.miniLesson.length > 0;
 
@@ -176,9 +214,7 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                 href="/dashboard"
                 className="absolute top-4 left-4 z-10 flex items-center justify-center rounded-lg h-9 w-9 bg-white/80 backdrop-blur-sm border border-slate-200 text-slate-500 hover:bg-slate-100 transition-colors shadow-sm"
               >
-                <span className="material-symbols-outlined">
-                  arrow_back
-                </span>
+                <span className="material-symbols-outlined">arrow_back</span>
               </Link>
 
               {/* Tab Switcher (only shown when mini lesson exists) */}
@@ -192,7 +228,9 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                         : "text-slate-500 hover:text-slate-700"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-base">description</span>
+                    <span className="material-symbols-outlined text-base">
+                      description
+                    </span>
                     Problem
                   </button>
                   <button
@@ -203,7 +241,9 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                         : "text-slate-500 hover:text-slate-700"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-base">school</span>
+                    <span className="material-symbols-outlined text-base">
+                      school
+                    </span>
                     Mini Lesson
                     <span className="inline-flex h-5 px-1.5 items-center justify-center rounded-full bg-amber-100 text-[10px] font-bold text-amber-700">
                       {problem.miniLesson!.length}
@@ -222,7 +262,9 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                       </h1>
                     </div>
                     <p className="text-sm text-slate-500 mb-8">
-                      New to coding? No worries! Read through these concepts one by one. Each one teaches you something you&apos;ll need for this problem.
+                      New to coding? No worries! Read through these concepts one
+                      by one. Each one teaches you something you&apos;ll need
+                      for this problem.
                     </p>
                     <div className="space-y-3">
                       {problem.miniLesson!.map((concept, i) => (
@@ -231,8 +273,11 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                     </div>
                     <div className="mt-8 p-4 rounded-xl bg-emerald-50 border border-emerald-200">
                       <p className="text-sm text-emerald-800 font-medium flex items-center gap-2">
-                        <span className="material-symbols-outlined text-emerald-600 text-base">check_circle</span>
-                        Done reading? Switch to the &quot;Problem&quot; tab and try the Guided Mode in the code editor!
+                        <span className="material-symbols-outlined text-emerald-600 text-base">
+                          check_circle
+                        </span>
+                        Done reading? Switch to the &quot;Problem&quot; tab and
+                        try the Guided Mode in the code editor!
                       </p>
                     </div>
                   </div>
@@ -240,7 +285,9 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
               )}
 
               {/* Problem Section */}
-              <div className={`${leftTab === "lesson" && hasMiniLesson ? "hidden" : ""} ${hintLevel > 0 ? "h-3/5" : "h-full"} overflow-y-auto custom-scrollbar`}>
+              <div
+                className={`${leftTab === "lesson" && hasMiniLesson ? "hidden" : ""} ${hintLevel > 0 ? "h-3/5" : "h-full"} overflow-y-auto custom-scrollbar`}
+              >
                 <div className="p-8 max-w-2xl mx-auto w-full">
                   <h1 className="text-3xl font-extrabold text-slate-900 mb-4">
                     {problem.title}
@@ -278,7 +325,9 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                           className="p-4 rounded-xl border border-slate-200 bg-slate-50"
                         >
                           <p className="text-sm font-mono break-all">
-                            <span className="font-bold text-slate-700">Input:</span>{" "}
+                            <span className="font-bold text-slate-700">
+                              Input:
+                            </span>{" "}
                             <span className="text-slate-600">{tc.input}</span>
                           </p>
                           <p className="text-sm font-mono mt-1 break-all">
@@ -310,7 +359,10 @@ export function ProblemLayout({ children }: ProblemLayoutProps) {
                       {Object.entries(displayHints)
                         .sort(([a], [b]) => Number(a) - Number(b))
                         .map(([level, content]) => (
-                          <div key={level} className="p-5 rounded-xl border border-primary/20 bg-white shadow-sm">
+                          <div
+                            key={level}
+                            className="p-5 rounded-xl border border-primary/20 bg-white shadow-sm"
+                          >
                             <h4 className="text-sm font-bold text-primary mb-2 uppercase tracking-wider flex items-center gap-2">
                               <span className="h-2 w-2 rounded-full bg-primary" />
                               Hint {level}

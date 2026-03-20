@@ -1,7 +1,7 @@
 import { Node, Flow } from "pocketflow";
 import { ChatMessage, TutorRequest } from "@/types";
-import { askBrainstorm, askHelp } from "@/lib/gemini";
-import { sessionModel, problemModel } from "@/lib/db";
+import { askBrainstorm, askHelp, verifySolution } from "@/lib/gemini";
+import { sessionModel, problemModel, progressModel } from "@/lib/db";
 
 export interface TutorStore {
   requestBody: TutorRequest;
@@ -17,22 +17,33 @@ export interface TutorStore {
 type ChatNodePrepRes = {
   hasContext: boolean;
   hasAssistantResponse: boolean;
+  isSubmission: boolean;
 };
 
 export class ChatNodeClass extends Node<TutorStore, ChatNodePrepRes> {
   async prep(store: TutorStore): Promise<ChatNodePrepRes> {
+    const userMessages = store.messages.filter((m) => m.role === "user");
+    const lastUserMsg =
+      userMessages.length > 0 ? userMessages[userMessages.length - 1] : null;
     return {
       hasContext: !!store.ragContext,
       hasAssistantResponse:
         store.messages.length > 0 &&
         store.messages[store.messages.length - 1].role === "assistant" &&
         store.messages.length > store.requestBody.history.length,
+      isSubmission: lastUserMsg?.content === "Submission",
     };
   }
 
-  async exec({ hasContext, hasAssistantResponse }: ChatNodePrepRes) {
+  async exec({
+    hasContext,
+    hasAssistantResponse,
+    isSubmission,
+  }: ChatNodePrepRes) {
     if (!hasContext) return "fetch_context";
-    if (!hasAssistantResponse) return "generate";
+    if (!hasAssistantResponse) {
+      return isSubmission ? "verify" : "generate";
+    }
     return "done";
   }
 
@@ -163,24 +174,24 @@ export class LLMProcessNodeClass extends Node<
     let guidance: string;
 
     if (mode === "brainstorm") {
-      guidance = await askBrainstorm(
-        message || code,
+      guidance = await askBrainstorm({
+        message: message || code,
         history,
         problemDescription,
         starterCode,
-      );
+      });
     } else {
-      guidance = await askHelp(
+      guidance = await askHelp({
         code,
         error,
         hintLevel,
         history,
-        brainstormHistory ?? [],
+        brainstormHistory: brainstormHistory ?? [],
         problemDescription,
         referenceSolution,
         hints,
         message,
-      );
+      });
     }
 
     return { guidance };
@@ -212,14 +223,97 @@ export class LLMProcessNodeClass extends Node<
   }
 }
 
+type VerifyNodePrepRes = {
+  code: string;
+  problemDescription: string;
+  referenceSolution: string | null;
+  userId: string;
+  problemId: string;
+};
+
+type VerifyNodeExecRes = {
+  guidance: string;
+  isCorrect: boolean;
+};
+
+export class VerifyNodeClass extends Node<TutorStore, VerifyNodePrepRes> {
+  async prep(store: TutorStore): Promise<VerifyNodePrepRes> {
+    return {
+      code: store.requestBody.code,
+      problemDescription: store.ragContext?.problemDescription || "",
+      referenceSolution: store.ragContext?.referenceSolution || null,
+      userId: store.requestBody.userId,
+      problemId: store.requestBody.problemId,
+    };
+  }
+
+  async exec({
+    code,
+    problemDescription,
+    referenceSolution,
+  }: VerifyNodePrepRes): Promise<VerifyNodeExecRes> {
+    const { reasoning, is_correct, mistakes } = await verifySolution({
+      code,
+      problemDescription,
+      referenceSolution,
+    });
+
+    let guidance = `# Assesment Result\n\nThe solution is: ${is_correct ? "Correct" : "Incorrect"}\n\n## Reasoning\n\n${reasoning}`;
+    if (mistakes && mistakes.length > 0) {
+      guidance += `\n\n## Mistakes\n\n${mistakes.map((m) => `- ${m}`).join("\n")}`;
+    }
+
+    return { guidance, isCorrect: is_correct };
+  }
+
+  async post(
+    store: TutorStore,
+    prepRes: VerifyNodePrepRes,
+    execRes: VerifyNodeExecRes,
+  ) {
+    const aiMessage: ChatMessage = {
+      role: "assistant",
+      content: execRes.guidance,
+      timestamp: Date.now(),
+      code: null,
+      error: null,
+      hintLevel: null,
+    };
+    store.messages.push(aiMessage);
+
+    try {
+      const { sessionId, mode } = store.requestBody;
+      await sessionModel.addMessage(sessionId, mode, aiMessage);
+
+      if (execRes.isCorrect) {
+        await progressModel.markSolved(prepRes.userId, prepRes.problemId);
+      } else {
+        await progressModel.upsert(`${prepRes.userId}_${prepRes.problemId}`, {
+          userId: prepRes.userId,
+          problemId: prepRes.problemId,
+          attempted: true,
+          lastAttemptAt: Date.now(),
+        });
+      }
+    } catch (err) {
+      console.error("Error saving verification message or progress:", err);
+    }
+
+    return "continue";
+  }
+}
+
 const chatNode = new ChatNodeClass();
 const fetchContextNode = new FetchContextNodeClass();
 const llmProcessNode = new LLMProcessNodeClass();
+const verifyNode = new VerifyNodeClass();
 
 chatNode.on("fetch_context", fetchContextNode);
 chatNode.on("generate", llmProcessNode);
+chatNode.on("verify", verifyNode);
 
 fetchContextNode.on("continue", chatNode);
 llmProcessNode.on("continue", chatNode);
+verifyNode.on("continue", chatNode);
 
 export const tutorFlow = new Flow<TutorStore>(chatNode);

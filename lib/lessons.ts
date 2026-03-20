@@ -14,12 +14,27 @@ const fizzBuzzLesson: MiniLessonConcept[] = [
     codeExample: `let age = 25;
 const name = "Ali";`,
     symbolBreakdown: [
-      { symbol: "let", meaning: "\"I'm creating a box that I might change later\"" },
-      { symbol: "const", meaning: "\"I'm creating a box that stays the same forever\"" },
-      { symbol: "age", meaning: "the name YOU choose for the box (could be anything)" },
-      { symbol: "=", meaning: "\"put this value inside the box\" (NOT \"equals\"!)" },
+      {
+        symbol: "let",
+        meaning: '"I\'m creating a box that I might change later"',
+      },
+      {
+        symbol: "const",
+        meaning: '"I\'m creating a box that stays the same forever"',
+      },
+      {
+        symbol: "age",
+        meaning: "the name YOU choose for the box (could be anything)",
+      },
+      {
+        symbol: "=",
+        meaning: '"put this value inside the box" (NOT "equals"!)',
+      },
       { symbol: "25", meaning: "the value you're storing" },
-      { symbol: ";", meaning: "end of this instruction (like a period in a sentence)" },
+      {
+        symbol: ";",
+        meaning: "end of this instruction (like a period in a sentence)",
+      },
     ],
   },
   {
@@ -32,32 +47,44 @@ fruits.push("mango");
     symbolBreakdown: [
       { symbol: "[ ]", meaning: "square brackets create a list (array)" },
       { symbol: ",", meaning: "separates items in the list" },
-      { symbol: "\"apple\"", meaning: "text must be wrapped in quotes" },
-      { symbol: ".push()", meaning: "\"add this item to the end of the list\"" },
-      { symbol: "fruits[0]", meaning: "get the FIRST item (positions start at 0!)" },
+      { symbol: '"apple"', meaning: "text must be wrapped in quotes" },
+      { symbol: ".push()", meaning: '"add this item to the end of the list"' },
+      {
+        symbol: "fruits[0]",
+        meaning: "get the FIRST item (positions start at 0!)",
+      },
     ],
   },
   {
     title: "What is a for loop?",
     explanation:
-      "A loop repeats an action. Think of it like: \"Count from 1 to 100, and for each number, do something.\" It has 3 parts: where to start, when to stop, and how to count.",
+      'A loop repeats an action. Think of it like: "Count from 1 to 100, and for each number, do something." It has 3 parts: where to start, when to stop, and how to count.',
     codeExample: `for (let i = 1; i <= 5; i++) {
   console.log(i);
 }
 // Prints: 1, 2, 3, 4, 5`,
     symbolBreakdown: [
-      { symbol: "for", meaning: "\"I want to repeat something\"" },
-      { symbol: "(  ;  ;  )", meaning: "three instructions separated by semicolons" },
-      { symbol: "let i = 1", meaning: "START: create a counter called i, starting at 1" },
+      { symbol: "for", meaning: '"I want to repeat something"' },
+      {
+        symbol: "(  ;  ;  )",
+        meaning: "three instructions separated by semicolons",
+      },
+      {
+        symbol: "let i = 1",
+        meaning: "START: create a counter called i, starting at 1",
+      },
       { symbol: "i <= 5", meaning: "STOP: keep going while i is 5 or less" },
-      { symbol: "i++", meaning: "COUNT: add 1 to i each time (shortcut for i = i + 1)" },
+      {
+        symbol: "i++",
+        meaning: "COUNT: add 1 to i each time (shortcut for i = i + 1)",
+      },
       { symbol: "{ }", meaning: "curly braces wrap the code that repeats" },
     ],
   },
   {
     title: "What is if / else?",
     explanation:
-      "An \"if\" is a decision. Like: \"IF it's raining, bring an umbrella. OTHERWISE (else), wear sunglasses.\" You can chain multiple checks with \"else if\".",
+      'An "if" is a decision. Like: "IF it\'s raining, bring an umbrella. OTHERWISE (else), wear sunglasses." You can chain multiple checks with "else if".',
     codeExample: `if (temperature > 25) {
   console.log("Hot!");
 } else if (temperature > 15) {
@@ -66,12 +93,21 @@ fruits.push("mango");
   console.log("Cold!");
 }`,
     symbolBreakdown: [
-      { symbol: "if", meaning: "\"check if this is true\"" },
-      { symbol: "( )", meaning: "the condition to check goes inside parentheses" },
-      { symbol: "{ }", meaning: "\"if true, do what's inside these curly braces\"" },
-      { symbol: "else if", meaning: "\"otherwise, check this next condition\"" },
-      { symbol: "else", meaning: "\"if NOTHING above was true, do this instead\"" },
-      { symbol: ">", meaning: "\"is greater than\"" },
+      { symbol: "if", meaning: '"check if this is true"' },
+      {
+        symbol: "( )",
+        meaning: "the condition to check goes inside parentheses",
+      },
+      {
+        symbol: "{ }",
+        meaning: '"if true, do what\'s inside these curly braces"',
+      },
+      { symbol: "else if", meaning: '"otherwise, check this next condition"' },
+      {
+        symbol: "else",
+        meaning: '"if NOTHING above was true, do this instead"',
+      },
+      { symbol: ">", meaning: '"is greater than"' },
     ],
   },
   {
@@ -88,14 +124,14 @@ if (x === 3)  // CORRECT! This checks if x is 3`,
     symbolBreakdown: [
       { symbol: "=", meaning: "STORE a value (put something in a box)" },
       { symbol: "===", meaning: "COMPARE two values (are they the same?)" },
-      { symbol: "&&", meaning: "\"AND\" — both conditions must be true" },
-      { symbol: "||", meaning: "\"OR\" — at least one must be true" },
+      { symbol: "&&", meaning: '"AND" — both conditions must be true' },
+      { symbol: "||", meaning: '"OR" — at least one must be true' },
     ],
   },
   {
     title: "What is % (modulo)?",
     explanation:
-      "The % symbol gives you the REMAINDER after dividing. If the remainder is 0, it divides evenly. This is how you check \"is this number divisible by 3?\" — the KEY to FizzBuzz!",
+      'The % symbol gives you the REMAINDER after dividing. If the remainder is 0, it divides evenly. This is how you check "is this number divisible by 3?" — the KEY to FizzBuzz!',
     codeExample: `10 % 3  // → 1  (10 ÷ 3 = 3 remainder 1)
 9 % 3   // → 0  (divisible! no remainder)
 15 % 5  // → 0  (divisible!)
@@ -105,23 +141,32 @@ if (i % 3 === 0) {
   // yes!
 }`,
     symbolBreakdown: [
-      { symbol: "%", meaning: "\"divide and give me the REMAINDER\" (not percentage!)" },
-      { symbol: "% 3 === 0", meaning: "\"the remainder is 0\" = \"divides evenly by 3\"" },
-      { symbol: "&&", meaning: "\"AND\" — check BOTH conditions at once" },
-      { symbol: "i % 3 === 0 && i % 5 === 0", meaning: "\"divisible by 3 AND 5\" (this is FizzBuzz!)" },
+      {
+        symbol: "%",
+        meaning: '"divide and give me the REMAINDER" (not percentage!)',
+      },
+      {
+        symbol: "% 3 === 0",
+        meaning: '"the remainder is 0" = "divides evenly by 3"',
+      },
+      { symbol: "&&", meaning: '"AND" — check BOTH conditions at once' },
+      {
+        symbol: "i % 3 === 0 && i % 5 === 0",
+        meaning: '"divisible by 3 AND 5" (this is FizzBuzz!)',
+      },
     ],
   },
   {
     title: "What is a function?",
     explanation:
-      "A function is a recipe. You give it a name, list what ingredients (inputs) it needs, and write the steps inside. \"return\" means \"here's the final answer.\"",
+      'A function is a recipe. You give it a name, list what ingredients (inputs) it needs, and write the steps inside. "return" means "here\'s the final answer."',
     codeExample: `function double(number) {
   return number * 2;
 }
 double(5);   // → 10
 double(100); // → 200`,
     symbolBreakdown: [
-      { symbol: "function", meaning: "\"I'm defining a new recipe\"" },
+      { symbol: "function", meaning: '"I\'m defining a new recipe"' },
       { symbol: "double", meaning: "the name you give your recipe" },
       { symbol: "(number)", meaning: "the input/ingredient the recipe needs" },
       { symbol: "{ }", meaning: "the steps of the recipe go inside" },
@@ -140,23 +185,32 @@ word[0]       // → "h"
 word[4]       // → "o"
 word.length   // → 5`,
     symbolBreakdown: [
-      { symbol: "\" \"", meaning: "quotes tell the computer \"this is text, not code\"" },
-      { symbol: "word[0]", meaning: "get the character at position 0 (first one)" },
-      { symbol: ".length", meaning: "\"how many characters are in this text?\"" },
+      {
+        symbol: '" "',
+        meaning: 'quotes tell the computer "this is text, not code"',
+      },
+      {
+        symbol: "word[0]",
+        meaning: "get the character at position 0 (first one)",
+      },
+      { symbol: ".length", meaning: '"how many characters are in this text?"' },
     ],
   },
   {
     title: "Building text with +=",
     explanation:
-      "You can build up text one piece at a time. Start with nothing (\"\") and keep adding characters. The += symbol means \"add this to what's already there.\"",
+      'You can build up text one piece at a time. Start with nothing ("") and keep adding characters. The += symbol means "add this to what\'s already there."',
     codeExample: `let result = "";
 result += "h";   // result is "h"
 result += "i";   // result is "hi"
 result += "!";   // result is "hi!"`,
     symbolBreakdown: [
-      { symbol: "\"\"", meaning: "empty text (nothing inside the quotes)" },
-      { symbol: "+=", meaning: "\"add this to the end of what I already have\"" },
-      { symbol: "let", meaning: "using let (not const) because the value keeps changing" },
+      { symbol: '""', meaning: "empty text (nothing inside the quotes)" },
+      { symbol: "+=", meaning: '"add this to the end of what I already have"' },
+      {
+        symbol: "let",
+        meaning: "using let (not const) because the value keeps changing",
+      },
     ],
   },
   {
@@ -173,8 +227,12 @@ for (let i = 4; i >= 0; i--) {
     symbolBreakdown: [
       { symbol: "i--", meaning: "subtract 1 each time (count DOWN)" },
       { symbol: "i++", meaning: "add 1 each time (count UP) — the opposite" },
-      { symbol: "i >= 0", meaning: "\"keep going while i is 0 or more\"" },
-      { symbol: "word.length - 1", meaning: "position of the LAST character (length is 5, last position is 4)" },
+      { symbol: "i >= 0", meaning: '"keep going while i is 0 or more"' },
+      {
+        symbol: "word.length - 1",
+        meaning:
+          "position of the LAST character (length is 5, last position is 4)",
+      },
     ],
   },
   {
@@ -189,8 +247,14 @@ reversed += word[0];  // reversed is "ih"
 // "hi" reversed is "ih"!`,
     symbolBreakdown: [
       { symbol: "word[i]", meaning: "the character at position i in the word" },
-      { symbol: "reversed += word[i]", meaning: "\"take this character and add it to my result\"" },
-      { symbol: "return reversed", meaning: "\"here's the reversed string, I'm done!\"" },
+      {
+        symbol: "reversed += word[i]",
+        meaning: '"take this character and add it to my result"',
+      },
+      {
+        symbol: "return reversed",
+        meaning: "\"here's the reversed string, I'm done!\"",
+      },
     ],
   },
 ];
@@ -199,7 +263,7 @@ const twoSumLesson: MiniLessonConcept[] = [
   {
     title: "What is an array?",
     explanation:
-      "An array is a numbered list. Each item has a position called an \"index\" starting from 0. Think of seats in a row — seat 0, seat 1, seat 2...",
+      'An array is a numbered list. Each item has a position called an "index" starting from 0. Think of seats in a row — seat 0, seat 1, seat 2...',
     codeExample: `const nums = [2, 7, 11, 15];
 nums[0]       // → 2
 nums[1]       // → 7
@@ -207,23 +271,26 @@ nums.length   // → 4`,
     symbolBreakdown: [
       { symbol: "[ ]", meaning: "square brackets create a list" },
       { symbol: "nums[0]", meaning: "get item at position 0 (the first item)" },
-      { symbol: ".length", meaning: "\"how many items in this list?\"" },
+      { symbol: ".length", meaning: '"how many items in this list?"' },
     ],
   },
   {
     title: "What is a Map?",
     explanation:
-      "A Map is like a phone book — you store pairs of (name → number). Later you can quickly ask \"do I have Alice's number?\" and look it up instantly.",
+      'A Map is like a phone book — you store pairs of (name → number). Later you can quickly ask "do I have Alice\'s number?" and look it up instantly.',
     codeExample: `const book = new Map();
 book.set("Alice", 42);   // store
 book.has("Alice");        // → true
 book.get("Alice");        // → 42
 book.has("Bob");          // → false`,
     symbolBreakdown: [
-      { symbol: "new Map()", meaning: "\"create a new empty phone book\"" },
-      { symbol: ".set(key, value)", meaning: "\"store this pair\"" },
-      { symbol: ".has(key)", meaning: "\"is this key in the book?\" → true/false" },
-      { symbol: ".get(key)", meaning: "\"look up and give me the value\"" },
+      { symbol: "new Map()", meaning: '"create a new empty phone book"' },
+      { symbol: ".set(key, value)", meaning: '"store this pair"' },
+      {
+        symbol: ".has(key)",
+        meaning: '"is this key in the book?" → true/false',
+      },
+      { symbol: ".get(key)", meaning: '"look up and give me the value"' },
     ],
   },
   {
@@ -238,7 +305,10 @@ const need = target - current;
 // "Have I seen a 7 before?"`,
     symbolBreakdown: [
       { symbol: "-", meaning: "subtraction: target minus current number" },
-      { symbol: "target - nums[i]", meaning: "\"what number do I NEED to reach the target?\"" },
+      {
+        symbol: "target - nums[i]",
+        meaning: '"what number do I NEED to reach the target?"',
+      },
     ],
   },
   {
@@ -252,7 +322,10 @@ for (let i = 0; i < nums.length; i++) {
 // Prints: 10, 20, 30`,
     symbolBreakdown: [
       { symbol: "i = 0", meaning: "start at the first position" },
-      { symbol: "i < nums.length", meaning: "keep going until we've checked every item" },
+      {
+        symbol: "i < nums.length",
+        meaning: "keep going until we've checked every item",
+      },
       { symbol: "nums[i]", meaning: "the actual value at position i" },
       { symbol: "i", meaning: "just the position NUMBER (0, 1, 2...)" },
     ],
@@ -260,14 +333,20 @@ for (let i = 0; i < nums.length; i++) {
   {
     title: "Returning the answer",
     explanation:
-      "\"return\" means \"I found it! Here's the answer.\" For Two Sum, you return the two positions (indices) where the matching numbers are.",
+      '"return" means "I found it! Here\'s the answer." For Two Sum, you return the two positions (indices) where the matching numbers are.',
     codeExample: `// When you find the pair:
 return [seen.get(need), i];
 // "The answer is these two positions!"`,
     symbolBreakdown: [
-      { symbol: "return", meaning: "\"stop here and give back the answer\"" },
-      { symbol: "[a, b]", meaning: "an array with two items — the two positions" },
-      { symbol: "seen.get(need)", meaning: "\"look up where I saw that number before\"" },
+      { symbol: "return", meaning: '"stop here and give back the answer"' },
+      {
+        symbol: "[a, b]",
+        meaning: "an array with two items — the two positions",
+      },
+      {
+        symbol: "seen.get(need)",
+        meaning: '"look up where I saw that number before"',
+      },
     ],
   },
 ];
@@ -278,13 +357,13 @@ const oddOrEvenLesson: MiniLessonConcept[] = [
   {
     title: "What is a function?",
     explanation:
-      "A function is like a recipe. You give it a name, tell it what ingredient (input) it needs, and write the steps inside. \"return\" means \"here's the final answer.\"",
+      'A function is like a recipe. You give it a name, tell it what ingredient (input) it needs, and write the steps inside. "return" means "here\'s the final answer."',
     codeExample: `function greet(name) {
   return "Hello, " + name;
 }
 greet("Ali");   // → "Hello, Ali"`,
     symbolBreakdown: [
-      { symbol: "function", meaning: "\"I'm defining a new recipe\"" },
+      { symbol: "function", meaning: '"I\'m defining a new recipe"' },
       { symbol: "greet", meaning: "the name you give your recipe" },
       { symbol: "(name)", meaning: "the input/ingredient the recipe needs" },
       { symbol: "{ }", meaning: "the steps of the recipe go inside" },
@@ -294,32 +373,41 @@ greet("Ali");   // → "Hello, Ali"`,
   {
     title: "What is if / else?",
     explanation:
-      "An \"if\" is a decision. Like: \"IF it's raining, bring an umbrella. OTHERWISE (else), wear sunglasses.\" The computer checks the condition and runs only one path.",
+      'An "if" is a decision. Like: "IF it\'s raining, bring an umbrella. OTHERWISE (else), wear sunglasses." The computer checks the condition and runs only one path.',
     codeExample: `if (age >= 18) {
   return "adult";
 } else {
   return "minor";
 }`,
     symbolBreakdown: [
-      { symbol: "if", meaning: "\"check if this is true\"" },
-      { symbol: "( )", meaning: "the condition to check goes inside parentheses" },
-      { symbol: "{ }", meaning: "\"if true, do what's inside these curly braces\"" },
-      { symbol: "else", meaning: "\"if it was NOT true, do this instead\"" },
+      { symbol: "if", meaning: '"check if this is true"' },
+      {
+        symbol: "( )",
+        meaning: "the condition to check goes inside parentheses",
+      },
+      {
+        symbol: "{ }",
+        meaning: '"if true, do what\'s inside these curly braces"',
+      },
+      { symbol: "else", meaning: '"if it was NOT true, do this instead"' },
     ],
   },
   {
     title: "What is % (modulo)?",
     explanation:
-      "The % symbol gives you the REMAINDER after dividing. If the remainder is 0, it divides evenly. This is how you check \"is this number even?\" — even numbers divide by 2 with no remainder!",
+      'The % symbol gives you the REMAINDER after dividing. If the remainder is 0, it divides evenly. This is how you check "is this number even?" — even numbers divide by 2 with no remainder!',
     codeExample: `4 % 2   // → 0  (even! divides evenly)
 7 % 2   // → 1  (odd! remainder of 1)
 0 % 2   // → 0  (even!)
 -3 % 2  // → -1 (odd!)`,
     symbolBreakdown: [
-      { symbol: "%", meaning: "\"divide and give me the REMAINDER\"" },
-      { symbol: "% 2 === 0", meaning: "\"the remainder is 0\" = \"it's even\"" },
-      { symbol: "% 2 !== 0", meaning: "\"the remainder is NOT 0\" = \"it's odd\"" },
-      { symbol: "===", meaning: "\"is exactly equal to?\" (comparison)" },
+      { symbol: "%", meaning: '"divide and give me the REMAINDER"' },
+      { symbol: "% 2 === 0", meaning: '"the remainder is 0" = "it\'s even"' },
+      {
+        symbol: "% 2 !== 0",
+        meaning: '"the remainder is NOT 0" = "it\'s odd"',
+      },
+      { symbol: "===", meaning: '"is exactly equal to?" (comparison)' },
     ],
   },
   {
@@ -336,9 +424,12 @@ greet("Ali");   // → "Hello, Ali"`,
 mood(9);  // → "happy"
 mood(3);  // → "meh"`,
     symbolBreakdown: [
-      { symbol: "\"happy\"", meaning: "text (string) — must be wrapped in quotes" },
-      { symbol: "return", meaning: "\"stop here and give back this answer\"" },
-      { symbol: ">", meaning: "\"is greater than\"" },
+      {
+        symbol: '"happy"',
+        meaning: "text (string) — must be wrapped in quotes",
+      },
+      { symbol: "return", meaning: '"stop here and give back this answer"' },
+      { symbol: ">", meaning: '"is greater than"' },
     ],
   },
 ];
@@ -355,19 +446,19 @@ nums.length   // → 3`,
     symbolBreakdown: [
       { symbol: "[ ]", meaning: "square brackets create a list (array)" },
       { symbol: "nums[0]", meaning: "get the item at position 0 (first item)" },
-      { symbol: ".length", meaning: "\"how many items are in this list?\"" },
+      { symbol: ".length", meaning: '"how many items are in this list?"' },
     ],
   },
   {
     title: "What is a for loop?",
     explanation:
-      "A loop repeats an action. Think of it like: \"Go through each item in the list, one by one, and do something.\" It has 3 parts: where to start, when to stop, and how to count.",
+      'A loop repeats an action. Think of it like: "Go through each item in the list, one by one, and do something." It has 3 parts: where to start, when to stop, and how to count.',
     codeExample: `for (let i = 0; i < 3; i++) {
   console.log(i);
 }
 // Prints: 0, 1, 2`,
     symbolBreakdown: [
-      { symbol: "for", meaning: "\"I want to repeat something\"" },
+      { symbol: "for", meaning: '"I want to repeat something"' },
       { symbol: "let i = 0", meaning: "START: create a counter starting at 0" },
       { symbol: "i < 3", meaning: "STOP: keep going while i is less than 3" },
       { symbol: "i++", meaning: "COUNT: add 1 to i each time" },
@@ -377,15 +468,18 @@ nums.length   // → 3`,
   {
     title: "The accumulator pattern",
     explanation:
-      "To add up numbers, start with a variable at 0 (the \"accumulator\"), then keep adding each number to it. At the end, the variable holds the total.",
+      'To add up numbers, start with a variable at 0 (the "accumulator"), then keep adding each number to it. At the end, the variable holds the total.',
     codeExample: `let total = 0;
 total += 10;  // total is 10
 total += 20;  // total is 30
 total += 30;  // total is 60`,
     symbolBreakdown: [
       { symbol: "let total = 0", meaning: "create a box starting at 0" },
-      { symbol: "+=", meaning: "\"add this to what's already there\"" },
-      { symbol: "total += nums[i]", meaning: "\"add the current number to our running total\"" },
+      { symbol: "+=", meaning: '"add this to what\'s already there"' },
+      {
+        symbol: "total += nums[i]",
+        meaning: '"add the current number to our running total"',
+      },
     ],
   },
 ];
@@ -402,7 +496,7 @@ nums.length   // → 4`,
     symbolBreakdown: [
       { symbol: "[ ]", meaning: "square brackets create a list" },
       { symbol: "nums[0]", meaning: "get item at position 0" },
-      { symbol: ".length", meaning: "\"how many items?\"" },
+      { symbol: ".length", meaning: '"how many items?"' },
     ],
   },
   {
@@ -415,9 +509,15 @@ if (nums[1] > max) {
   max = nums[1];  // found a bigger one!
 }`,
     symbolBreakdown: [
-      { symbol: "let max = nums[0]", meaning: "\"the best so far is the first item\"" },
-      { symbol: ">", meaning: "\"is greater than\"" },
-      { symbol: "max = nums[i]", meaning: "\"update: THIS is now the biggest I've seen\"" },
+      {
+        symbol: "let max = nums[0]",
+        meaning: '"the best so far is the first item"',
+      },
+      { symbol: ">", meaning: '"is greater than"' },
+      {
+        symbol: "max = nums[i]",
+        meaning: '"update: THIS is now the biggest I\'ve seen"',
+      },
     ],
   },
   {
@@ -434,8 +534,14 @@ for (let i = 1; i < nums.length; i++) {
 }
 // max is 9`,
     symbolBreakdown: [
-      { symbol: "i = 1", meaning: "start at position 1 (we already have position 0)" },
-      { symbol: "i < nums.length", meaning: "keep going until we've checked every item" },
+      {
+        symbol: "i = 1",
+        meaning: "start at position 1 (we already have position 0)",
+      },
+      {
+        symbol: "i < nums.length",
+        meaning: "keep going until we've checked every item",
+      },
       { symbol: "nums[i]", meaning: "the actual value at position i" },
     ],
   },
@@ -451,9 +557,9 @@ word[0]       // → "h"
 word[4]       // → "o"
 word.length   // → 5`,
     symbolBreakdown: [
-      { symbol: "\" \"", meaning: "quotes tell the computer \"this is text\"" },
+      { symbol: '" "', meaning: 'quotes tell the computer "this is text"' },
       { symbol: "word[0]", meaning: "get the character at position 0" },
-      { symbol: ".length", meaning: "\"how many characters?\"" },
+      { symbol: ".length", meaning: '"how many characters?"' },
     ],
   },
   {
@@ -464,8 +570,11 @@ word.length   // → 5`,
 "aeiou".includes("b")  // → false
 "aeiou".includes("e")  // → true`,
     symbolBreakdown: [
-      { symbol: ".includes()", meaning: "\"does this contain...?\" → true or false" },
-      { symbol: "\"aeiou\"", meaning: "a string containing all the vowels" },
+      {
+        symbol: ".includes()",
+        meaning: '"does this contain...?" → true or false',
+      },
+      { symbol: '"aeiou"', meaning: "a string containing all the vowels" },
       { symbol: "true", meaning: "yes, it's in there!" },
       { symbol: "false", meaning: "no, it's not" },
     ],
@@ -473,14 +582,17 @@ word.length   // → 5`,
   {
     title: "Making text lowercase",
     explanation:
-      "\"A\" and \"a\" are different to a computer. To handle both uppercase and lowercase letters, convert the whole string to lowercase first with .toLowerCase().",
+      '"A" and "a" are different to a computer. To handle both uppercase and lowercase letters, convert the whole string to lowercase first with .toLowerCase().',
     codeExample: `"Hello".toLowerCase()  // → "hello"
 "ABC".toLowerCase()    // → "abc"
 
 const char = "A";
 "aeiou".includes(char.toLowerCase())  // → true`,
     symbolBreakdown: [
-      { symbol: ".toLowerCase()", meaning: "\"convert all letters to lowercase\"" },
+      {
+        symbol: ".toLowerCase()",
+        meaning: '"convert all letters to lowercase"',
+      },
     ],
   },
   {
@@ -494,7 +606,10 @@ const word = "Hi";
 // word[1] is "i" → lowercase is "i" → vowel! count becomes 1`,
     symbolBreakdown: [
       { symbol: "let count = 0", meaning: "start counting from zero" },
-      { symbol: "count++", meaning: "\"add 1 to count\" (same as count = count + 1)" },
+      {
+        symbol: "count++",
+        meaning: '"add 1 to count" (same as count = count + 1)',
+      },
     ],
   },
 ];
@@ -509,8 +624,11 @@ const result = [];
 result.push(10);
 // result is [10]`,
     symbolBreakdown: [
-      { symbol: "[ ]", meaning: "square brackets create a list (empty if nothing inside)" },
-      { symbol: ".push()", meaning: "\"add this item to the end of the list\"" },
+      {
+        symbol: "[ ]",
+        meaning: "square brackets create a list (empty if nothing inside)",
+      },
+      { symbol: ".push()", meaning: '"add this item to the end of the list"' },
     ],
   },
   {
@@ -524,7 +642,10 @@ for (let i = 0; i < nums.length; i++) {
 // Prints: 4, 5, 6`,
     symbolBreakdown: [
       { symbol: "i = 0", meaning: "start at the first position" },
-      { symbol: "i < nums.length", meaning: "keep going until we've seen every item" },
+      {
+        symbol: "i < nums.length",
+        meaning: "keep going until we've seen every item",
+      },
       { symbol: "nums[i]", meaning: "the actual value at position i" },
       { symbol: "i++", meaning: "move to the next position" },
     ],
@@ -542,8 +663,14 @@ doubled.push(nums[2] * 2);  // push 6
 // doubled is [2, 4, 6]`,
     symbolBreakdown: [
       { symbol: "*", meaning: "multiplication (times)" },
-      { symbol: "nums[i] * 2", meaning: "\"take this number and multiply by 2\"" },
-      { symbol: "result.push(...)", meaning: "\"add the doubled number to our new list\"" },
+      {
+        symbol: "nums[i] * 2",
+        meaning: '"take this number and multiply by 2"',
+      },
+      {
+        symbol: "result.push(...)",
+        meaning: '"add the doubled number to our new list"',
+      },
     ],
   },
 ];
@@ -706,7 +833,7 @@ The function should be case-insensitive — both \`"A"\` and \`"a"\` count as vo
 }`,
     hints: [
       "Loop through each character in the string and check if it's a vowel.",
-      "Use .toLowerCase() on each character so you don't miss uppercase vowels. You can check if a character is a vowel with \"aeiou\".includes(char).",
+      'Use .toLowerCase() on each character so you don\'t miss uppercase vowels. You can check if a character is a vowel with "aeiou".includes(char).',
       "Keep a counter starting at 0. Each time you find a vowel, add 1 to the counter with count++.",
     ],
     miniLesson: countVowelsLesson,

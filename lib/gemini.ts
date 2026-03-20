@@ -1,10 +1,18 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import type { ChatMessage } from "@/types";
+import {
+  AskBrainstormParams,
+  AskHelpParams,
+  GenerateSolutionParams,
+  VerifySolutionOutput,
+  VerifySolutionInput,
+} from "@/types/ai";
 import {
   buildTutorSystemPrompt,
   buildTutorUserMessage,
   buildBrainstormSystemPrompt,
   buildBrainstormUserMessage,
+  buildVerifySolutionPrompt,
 } from "@/lib/prompt-builder";
 
 let _ai: GoogleGenAI | undefined;
@@ -38,12 +46,12 @@ function formatHistory(history: ChatMessage[]): string {
 
 const GEMINI_MODEL = "gemini-2.5-flash-lite";
 
-export async function askBrainstorm(
-  message: string,
-  history: ChatMessage[],
-  problemDescription: string,
-  starterCode: string,
-): Promise<string> {
+export async function askBrainstorm({
+  message,
+  history,
+  problemDescription,
+  starterCode,
+}: AskBrainstormParams): Promise<string> {
   const currentTurnContent = buildBrainstormUserMessage({ message });
 
   const contents = [
@@ -71,17 +79,17 @@ export async function askBrainstorm(
   );
 }
 
-export async function askHelp(
-  code: string,
-  error: string,
-  hintLevel: number,
-  history: ChatMessage[],
-  brainstormHistory: ChatMessage[],
-  problemDescription: string,
-  referenceSolution: string | null,
-  hints: string[] | null,
-  message?: string,
-): Promise<string> {
+export async function askHelp({
+  code,
+  error,
+  hintLevel,
+  history,
+  brainstormHistory,
+  problemDescription,
+  referenceSolution,
+  hints,
+  message,
+}: AskHelpParams): Promise<string> {
   const brainstormPlan =
     brainstormHistory.length > 0
       ? `\n\n# Brainstorm Plan\n${formatHistory(brainstormHistory)}`
@@ -120,50 +128,59 @@ export async function askHelp(
   );
 }
 
-export async function evaluateCode(
-  code: string,
-  problemDescription: string,
-  testCases: { input: string; expectedOutput: string }[],
-  systemPrompt: string,
-): Promise<{ correct: boolean; feedback: string }> {
-  const userMessage = `
-Problem: ${problemDescription}
-
-Test Cases:
-${testCases.map((tc, i) => `${i + 1}. Input: ${tc.input} → Expected: ${tc.expectedOutput}`).join("\n")}
-
-User's Solution:
-\`\`\`
-${code}
-\`\`\`
-
-Evaluate this solution and respond with a JSON object containing "correct" (boolean) and "feedback" (string).`;
+export async function verifySolution({
+  code,
+  problemDescription,
+  referenceSolution,
+}: VerifySolutionInput): Promise<VerifySolutionOutput> {
+  const prompt = buildVerifySolutionPrompt({
+    code,
+    problemDescription,
+    referenceSolution,
+  });
 
   const response = await getAI().models.generateContent({
     model: GEMINI_MODEL,
-    contents: userMessage,
+    contents: prompt,
     config: {
-      systemInstruction: systemPrompt,
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          reasoning: { type: Type.STRING },
+          is_correct: { type: Type.BOOLEAN },
+          mistakes: { type: Type.ARRAY, items: { type: Type.STRING } },
+        },
+        required: ["reasoning", "is_correct", "mistakes"],
+      },
     },
   });
 
-  const text =
-    response.text ??
-    '{"correct": false, "feedback": "Unable to evaluate. Please try again."}';
+  const text = response.text;
+  if (!text) {
+    return {
+      reasoning: "Failed to generate evaluation.",
+      is_correct: false,
+      mistakes: [],
+    };
+  }
 
   try {
-    const cleaned = text.replace(/```json\n?|\n?```/g, "").trim();
-    return JSON.parse(cleaned);
+    return JSON.parse(text) as VerifySolutionOutput;
   } catch {
-    return { correct: false, feedback: text };
+    return {
+      reasoning: "Failed to parse evaluation.",
+      is_correct: false,
+      mistakes: [],
+    };
   }
 }
 
-export async function generateSolution(
-  problemDescription: string,
-  language: string,
-  systemPrompt: string,
-): Promise<string> {
+export async function generateSolution({
+  problemDescription,
+  language,
+  systemPrompt,
+}: GenerateSolutionParams): Promise<string> {
   const userMessage = `
 Problem: ${problemDescription}
 Language: ${language}
